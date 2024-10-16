@@ -1,0 +1,21 @@
+/* WebKit (Safari/Chrome) */
+::-webkit-scrollbar {
+  height: 5px;
+  width: 5px;  /* Width of entire scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Color of track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: lightgray; /* Color of scroll thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: lightgray;/* Color of scroll thumb on hover */
+}
+::-webkit-scrollbar-horizontal {
+  height: 5px;/* Height of the horizontal scrollbar */
+  width: auto;/* Width of the vertical scrollbar */
+}
