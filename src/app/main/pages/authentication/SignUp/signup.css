@@ -1,0 +1,33 @@
+.textrecover {
+    color: #095f99;
+    /* float: right; */
+    font-size: 14px !important;
+  }
+  .text-center {
+    text-align: center;
+  }
+  .btn {
+    background-color: #095f99;
+    color: #ffff !important;
+    padding: 14px 42px !important;
+    border-radius: 9px !important;
+  }
+  .btn:hover {
+    background-color: #095f99 !important;
+    color: #ffff !important;
+    padding: 14px 42px !important;
+    border-radius: 9px !important;
+  }
+  body {
+    font-size: 12px;
+  }
+  .favicon {
+    width: 100%;
+    height: "100vh";
+  }
+  .maxchart {
+    color: "#18699f !important";
+  }
+  .icons-width {
+    width: 22px;
+  }

@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Box, Paper, Typography, Button, Alert, Snackbar } from "@mui/material";
 import login from "../../../../../assets/images/loginbg.jpg";
-import erpsal from "../../../../../assets/images/erpsal.jpg";
+import logo from "../../../../../assets/images/GinfoTech logo.png";
 import EmailIcon from "@mui/icons-material/Email";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import LockIcon from "@mui/icons-material/Lock";
@@ -88,33 +88,44 @@ function Login() {
             },
           }}
         >
-          <Box pt={2.5} pb={2.5}>
-            <Typography variant="h4" component="h1">
+          <Box>
+            <Box
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                textAlign: "center",
+                alignItems: "center",
+              }}
+            >
               <img
-                src={erpsal}
-                alt="Description of the image"
-                height={"300px"}
-                width={"400px"}
-                style={{ marginBottom: "-70px", marginTop: "-40px" }}
+                src={logo}
+                alt="GinfoTech Solution"
+                style={{
+                  marginBottom: "-90px",
+                  marginTop: "-40px",
+                  height: "35vh",
+                  width: "80%",
+                }}
               />
-            </Typography>
-            <Typography
-              variant="h5"
-              component="h1"
-              style={{ fontWeight: "600" }}
-            >
-              <span style={{ color: "#2f2f2f", fontSize: "20px" }}>
-                Welcome Back!
-              </span>
-            </Typography>
-            <Typography
-              variant="h6"
-              component="h1"
-              style={{ fontSize: "14px" }}
-              pt={0.5}
-            >
-              <span style={{ color: "#90919b" }}>Login To Your Account</span>
-            </Typography>
+
+              <Typography
+                variant="h5"
+                component="h1"
+                style={{ fontWeight: "600" }}
+              >
+                <span style={{ color: "#2f2f2f", fontSize: "20px" }}>
+                  Welcome Back!
+                </span>
+              </Typography>
+              <Typography
+                variant="h6"
+                component="h1"
+                style={{ fontSize: "14px" }}
+                pt={0.5}
+              >
+                <span style={{ color: "#90919b" }}>Login To Your Account</span>
+              </Typography>
+            </Box>
             <Box pt={3}>
               <ThemeProvider theme={theme}>
                 <Box pt={2}>
@@ -191,7 +202,26 @@ function Login() {
                 </Box>
               </ThemeProvider>
             </Box>
-            <Box pt={2}>
+            <Box
+              pt={2}
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography className="textrecover" sx={{ fontSize: "13px" }}>
+                <Link
+                  to="/signup"
+                  style={{
+                    fontSize: "13px",
+                    textDecoration: "none",
+                    color: "#095f99",
+                  }}
+                >
+                  SignUp Account
+                </Link>
+              </Typography>
               <Typography className="textrecover" sx={{ fontSize: "13px" }}>
                 <Link
                   to="/recover"
