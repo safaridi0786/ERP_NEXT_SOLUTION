@@ -17,7 +17,8 @@ import logo from "../../../../../assets/images/GinfoTech logo.png";
 import "./signup.css";
 import { TextField } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import GoogleIcon from "@mui/icons-material/Google";
 
 const countries = [
   { name: "Afghanistan", code: "AF" },
@@ -214,6 +215,7 @@ const countries = [
 ];
 
 function SignUp() {
+  const navigate = useNavigate();
   const [userName, setUserName] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState({
     openSnack: false,
@@ -271,7 +273,7 @@ function SignUp() {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            padding: "31px",
+            padding: "25px",
             backgroundColor: "#ffffff",
             borderRadius: "10px",
             textAlign: "center",
@@ -297,7 +299,6 @@ function SignUp() {
             />
 
             <Typography
-              variant="h5"
               component="h1"
               style={{
                 fontWeight: "600",
@@ -309,7 +310,7 @@ function SignUp() {
               SignUp
             </Typography>
 
-            <Box pt={1}>
+            <Box pt={0.5}>
               <Typography
                 style={{ float: "left", fontSize: "14px", fontWeight: "bold" }}
                 pb={1}
@@ -328,7 +329,7 @@ function SignUp() {
                 />
               </ThemeProvider>
             </Box>
-            <Box pt={1}>
+            <Box pt={0.5}>
               <Typography
                 style={{ float: "left", fontSize: "14px", fontWeight: "bold" }}
                 pb={1}
@@ -347,7 +348,7 @@ function SignUp() {
                 />
               </ThemeProvider>
             </Box>
-            <Box pt={1}>
+            <Box pt={0.5}>
               <Typography
                 style={{ float: "left", fontSize: "14px", fontWeight: "bold" }}
                 pb={1}
@@ -366,7 +367,7 @@ function SignUp() {
                 />
               </ThemeProvider>
             </Box>
-            <Box pt={1}>
+            <Box pt={0.5}>
               <Typography
                 style={{ float: "left", fontSize: "14px", fontWeight: "bold" }}
                 pb={1}
@@ -377,7 +378,10 @@ function SignUp() {
               <FormControl
                 fullWidth
                 size="small"
-                style={{ backgroundColor: "#f6f7fb" }}
+                style={{
+                  backgroundColor: "#f6f7fb",
+                  textAlign: "left",
+                }}
               >
                 <Select value={selectedCountry} onChange={handleChange}>
                   {countries.map((country, index) => (
@@ -388,7 +392,7 @@ function SignUp() {
                 </Select>
               </FormControl>
             </Box>
-            <Box pt={1}>
+            <Box pt={0.5}>
               <Typography
                 style={{ float: "left", fontSize: "14px", fontWeight: "bold" }}
                 pb={1}
@@ -425,26 +429,91 @@ function SignUp() {
               style={{
                 display: "flex",
                 flexDirection: "row",
+                width: "100%",
                 alignItems: "center",
+                textAlign: "left",
               }}
             >
-              <Checkbox />
-              <Typography sx={{ fontSize: "14px", fontWeight: "600" }}>
-                I accept this condition
+              <Checkbox style={{ marginTop: "-10px", color: "#0E4374" }} />
+              <Typography sx={{ fontSize: "13px", fontWeight: "600" }}>
+                I agree to{" "}
+                <span
+                  style={{
+                    color: "#0E4374",
+                    fontWeight: "800",
+                    fontSize: "14px" /* Adjust font size as needed */,
+                    textShadow:
+                      "2px 2px 5px rgba(0, 0, 0, 0.3), 4px 4px 10px rgba(0, 0, 0, 0.2)" /* 3D shadow effect */,
+                    background:
+                      "linear-gradient(135deg, #0E4374, #4285F4)" /* Gradient effect */,
+                    WebkitBackgroundClip: "text" /* For gradient text color */,
+                    WebkitTextFillColor:
+                      "transparent" /* Ensure text is filled by the gradient */,
+                    transform:
+                      "perspective(500px) rotateX(10deg) rotateY(5deg)" /* 3D perspective */,
+                    letterSpacing: "2px" /* Stylish letter spacing */,
+                    display: "inline-block",
+                  }}
+                >
+                  GINFOTECH
+                </span>
+                {` `}
+                Terms of Service, Privacy Policy & Cookie Policy.
               </Typography>
             </Box>
 
-            <Box pt={4}>
+            <Box pt={2}>
               <Button
                 variant="contained"
-                className="btn"
-                // onClick={() => {
-                //   postAthenticationData(data);
-                // }}
+                fullWidth
+                sx={{
+                  backgroundColor: "#0E4374",
+                  borderRadius: "10px",
+                  fontWeight: "500",
+                  fontSize: "16px",
+                  textTransform: "none",
+                }}
+                onClick={() => {
+                  // postAthenticationData(data);
+                  navigate("/setupaccount");
+                }}
               >
                 Create Account
               </Button>
             </Box>
+            <Box
+              sx={{
+                textAlign: "center",
+                fontSize: "18px",
+                color: "silver",
+                fontWeight: "600",
+                marginTop: "5px",
+                marginBottom: "5px",
+              }}
+            >
+              or
+            </Box>
+            <Button
+              variant="contained"
+              fullWidth
+              sx={{
+                backgroundColor: "silver",
+                color: "black",
+                fontWeight: "600",
+                textTransform: "none",
+                gap: 1,
+              }}
+              // onClick={() => {
+              //   postAthenticationData(data);
+              // }}
+            >
+              <GoogleIcon
+                sx={{
+                  color: "#0E4374",
+                }}
+              />{" "}
+              Signup with Google
+            </Button>
           </Box>
         </Paper>
         {/* SnackBar */}
@@ -514,7 +583,7 @@ const theme = createTheme({
             backgroundColor: "#f6f7fb",
             "& input": {
               padding: "6px 12px",
-              fontSize: "12px",
+              fontSize: "14px",
               height: "30px",
               backgroundColor: "#f6f7fb",
             },

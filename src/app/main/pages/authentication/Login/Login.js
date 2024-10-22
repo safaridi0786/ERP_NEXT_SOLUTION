@@ -11,6 +11,7 @@ import "./login.css";
 import { TextField, InputAdornment } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Link } from "react-router-dom";
+import GoogleIcon from "@mui/icons-material/Google";
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -114,19 +115,32 @@ function Login() {
                 style={{ fontWeight: "600" }}
               >
                 <span style={{ color: "#2f2f2f", fontSize: "20px" }}>
-                  Welcome Back!
+                  Welcome Back! <br /> Login to{" "}
+                  <span
+                    style={{
+                      color: "#0E4374",
+                      fontWeight: "800",
+                      fontSize: "14px" /* Adjust font size as needed */,
+                      textShadow:
+                        "2px 2px 5px rgba(0, 0, 0, 0.3), 4px 4px 10px rgba(0, 0, 0, 0.2)" /* 3D shadow effect */,
+                      background:
+                        "linear-gradient(135deg, #0E4374, #4285F4)" /* Gradient effect */,
+                      WebkitBackgroundClip:
+                        "text" /* For gradient text color */,
+                      WebkitTextFillColor:
+                        "transparent" /* Ensure text is filled by the gradient */,
+                      transform:
+                        "perspective(500px) rotateX(10deg) rotateY(5deg)" /* 3D perspective */,
+                      letterSpacing: "2px" /* Stylish letter spacing */,
+                      display: "inline-block",
+                    }}
+                  >
+                    GINFOTECH
+                  </span>
                 </span>
               </Typography>
-              <Typography
-                variant="h6"
-                component="h1"
-                style={{ fontSize: "14px" }}
-                pt={0.5}
-              >
-                <span style={{ color: "#90919b" }}>Login To Your Account</span>
-              </Typography>
             </Box>
-            <Box pt={3}>
+            <Box pt={1}>
               <ThemeProvider theme={theme}>
                 <Box pt={2}>
                   <TextField
@@ -235,18 +249,60 @@ function Login() {
                 </Link>
               </Typography>
             </Box>
-            <Box pt={3}>
+
+            <Box pt={2}>
               <Button
                 disabled={userPassword !== "" && userName !== "" ? false : true}
                 variant="contained"
-                className="btn"
+                fullWidth
+                sx={{
+                  backgroundColor: "#0E4374",
+                  borderRadius: "10px",
+                  fontWeight: "500",
+                  fontSize: "16px",
+                  textTransform: "none",
+                }}
                 // onClick={() => {
                 //   postAthenticationData(data);
                 // }}
               >
-                Log in
+                Login
               </Button>
             </Box>
+
+            <Box
+              sx={{
+                textAlign: "center",
+                fontSize: "18px",
+                color: "silver",
+                fontWeight: "600",
+                marginTop: "5px",
+                marginBottom: "5px",
+              }}
+            >
+              or
+            </Box>
+            <Button
+              variant="contained"
+              fullWidth
+              sx={{
+                backgroundColor: "silver",
+                color: "black",
+                fontWeight: "600",
+                textTransform: "none",
+                gap: 1,
+              }}
+              // onClick={() => {
+              //   postAthenticationData(data);
+              // }}
+            >
+              <GoogleIcon
+                sx={{
+                  color: "#0E4374",
+                }}
+              />{" "}
+              Login with Google
+            </Button>
           </Box>
         </Paper>
         {/* SnackBar */}
