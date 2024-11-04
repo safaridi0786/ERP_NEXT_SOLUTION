@@ -10,10 +10,11 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import "./login.css";
 import { TextField, InputAdornment } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import GoogleIcon from "@mui/icons-material/Google";
 
 function Login() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [userName, setUserName] = useState("");
   const [userPassword, setUserPassword] = useState("");
@@ -262,9 +263,10 @@ function Login() {
                   fontSize: "16px",
                   textTransform: "none",
                 }}
-                // onClick={() => {
-                //   postAthenticationData(data);
-                // }}
+                onClick={() => {
+                  navigate("/dashboard");
+                  // postAthenticationData(data);
+                }}
               >
                 Login
               </Button>

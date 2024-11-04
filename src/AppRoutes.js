@@ -7,6 +7,8 @@ import Recover from "./app/main/pages/authentication/Recover/Recover";
 import Reset from "./app/main/pages/authentication/Reset/Reset";
 import Submit from "./app/main/pages/authentication/Submit/Submit";
 import OTPVerification from "./app/main/pages/authentication/OTP Verification/OTPVerification";
+import Dashboard from "./app/main/dashboard/Dashboard";
+import SideBar from "./app/main/components/navigation/SideBar";
 
 function AppRoutes() {
   return (
@@ -19,6 +21,9 @@ function AppRoutes() {
         <Route path="/otp" element={<OTPVerification />} />
         <Route path="/reset" element={<Reset />} />
         <Route path="/submit" element={<Submit />} />
+        <Route element={<SideBar />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Route>
       </Routes>
     </>
   );
