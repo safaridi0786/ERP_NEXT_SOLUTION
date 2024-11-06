@@ -268,3 +268,24 @@ export const addChatMessage = async (chatData) => {
     return null;
   }
 };
+
+// ERP Tasks API's Fetching
+
+export const getCountriesData = async (userId) => {
+  try {
+    const url = `${s.getCountries.countries}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const postedSignUpData = async (data) => {
+  try {
+    const response = await postData(`${s.credentials.signup}`, data);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};

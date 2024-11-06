@@ -1,6 +1,15 @@
 export const settings = {
-  baseUrl: "http://tfs-server:8784", // Write your Base Url
+  baseUrl: "http://192.168.100.78:8012",
 
+  getCountries: {
+    countries: "/api/User/GetCountries",
+  },
+
+  credentials: {
+    signup: "/api/User/AddUserReg",
+  },
+
+  // Dummy Data
   chatuser: {
     login: "/api/User/Login",
     sendOtp: "/api/User/SendOTP?email=[email]",
