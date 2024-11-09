@@ -7,6 +7,8 @@ export const settings = {
 
   credentials: {
     signup: "/api/User/AddUserReg",
+    welcomeScreen: "/api/User/Welcome",
+    setUpPassword: "/api/User/SetUpPass",
   },
 
   // Dummy Data

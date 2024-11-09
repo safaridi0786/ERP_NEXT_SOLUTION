@@ -17,11 +17,17 @@ import {
   ThemeProvider,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import login from "../../../../../../assets/images/loginbg.jpg";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import {
+  postedSetUpPassword,
+  postedWelcomeScreen,
+  getCountriesData,
+} from "../../../../../services/api/apiManager";
+import { useSelector } from "react-redux";
 
 const timeZones = [
   { label: "Pacific/Midway (Samoa)", value: "Pacific/Midway" },
@@ -135,12 +141,77 @@ const currencies = [
   // Add more as needed
 ];
 
+const languages = [
+  { label: "English", value: 1 },
+  { label: "Spanish", value: 2 },
+  { label: "French", value: 3 },
+  { label: "German", value: 4 },
+  { label: "Mandarin Chinese", value: 5 },
+  { label: "Japanese", value: 6 },
+  { label: "Korean", value: 7 },
+  { label: "Italian", value: 8 },
+  { label: "Portuguese", value: 9 },
+  { label: "Russian", value: 10 },
+  { label: "Hindi", value: 11 },
+  { label: "Bengali", value: 12 },
+  { label: "Arabic", value: 13 },
+  { label: "Turkish", value: 14 },
+  { label: "Urdu", value: 15 },
+  { label: "Indonesian", value: 16 },
+  { label: "Vietnamese", value: 17 },
+  { label: "Persian", value: 18 },
+  { label: "Swahili", value: 19 },
+  { label: "Thai", value: 20 },
+  { label: "Dutch", value: 21 },
+  { label: "Polish", value: 22 },
+  { label: "Swedish", value: 23 },
+  { label: "Norwegian", value: 24 },
+  { label: "Danish", value: 25 },
+  { label: "Finnish", value: 26 },
+  { label: "Greek", value: 27 },
+  { label: "Hebrew", value: 28 },
+  { label: "Malay", value: 29 },
+  { label: "Czech", value: 30 },
+  { label: "Hungarian", value: 31 },
+  { label: "Romanian", value: 32 },
+  { label: "Ukrainian", value: 33 },
+  { label: "Serbian", value: 34 },
+  { label: "Croatian", value: 35 },
+  { label: "Bulgarian", value: 36 },
+  { label: "Slovak", value: 37 },
+  { label: "Lithuanian", value: 38 },
+  { label: "Latvian", value: 39 },
+  { label: "Estonian", value: 40 },
+  { label: "Filipino", value: 41 },
+  { label: "Punjabi", value: 42 },
+  { label: "Tamil", value: 43 },
+  { label: "Telugu", value: 44 },
+  { label: "Gujarati", value: 45 },
+  { label: "Marathi", value: 46 },
+  { label: "Nepali", value: 47 },
+  { label: "Sinhala", value: 48 },
+  { label: "Khmer", value: 49 },
+  { label: "Burmese", value: 50 },
+  { label: "Amharic", value: 51 },
+  { label: "Yoruba", value: 52 },
+  { label: "Zulu", value: 53 },
+  { label: "Xhosa", value: 54 },
+  // Add more as needed
+];
+
 const steps = ["1", "2", "3"];
 
 function WelcomePage() {
+  const { countryId, emailAddress, lastname, firstname, compId } = useSelector(
+    (state) => state.credentials
+  );
+
   const [activeStep, setActiveStep] = React.useState(0);
+  const [language, setLanguage] = React.useState("");
   const [timeZone, setTimeZone] = React.useState("");
   const [currency, setCurrency] = React.useState("");
+  const [countries, setCountries] = React.useState([]);
+  const [selectedCountry, setSelectedCountry] = React.useState(countryId);
   const [userPassword, setUserPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
   const [strength, setStrength] = React.useState("");
@@ -215,13 +286,68 @@ function WelcomePage() {
     setCurrency(event.target.value);
   };
 
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  const handleNext = async () => {
+    if (activeStep === 0) {
+      if (language && timeZone && currency) {
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      } else {
+        console.log("Step 0 validation failed");
+      }
+    } else if (activeStep === 1) {
+      if (language && timeZone && currency) {
+        console.log("Step 1 validation passed");
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      } else {
+        console.log("Step 1 validation failed");
+      }
+    } else if (activeStep === 2) {
+      if (language && timeZone && currency) {
+        try {
+          const dataWelcomeScreen = {
+            comp_ID: compId,
+            languid: language,
+            timeZone: timeZone,
+            currency: currency,
+          };
+          const dataSetUpScreen = {
+            comp_ID: compId,
+            shanakht: userPassword,
+          };
+          const response = await postedWelcomeScreen(dataWelcomeScreen);
+          const response2 = await postedSetUpPassword(dataSetUpScreen);
+
+          if (response.ok && response2.ok) {
+            console.log("WelcomeScreen Response-->>>", response);
+            console.log("SetUp Password Response-->>>", response2);
+          } else {
+            console.error("API call failed at final step");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      } else {
+        console.log("Step 1 validation failed");
+      }
+    }
   };
+
+  // const handleNext = () => {
+  //   console.log(`check value-->>`);
+  //   setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  // };
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
+
+  useEffect(() => {
+    const fetchCountries = async () => {
+      const response = await getCountriesData();
+      setCountries(response?.data?.result);
+    };
+
+    fetchCountries();
+  }, []);
 
   return (
     <>
@@ -336,17 +462,27 @@ function WelcomePage() {
                         *
                       </span>
                     </Typography>
-                    <ThemeProvider theme={theme}>
-                      <TextField
-                        // value={userName}
-                        // onChange={(e) => {
-                        //   setUserName(e.target.value);
-                        // }}
-                        variant="outlined"
-                        fullWidth
-                        placeholder="Enter Your Language"
-                      />
-                    </ThemeProvider>
+                    <FormControl
+                      fullWidth
+                      size="small"
+                      style={{
+                        backgroundColor: "#f6f7fb",
+                        textAlign: "left",
+                      }}
+                    >
+                      <Select
+                        value={language}
+                        onChange={(e) => {
+                          setLanguage(e.target.value);
+                        }}
+                      >
+                        {languages?.map((lang, index) => (
+                          <MenuItem key={index} value={lang.value}>
+                            {lang.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
                   </Box>
                   <Box pt={0.5}>
                     <Typography
@@ -368,17 +504,29 @@ function WelcomePage() {
                         *
                       </span>
                     </Typography>
-                    <ThemeProvider theme={theme}>
-                      <TextField
-                        // value={userName}
-                        // onChange={(e) => {
-                        //   setUserName(e.target.value);
-                        // }}
-                        variant="outlined"
-                        fullWidth
-                        placeholder="Enter Your Country"
-                      />
-                    </ThemeProvider>
+
+                    <FormControl
+                      fullWidth
+                      size="small"
+                      style={{
+                        backgroundColor: "#f6f7fb",
+                        textAlign: "left",
+                      }}
+                    >
+                      <Select
+                        value={selectedCountry}
+                        disabled
+                        onChange={(e) => {
+                          setSelectedCountry(e.target.value);
+                        }}
+                      >
+                        {countries?.map((country, index) => (
+                          <MenuItem key={index} value={country.contID}>
+                            {country?.contName} ({country.contCode})
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
                   </Box>
                   <Box pt={0.5}>
                     <Typography
@@ -504,13 +652,14 @@ function WelcomePage() {
                     </Typography>
                     <ThemeProvider theme={theme}>
                       <TextField
-                        // value={userName}
+                        value={firstname + "," + lastname}
+                        disabled
                         // onChange={(e) => {
                         //   setUserName(e.target.value);
                         // }}
                         variant="outlined"
                         fullWidth
-                        placeholder="Enter Your Full Name"
+                        // placeholder="Enter Your Full Name"
                       />
                     </ThemeProvider>
                   </Box>
@@ -536,13 +685,11 @@ function WelcomePage() {
                     </Typography>
                     <ThemeProvider theme={theme}>
                       <TextField
-                        // value={userName}
-                        // onChange={(e) => {
-                        //   setUserName(e.target.value);
-                        // }}
+                        value={emailAddress}
+                        disabled
                         variant="outlined"
                         fullWidth
-                        placeholder="Enter Your Email"
+                        // placeholder="Enter Your Email"
                       />
                     </ThemeProvider>
                   </Box>

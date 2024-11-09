@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-import callReducer from "../store/slice/CallSlice";
+import credentials from "../store/slice/credentials";
 
 export const Store = configureStore({
   reducer: {
-    call: callReducer,
+    credentials: credentials,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });

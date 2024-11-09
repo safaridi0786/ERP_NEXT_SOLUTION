@@ -289,3 +289,19 @@ export const postedSignUpData = async (data) => {
     return null;
   }
 };
+export const postedWelcomeScreen = async (data) => {
+  try {
+    const response = await postData(`${s.credentials.welcomeScreen}`, data);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const postedSetUpPassword = async (data) => {
+  try {
+    const response = await postData(`${s.credentials.setUpPassword}`, data);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};

@@ -23,9 +23,19 @@ import {
   getCountriesData,
   postedSignUpData,
 } from "../../../../services/api/apiManager";
+import { useDispatch } from "react-redux";
+import {
+  setCompanyName,
+  setCompId,
+  setCountryId,
+  setEmailAddress,
+  setFirstname,
+  setLastname,
+} from "../../../../services/store/slice/credentials";
 
 function SignUp() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = React.useState("");
   const [email, setEmail] = useState("");
@@ -66,7 +76,14 @@ function SignUp() {
       };
 
       const response = await postedSignUpData(data);
+      console.log(`check response of signup data-->>`, response);
       if (response?.data?.status === 200) {
+        dispatch(setCompId(response?.data?.result?.companyId?.comp_ID));
+        dispatch(setCountryId(response?.data?.result?.model?.countryId));
+        dispatch(setFirstname(response?.data?.result?.model?.uName_First));
+        dispatch(setLastname(response?.data?.result?.model?.uName_Last));
+        dispatch(setEmailAddress(response?.data?.result?.model?.email));
+        dispatch(setCompanyName(response?.data?.result?.model?.companyName));
         setOpenSnackbar({
           openSnack: false,
           snackMessage: "success",
