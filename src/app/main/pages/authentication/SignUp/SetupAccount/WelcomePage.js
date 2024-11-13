@@ -9,6 +9,7 @@ import {
   LinearProgress,
   MenuItem,
   Paper,
+  Radio,
   Select,
   Step,
   StepLabel,
@@ -22,10 +23,15 @@ import login from "../../../../../../assets/images/loginbg.jpg";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import DateRangeIcon from "@mui/icons-material/DateRange";
 import {
   postedSetUpPassword,
   postedWelcomeScreen,
   getCountriesData,
+  dataGetLanguages,
+  dataGetYears,
+  dataGetCharts,
+  postedSetUpOraganization,
 } from "../../../../../services/api/apiManager";
 import { useSelector } from "react-redux";
 
@@ -33,10 +39,6 @@ const timeZones = [
   { label: "Pacific/Midway (Samoa)", value: "Pacific/Midway" },
   { label: "Pacific/Honolulu (USA - Hawaii)", value: "Pacific/Honolulu" },
   { label: "America/Anchorage (USA - Alaska)", value: "America/Anchorage" },
-  {
-    label: "America/Los_Angeles (USA - Pacific Time)",
-    value: "America/Los_Angeles",
-  },
   { label: "America/Denver (USA - Mountain Time)", value: "America/Denver" },
   { label: "America/Chicago (USA - Central Time)", value: "America/Chicago" },
   { label: "America/New_York (USA - Eastern Time)", value: "America/New_York" },
@@ -61,10 +63,6 @@ const timeZones = [
   { label: "Pacific/Auckland (New Zealand)", value: "Pacific/Auckland" },
   { label: "Pacific/Fiji (Fiji)", value: "Pacific/Fiji" },
   { label: "Pacific/Guam (Guam)", value: "Pacific/Guam" },
-  {
-    label: "America/Argentina/Buenos_Aires (Argentina)",
-    value: "America/Argentina/Buenos_Aires",
-  },
   { label: "America/Caracas (Venezuela)", value: "America/Caracas" },
   { label: "America/Bogota (Colombia)", value: "America/Bogota" },
   { label: "America/Mexico_City (Mexico)", value: "America/Mexico_City" },
@@ -85,10 +83,6 @@ const timeZones = [
   { label: "Asia/Karachi (Pakistan)", value: "Asia/Karachi" },
   { label: "Asia/Dhaka (Bangladesh)", value: "Asia/Dhaka" },
   { label: "Asia/Yangon (Myanmar)", value: "Asia/Yangon" },
-  {
-    label: "Pacific/Port_Moresby (Papua New Guinea)",
-    value: "Pacific/Port_Moresby",
-  },
   { label: "Pacific/Tahiti (French Polynesia)", value: "Pacific/Tahiti" },
 ];
 
@@ -141,64 +135,6 @@ const currencies = [
   // Add more as needed
 ];
 
-const languages = [
-  { label: "English", value: 1 },
-  { label: "Spanish", value: 2 },
-  { label: "French", value: 3 },
-  { label: "German", value: 4 },
-  { label: "Mandarin Chinese", value: 5 },
-  { label: "Japanese", value: 6 },
-  { label: "Korean", value: 7 },
-  { label: "Italian", value: 8 },
-  { label: "Portuguese", value: 9 },
-  { label: "Russian", value: 10 },
-  { label: "Hindi", value: 11 },
-  { label: "Bengali", value: 12 },
-  { label: "Arabic", value: 13 },
-  { label: "Turkish", value: 14 },
-  { label: "Urdu", value: 15 },
-  { label: "Indonesian", value: 16 },
-  { label: "Vietnamese", value: 17 },
-  { label: "Persian", value: 18 },
-  { label: "Swahili", value: 19 },
-  { label: "Thai", value: 20 },
-  { label: "Dutch", value: 21 },
-  { label: "Polish", value: 22 },
-  { label: "Swedish", value: 23 },
-  { label: "Norwegian", value: 24 },
-  { label: "Danish", value: 25 },
-  { label: "Finnish", value: 26 },
-  { label: "Greek", value: 27 },
-  { label: "Hebrew", value: 28 },
-  { label: "Malay", value: 29 },
-  { label: "Czech", value: 30 },
-  { label: "Hungarian", value: 31 },
-  { label: "Romanian", value: 32 },
-  { label: "Ukrainian", value: 33 },
-  { label: "Serbian", value: 34 },
-  { label: "Croatian", value: 35 },
-  { label: "Bulgarian", value: 36 },
-  { label: "Slovak", value: 37 },
-  { label: "Lithuanian", value: 38 },
-  { label: "Latvian", value: 39 },
-  { label: "Estonian", value: 40 },
-  { label: "Filipino", value: 41 },
-  { label: "Punjabi", value: 42 },
-  { label: "Tamil", value: 43 },
-  { label: "Telugu", value: 44 },
-  { label: "Gujarati", value: 45 },
-  { label: "Marathi", value: 46 },
-  { label: "Nepali", value: 47 },
-  { label: "Sinhala", value: 48 },
-  { label: "Khmer", value: 49 },
-  { label: "Burmese", value: 50 },
-  { label: "Amharic", value: 51 },
-  { label: "Yoruba", value: 52 },
-  { label: "Zulu", value: 53 },
-  { label: "Xhosa", value: 54 },
-  // Add more as needed
-];
-
 const steps = ["1", "2", "3"];
 
 function WelcomePage() {
@@ -207,6 +143,9 @@ function WelcomePage() {
   );
 
   const [activeStep, setActiveStep] = React.useState(0);
+  const [allYears, setAllYears] = React.useState([]);
+  const [allCharts, setAllCharts] = React.useState([]);
+  const [allLanguage, setAllLanguage] = React.useState([]);
   const [language, setLanguage] = React.useState("");
   const [timeZone, setTimeZone] = React.useState("");
   const [currency, setCurrency] = React.useState("");
@@ -215,25 +154,38 @@ function WelcomePage() {
   const [userPassword, setUserPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
   const [strength, setStrength] = React.useState("");
-  const [date, setDate] = React.useState("");
-  const [checked, setChecked] = React.useState(false);
+  // For Demo Generate
+  const [checked, setChecked] = React.useState(0);
+  // For Year
+  const [selectedDate, setSelectedDate] = React.useState("");
+  const [selectedYear, setSelectedYear] = React.useState("");
+  const handleYearChange = (event) => {
+    setSelectedYear(event.target.value);
+  };
 
-  const handleDate = (event) => {
-    const value = event.target.value.replace(/\D/g, ""); // Remove non-digit characters
-
-    // Format the input to DD/MM/YYYY as user types
-    let formattedDate = "";
-    if (value.length >= 1) {
-      formattedDate += value.substring(0, 2); // Day
-    }
-    if (value.length >= 3) {
-      formattedDate += "/" + value.substring(2, 4); // Month
-    }
-    if (value.length >= 5) {
-      formattedDate += "/" + value.substring(4, 8); // Year
-    }
-
-    setDate(formattedDate);
+  // For Chart
+  const [selectChart, setSelectChart] = React.useState("");
+  const handleChangeChart = (event) => {
+    setSelectChart(event.target.value);
+  };
+  // Company Name & Abbrevation
+  const [companyName, setCompanyName] = React.useState("");
+  const [companyAbbreviation, setCompanyAbbreviation] = React.useState("");
+  const handleCompanyNameChange = (e) => {
+    const name = e.target.value;
+    setCompanyName(name);
+    const abbreviation = name
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase())
+      .join("");
+    setCompanyAbbreviation(abbreviation);
+  };
+  // CheckBox for Business Year
+  const [isOptionSelected, setIsOptionSelected] = React.useState(false);
+  const [selectedOption, setSelectedOption] = React.useState(null);
+  const handleCheckboxChange = (value) => {
+    setSelectedOption(value);
+    setIsOptionSelected(true);
   };
 
   const evaluatePasswordStrength = (pass) => {
@@ -274,7 +226,6 @@ function WelcomePage() {
   const handleClickShowPassword = () => {
     setShowPassword((prev) => !prev);
   };
-  // Prevent default action on mouse down
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
@@ -313,15 +264,24 @@ function WelcomePage() {
             comp_ID: compId,
             shanakht: userPassword,
           };
+
+          const dataSetUpOrganization = {
+            organization: companyName,
+            companyId: compId,
+            yearId: selectedYear,
+            comp_Abbr: companyAbbreviation,
+            chart_ID: selectChart,
+            isDemo: checked,
+          };
           const response = await postedWelcomeScreen(dataWelcomeScreen);
           const response2 = await postedSetUpPassword(dataSetUpScreen);
+          const response3 = await postedSetUpOraganization(
+            dataSetUpOrganization
+          );
 
-          if (response.ok && response2.ok) {
-            console.log("WelcomeScreen Response-->>>", response);
-            console.log("SetUp Password Response-->>>", response2);
-          } else {
-            console.error("API call failed at final step");
-          }
+          console.log("WelcomeScreen Response-->>>", response);
+          console.log("SetUp Password Response-->>>", response2);
+          console.log("SetUp Organization Response-->>>", response3);
         } catch (error) {
           console.error("Error:", error);
         }
@@ -347,6 +307,37 @@ function WelcomePage() {
     };
 
     fetchCountries();
+  }, []);
+  useEffect(() => {
+    const fetchAllLanguage = async () => {
+      const response = await dataGetLanguages();
+      setAllLanguage(response?.data?.result);
+    };
+
+    fetchAllLanguage();
+  }, []);
+  useEffect(() => {
+    const fetchAllYears = async (selectedOption) => {
+      const response = await dataGetYears(selectedOption);
+      setAllYears(response?.data?.result);
+    };
+
+    fetchAllYears(selectedOption);
+  }, [selectedOption]);
+  useEffect(() => {
+    if (selectedYear) {
+      const matchingYear =
+        allYears && allYears?.find((year) => year?.yearID === selectedYear);
+      setSelectedDate(matchingYear ? matchingYear?.startDate : "");
+    }
+  }, [selectedYear, allYears]);
+  useEffect(() => {
+    const fetchAllCharts = async () => {
+      const response = await dataGetCharts();
+      setAllCharts(response?.data?.result);
+    };
+
+    fetchAllCharts();
   }, []);
 
   return (
@@ -383,7 +374,7 @@ function WelcomePage() {
           }}
         >
           <Stepper activeStep={activeStep}>
-            {steps.map((label, index) => {
+            {steps?.map((label, index) => {
               return (
                 <Step>
                   <StepLabel></StepLabel>
@@ -476,9 +467,9 @@ function WelcomePage() {
                           setLanguage(e.target.value);
                         }}
                       >
-                        {languages?.map((lang, index) => (
-                          <MenuItem key={index} value={lang.value}>
-                            {lang.label}
+                        {allLanguage?.map((lang, index) => (
+                          <MenuItem key={index} value={lang.languageid}>
+                            {lang.language_Name}
                           </MenuItem>
                         ))}
                       </Select>
@@ -558,7 +549,7 @@ function WelcomePage() {
                       }}
                     >
                       <Select value={timeZone} onChange={handleTimeZone}>
-                        {timeZones.map((zone, index) => (
+                        {timeZones?.map((zone, index) => (
                           <MenuItem key={index} value={zone.value}>
                             {zone.label}
                           </MenuItem>
@@ -596,7 +587,7 @@ function WelcomePage() {
                       }}
                     >
                       <Select value={currency} onChange={handleCurrency}>
-                        {currencies.map((currency, index) => (
+                        {currencies?.map((currency, index) => (
                           <MenuItem key={index} value={currency.value}>
                             {currency.label}
                           </MenuItem>
@@ -837,11 +828,10 @@ function WelcomePage() {
                     </Typography>
                     <ThemeProvider theme={theme}>
                       <TextField
-                        // value={userName}
-                        // onChange={(e) => {
-                        //   setUserName(e.target.value);
-                        // }}
+                        value={companyName}
+                        onChange={handleCompanyNameChange}
                         variant="outlined"
+                        autoComplete="off"
                         fullWidth
                         placeholder="Enter Your Company Name"
                       />
@@ -869,13 +859,22 @@ function WelcomePage() {
                     </Typography>
                     <ThemeProvider theme={theme}>
                       <TextField
-                        // value={userName}
-                        // onChange={(e) => {
-                        //   setUserName(e.target.value);
-                        // }}
+                        value={companyAbbreviation}
+                        disabled
                         variant="outlined"
+                        autoComplete="off"
                         fullWidth
                         placeholder=""
+                        InputProps={{
+                          style: {
+                            fontWeight: "bold",
+                            fontSize: "18px",
+                            letterSpacing: "3px",
+                            color: "black",
+                            fontFamily: "'Courier New', Courier, monospace",
+                            textTransform: "uppercase",
+                          },
+                        }}
                       />
                     </ThemeProvider>
                   </Box>
@@ -899,7 +898,6 @@ function WelcomePage() {
                         *
                       </span>
                     </Typography>
-
                     <FormControl
                       fullWidth
                       size="small"
@@ -909,50 +907,168 @@ function WelcomePage() {
                       }}
                     >
                       <Select
-                      //   value={timeZone} onChange={handleTimeZone}
+                        value={selectChart}
+                        onChange={handleChangeChart}
+                        displayEmpty
                       >
-                        <MenuItem>Standard</MenuItem>
-                        <MenuItem>Medium</MenuItem>
-                        <MenuItem>High</MenuItem>
+                        {allCharts?.map((chart, index) => (
+                          <MenuItem key={index} value={chart?.chart_ID}>
+                            {chart?.charts}
+                          </MenuItem>
+                        ))}
                       </Select>
                     </FormControl>
                   </Box>
                   <Box pt={0.5}>
-                    <Typography
-                      style={{
-                        float: "left",
-                        fontSize: "14px",
-                        fontWeight: "bold",
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
                       }}
-                      pb={1}
                     >
-                      Financial Year Begins On{" "}
-                      <span
+                      <Typography
                         style={{
-                          color: "red",
-                          fontSize: "16px",
-                          fontWeight: "600",
+                          float: "left",
+                          fontSize: "14px",
+                          fontWeight: "bold",
+                        }}
+                        pb={1}
+                      >
+                        Business Year
+                        <span
+                          style={{
+                            color: "red",
+                            fontSize: "16px",
+                            fontWeight: "600",
+                          }}
+                        >
+                          *
+                        </span>
+                      </Typography>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "row",
+                          gap: "1px",
+                          alignItems: "center",
                         }}
                       >
-                        *
-                      </span>
-                    </Typography>
-                    <ThemeProvider theme={theme}>
-                      <TextField
-                        value={date}
-                        onChange={handleDate}
-                        variant="outlined"
-                        fullWidth
-                        placeholder="Enter Date (DD/MM/YYYY)"
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <CalendarMonthIcon sx={{ color: "#0E4374" }} />
-                            </InputAdornment>
-                          ),
+                        <Radio
+                          size="small"
+                          style={{ color: "#0E4374" }}
+                          checked={selectedOption === 1}
+                          onChange={() => handleCheckboxChange(1)}
+                        />
+                        <Typography
+                          style={{
+                            fontSize: "12px",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Calender
+                        </Typography>
+                      </Box>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "row",
+                          gap: "1px",
+                          alignItems: "center",
                         }}
-                      />
-                    </ThemeProvider>
+                      >
+                        <Radio
+                          size="small"
+                          style={{ color: "#0E4374" }}
+                          checked={selectedOption === 0}
+                          onChange={() => handleCheckboxChange(0)}
+                        />
+                        <Typography
+                          style={{
+                            fontSize: "12px",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Financial
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <FormControl
+                      fullWidth
+                      size="small"
+                      style={{
+                        backgroundColor: "#f6f7fb",
+                        textAlign: "left",
+                      }}
+                      disabled={!isOptionSelected}
+                    >
+                      <Select
+                        value={selectedYear}
+                        onChange={handleYearChange}
+                        displayEmpty
+                        startAdornment={
+                          <InputAdornment position="start">
+                            <CalendarMonthIcon
+                              sx={{
+                                color: !isOptionSelected ? "silver" : "#0E4374",
+                              }}
+                            />
+                          </InputAdornment>
+                        }
+                        renderValue={(selected) => {
+                          const selectedYearObj =
+                            allYears &&
+                            allYears?.find((year) => year?.yearID === selected);
+                          return selectedYearObj
+                            ? selectedYearObj?.yearName
+                            : "Enter Year";
+                        }}
+                      >
+                        {allYears?.map((year, index) => (
+                          <MenuItem key={index} value={year?.yearID}>
+                            {year?.yearName}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    <FormControl
+                      fullWidth
+                      size="small"
+                      style={{
+                        backgroundColor: "#f6f7fb",
+                        textAlign: "left",
+                        marginTop: "10px",
+                      }}
+                      disabled={!isOptionSelected || !selectedYear}
+                    >
+                      <Select
+                        value={selectedDate || ""}
+                        displayEmpty
+                        startAdornment={
+                          <InputAdornment position="start">
+                            <DateRangeIcon
+                              sx={{
+                                color:
+                                  !isOptionSelected || !selectedYear
+                                    ? "silver"
+                                    : "#0E4374",
+                              }}
+                            />
+                          </InputAdornment>
+                        }
+                        renderValue={(selected) =>
+                          selected || "Enter Begin Date"
+                        }
+                        // readOnly
+                      >
+                        {selectedDate && (
+                          <MenuItem value={selectedDate}>
+                            {selectedDate}
+                          </MenuItem>
+                        )}
+                      </Select>
+                    </FormControl>
                   </Box>
                   <Box
                     style={{
@@ -968,9 +1084,9 @@ function WelcomePage() {
                       value={checked}
                       onChange={() => {
                         if (!checked) {
-                          setChecked(true);
+                          setChecked(1);
                         } else {
-                          setChecked(false);
+                          setChecked(0);
                         }
                       }}
                     />

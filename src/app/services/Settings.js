@@ -1,14 +1,24 @@
 export const settings = {
   baseUrl: "http://192.168.100.78:8012",
 
-  getCountries: {
-    countries: "/api/User/GetCountries",
-  },
-
   credentials: {
     signup: "/api/User/AddUserReg",
     welcomeScreen: "/api/User/Welcome",
     setUpPassword: "/api/User/SetUpPass",
+    setUpOrganization: "/api/User/AddOrganization",
+  },
+  languages: {
+    getLanguage: "/api/User/GetLanguages",
+  },
+  year: {
+    getYears: "/api/User/GetYears?CorF=",
+  },
+  getCountries: {
+    countries: "/api/User/GetCountries",
+  },
+
+  getCharts: {
+    charts: "/api/User/GetCharts",
   },
 
   // Dummy Data

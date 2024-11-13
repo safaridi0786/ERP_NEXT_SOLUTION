@@ -305,3 +305,38 @@ export const postedSetUpPassword = async (data) => {
     return null;
   }
 };
+export const postedSetUpOraganization = async (data) => {
+  try {
+    const response = await postData(`${s.credentials.setUpOrganization}`, data);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const dataGetLanguages = async () => {
+  try {
+    const url = `${s.languages.getLanguage}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const dataGetYears = async (CorF) => {
+  try {
+    const url = `${s.year.getYears}${CorF}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const dataGetCharts = async () => {
+  try {
+    const url = `${s.getCharts.charts}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
