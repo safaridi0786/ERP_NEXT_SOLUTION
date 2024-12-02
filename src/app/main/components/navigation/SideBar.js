@@ -1,31 +1,22 @@
-import { Feedback, Settings, Sync } from "@mui/icons-material";
+import { Sync } from "@mui/icons-material";
+import SettingsIcon from "@mui/icons-material/Settings";
 import {
-  Avatar,
   Badge,
   Box,
   Button,
   CssBaseline,
-  Divider,
-  FormControl,
-  FormControlLabel,
   IconButton,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Menu,
-  MenuItem,
-  Modal,
-  Radio,
-  RadioGroup,
   Toolbar,
   Tooltip,
   Typography,
-  Switch,
 } from "@mui/material";
 import React from "react";
-import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import "./SideBar.css";
 import { ExitToAppRounded as ExitToAppRoundedIcon } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -34,22 +25,17 @@ import { styled } from "@mui/material/styles";
 import MuiAppBar from "@mui/material/AppBar";
 import MuiDrawer from "@mui/material/Drawer";
 import CircleNotificationsIcon from "@mui/icons-material/CircleNotifications";
-import LogoutIcon from "@mui/icons-material/Logout";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import ApprovalIcon from "@mui/icons-material/Approval";
+import ReportIcon from "@mui/icons-material/Report";
+import CreditCardIcon from "@mui/icons-material/CreditCard";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import ManageHistoryIcon from "@mui/icons-material/ManageHistory";
 
 function SideBar() {
   const drawerWidth = 240;
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 500,
-    backgroundColor: "white",
-    border: " 1px solid #00000026",
-    p: 4,
-    borderRadius: "10px",
-  };
   const openedMixin = (theme) => ({
     width: drawerWidth,
     transition: theme.transitions.create("width", {
@@ -137,67 +123,66 @@ function SideBar() {
   };
 
   const navigate = useNavigate();
+  const [activeItem, setActiveItem] = React.useState("Dashboard");
+  const menuItems = [
+    {
+      text: "Dashboard",
+      icon: <DashboardIcon />,
+      to: "/dashboard",
+    },
+    {
+      text: "Employees",
+      icon: <PeopleAltIcon />,
+      to: "/employees",
+    },
+    {
+      text: "Approvals",
+      icon: <ApprovalIcon />,
+      // to: "/approvals",
+      to: "/dashboard",
+    },
+    {
+      text: "Reports",
+      icon: <ReportIcon />,
+      // to: "/reports",
+      to: "/dashboard",
+    },
+    {
+      text: "Loans",
+      icon: <CreditCardIcon />,
+      // to: "/loans",
+      to: "/dashboard",
+    },
+    {
+      text: "Invoices",
+      icon: <ReceiptIcon />,
+      // to: "/invoices",
+      to: "/dashboard",
+    },
+    {
+      text: "Requests",
+      icon: <HelpOutlineIcon />,
+      // to: "/requests",
+      to: "/dashboard",
+    },
+    {
+      text: "Logout",
+      icon: <ExitToAppRoundedIcon />,
+      action: () => {
+        logoutFunc();
+        navigate("/");
+      },
+    },
+  ];
   const [open, setOpen] = React.useState(null);
-  const [openModal, setOpenModal] = React.useState(false);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
-  const handleCloseEditModal = () => {
-    setOpenModal(false);
-  };
-
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const [anchorElNotifications, setAnchorElNotifications] =
-    React.useState(null);
-
-  const [showNotificationSettings, setShowNotificationSettings] =
-    React.useState(false);
-
-  const switchToSettings = () => {
-    setShowNotificationSettings(true);
-  };
-
-  const switchToNotifications = () => {
-    setShowNotificationSettings(false);
-  };
-
-  const handleCloseNotifications = () => {
-    setAnchorElNotifications(null);
-  };
-
-  const handleOpenNotifications = (event) => {
-    setAnchorElNotifications(event.currentTarget);
-  };
-
   const closeSidebar = () => {
     if (open === true) {
       setOpen(false);
     }
   };
-  const currentlocation = useLocation();
-  const [locationName, setLocationName] = React.useState(
-    currentlocation.pathname
-  );
-
-  const settingLocationName = () => {
-    setLocationName(
-      currentlocation.pathname.slice(1).charAt(0).toUpperCase() +
-        currentlocation.pathname.slice(2).replace(/_/g, " ")
-    );
-  };
-
-  React.useEffect(() => {
-    settingLocationName();
-  });
   return (
     <>
       <Box sx={{ display: "flex" }}>
@@ -218,27 +203,52 @@ function SideBar() {
               display={"flex"}
               justifyContent={"space-between"}
             >
-              <Typography
-                variant="h2"
-                noWrap
-                component="div"
-                color={"black"}
-                fontWeight={600}
+              <Box
                 sx={{
                   display: "flex",
-                  alignItems: "center",
-                  marginLeft: "24px",
-                  fontSize: {
-                    xl: "24px",
-                    lg: "16px",
-                    md: "15px:",
-                    sm: "15px",
-                    xs: "15px",
-                  },
+                  flexDirection: "column",
+                  textAlign: "left",
+                  padding: "2px 0px",
                 }}
               >
-                Dashboard
-              </Typography>
+                <Typography
+                  variant="h2"
+                  noWrap
+                  component="div"
+                  color={"black"}
+                  fontWeight={600}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginLeft: "24px",
+                    fontSize: {
+                      xl: "24px",
+                      lg: "16px",
+                      md: "15px:",
+                      sm: "15px",
+                      xs: "15px",
+                    },
+                  }}
+                >
+                  Welcome, Dibbendo!
+                </Typography>
+                <Typography
+                  color={"silver"}
+                  fontWeight={600}
+                  sx={{
+                    marginLeft: "24px",
+                    fontSize: {
+                      xl: "14px",
+                      lg: "14px",
+                      md: "14px:",
+                      sm: "14px",
+                      xs: "14px",
+                    },
+                  }}
+                >
+                  08 March, 2025
+                </Typography>
+              </Box>
 
               <Box
                 display={{
@@ -270,482 +280,48 @@ function SideBar() {
                     />
                   </IconButton>
                 </Tooltip>
+                <Tooltip title="Upgrade System">
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        gap: 1,
+                        height: "60%",
+                        backgroundColor: "orange",
+                        "&:hover": {
+                          backgroundColor: "darkorange",
+                        },
+                      }}
+                    >
+                      <ManageHistoryIcon
+                        sx={{ color: "white", fontSize: "18px" }}
+                      />
+                      <Typography sx={{ fontSize: "13px", fontWeight: "600" }}>
+                        Upgrade Now
+                      </Typography>
+                    </Button>
+                  </Box>
+                </Tooltip>
+                <Tooltip title="settings">
+                  <IconButton size="small" aria-label="settings" color="black">
+                    <SettingsIcon />
+                  </IconButton>
+                </Tooltip>
 
-                <Tooltip title="Notfications">
+                <Tooltip title="Notifications">
                   <IconButton
                     size="small"
-                    aria-label="show 4 new notfications"
-                    color="black"
-                    onClick={handleOpenNotifications}
+                    aria-label="show 4 new notifications"
+                    color="default"
                   >
                     <Badge badgeContent={4} color="error">
                       <CircleNotificationsIcon />
                     </Badge>
                   </IconButton>
                 </Tooltip>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorElNotifications}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={Boolean(anchorElNotifications)}
-                  onClose={handleCloseNotifications}
-                >
-                  <Box
-                    display={"flex"}
-                    fontFamily={"Poppins"}
-                    justifyContent={"space-between"}
-                    p={1}
-                    sx={{ width: "300px" }}
-                  >
-                    <h5
-                      style={
-                        !showNotificationSettings
-                          ? {
-                              color: "#CB6309",
-                              fontWeight: 600,
-                              cursor: "pointer",
-                              fontSize: "14px",
-                              borderBottom: "2px solid #CB6309",
-                            }
-                          : {
-                              color: "#AAA0A0",
-                              fontWeight: 600,
-                              cursor: "pointer",
-                              fontSize: "14px",
-                            }
-                      }
-                      onClick={switchToNotifications}
-                    >
-                      Notfications
-                    </h5>
-                    <p
-                      style={
-                        showNotificationSettings
-                          ? {
-                              color: "#CB6309",
-                              fontWeight: 600,
-                              cursor: "pointer",
-                              fontSize: "12px",
-                              borderBottom: "2px solid #CB6309",
-                            }
-                          : {
-                              color: "#AAA0A0",
-                              fontWeight: 600,
-                              cursor: "pointer",
-                              fontSize: "12px",
-                            }
-                      }
-                      onClick={switchToSettings}
-                    >
-                      Settings
-                    </p>
-                  </Box>
-                  {/* notification menu */}
-
-                  <MenuItem
-                    // onClick={handleCloseNotifications}
-                    sx={
-                      showNotificationSettings
-                        ? { display: "none " }
-                        : { flexDirection: "column", width: "294px" }
-                    }
-                  >
-                    <Box
-                      width={"100%"}
-                      height={"40px"}
-                      display={"flex"}
-                      gap={0.5}
-                    >
-                      <Box width={"24px"}>
-                        <Box
-                          display={"flex"}
-                          alignItems={"center"}
-                          justifyContent={"center"}
-                          sx={{
-                            width: "24px",
-                            height: "24px",
-                            backgroundColor: "#D6F5EC",
-                            borderRadius: "20px",
-                          }}
-                        >
-                          <img
-                            alt="Lock Icon"
-                            width={"11.33px"}
-                            // src={lockIconPng}
-                          />
-                        </Box>
-                      </Box>
-
-                      <Box
-                        width={"166px"}
-                        display={"flex"}
-                        flexDirection={"column"}
-                      >
-                        <Typography
-                          width={"auto"}
-                          fontWeight={600}
-                          color={"#393838"}
-                          fontSize={"10px"}
-                          fontFamily={"Poppins"}
-                        >
-                          Two-Factor Authentication(2FA)
-                        </Typography>
-
-                        <Typography fontSize={"9px"} color={"#4A4949"}>
-                          11:49pm-Yesterday
-                        </Typography>
-                      </Box>
-
-                      <Box width={"62px"}>
-                        <Typography
-                          fontWeight={400}
-                          fontSize={"10px"}
-                          fontFamily={"Poppins"}
-                          color={"#000000"}
-                        >
-                          is activated
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </MenuItem>
-
-                  <MenuItem
-                    // onClick={handleCloseNotifications}
-                    sx={
-                      showNotificationSettings
-                        ? { display: "none " }
-                        : { flexDirection: "column" }
-                    }
-                  >
-                    <Box
-                      width={"100%"}
-                      height={"40px"}
-                      display={"flex"}
-                      gap={0.5}
-                    >
-                      <Box width={"24px"}>
-                        <Avatar
-                          sx={{ width: "24px", height: "24px" }}
-                          alt="Remy Sharp"
-                          // src={girlImage}
-                        />
-                      </Box>
-
-                      <Box
-                        width={"69px"}
-                        display={"flex"}
-                        flexDirection={"column"}
-                      >
-                        <Typography
-                          width={"auto"}
-                          fontWeight={600}
-                          color={"#393838"}
-                          fontSize={"10px"}
-                          fontFamily={"Poppins"}
-                        >
-                          Mellisa Jones
-                        </Typography>
-
-                        <Typography
-                          fontSize={"9px"}
-                          fontFamily={"Poppins"}
-                          color={"#4A4949"}
-                        >
-                          11:49pm-Yesterday
-                        </Typography>
-                      </Box>
-
-                      <Box width={"146px"}>
-                        <Typography
-                          ml={0.5}
-                          fontWeight={400}
-                          fontSize={"11px"}
-                          fontFamily={"Poppins"}
-                        >
-                          done changes in batch#0012
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </MenuItem>
-
-                  <MenuItem
-                    // onClick={handleCloseNotifications}
-                    sx={
-                      showNotificationSettings
-                        ? { display: "none " }
-                        : { flexDirection: "column" }
-                    }
-                  >
-                    <Box
-                      width={"100%"}
-                      height={"50px"}
-                      display={"flex"}
-                      gap={0.5}
-                    >
-                      <Box width={"24px"}>
-                        <Avatar
-                          sx={{ width: "24px", height: "24px" }}
-                          alt="Remy Sharp"
-                          // src={girlImage}
-                        />
-                      </Box>
-
-                      <Box
-                        width={"50px"}
-                        display={"flex"}
-                        flexDirection={"column"}
-                      >
-                        <Typography
-                          width={"auto"}
-                          fontWeight={600}
-                          color={"#393838"}
-                          fontSize={"10px"}
-                          fontFamily={"Poppins"}
-                        >
-                          Henry Leo
-                        </Typography>
-
-                        <Typography
-                          fontSize={"9px"}
-                          fontFamily={"Poppins"}
-                          color={"#4A4949"}
-                        >
-                          11:49pm-Yesterday
-                        </Typography>
-                        <Box width={"140px"}>
-                          <button className="approvedBtn">Approve</button>
-
-                          <button className="denyBtn">Deny</button>
-                        </Box>
-                      </Box>
-
-                      <Box width={"146px"}>
-                        <Typography
-                          ml={0.5}
-                          fontWeight={400}
-                          fontSize={"11px"}
-                          fontFamily={"Poppins"}
-                        >
-                          wants to update patientid#09865
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </MenuItem>
-
-                  <MenuItem
-                    // onClick={handleCloseNotifications}
-                    sx={
-                      showNotificationSettings
-                        ? { display: "none " }
-                        : { flexDirection: "column" }
-                    }
-                  >
-                    <Box
-                      width={"100%"}
-                      height={"40px"}
-                      display={"flex"}
-                      gap={0.5}
-                    >
-                      <Box width={"24px"}>
-                        <Avatar
-                          sx={{ width: "24px", height: "24px" }}
-                          alt="Remy Sharp"
-                          // src={girlImage}
-                        />
-                      </Box>
-
-                      <Box
-                        width={"69px"}
-                        display={"flex"}
-                        flexDirection={"column"}
-                      >
-                        <Typography
-                          width={"auto"}
-                          fontWeight={600}
-                          color={"#393838"}
-                          fontSize={"10px"}
-                          fontFamily={"Poppins"}
-                        >
-                          Mellisa Jones
-                        </Typography>
-
-                        <Typography
-                          fontSize={"9px"}
-                          fontFamily={"Poppins"}
-                          color={"#4A4949"}
-                        >
-                          11:49pm-Yesterday
-                        </Typography>
-                      </Box>
-
-                      <Box width={"146px"}>
-                        <Typography
-                          ml={0.5}
-                          fontWeight={400}
-                          fontSize={"11px"}
-                          fontFamily={"Poppins"}
-                        >
-                          done changes in batch#0012
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </MenuItem>
-
-                  {/* Settings Menu */}
-
-                  {showNotificationSettings && (
-                    <MenuItem
-                    // onClick={handleCloseNotifications}
-                    >
-                      <Box
-                        display={"flex"}
-                        width={"100%"}
-                        justifyContent={"space-between"}
-                        alignItems={"center"}
-                      >
-                        <Typography
-                          variant="h1"
-                          fontWeight={600}
-                          fontSize={"10px"}
-                          color={"#393838"}
-                          fontFamily={"Poppins"}
-                        >
-                          Enable all notifications
-                        </Typography>
-
-                        <Switch size="small" name="enableNotifications" />
-                      </Box>
-                    </MenuItem>
-                  )}
-                  {showNotificationSettings && (
-                    <MenuItem>
-                      <Box
-                        display={"flex"}
-                        width={"100%"}
-                        justifyContent={"space-between"}
-                        alignItems={"center"}
-                      >
-                        <Typography
-                          variant="h1"
-                          fontWeight={600}
-                          fontSize={"10px"}
-                          color={"#393838"}
-                          fontFamily={"Poppins"}
-                        >
-                          Custom Settings
-                        </Typography>
-                        <Box display={"flex"} gap={2}>
-                          <Typography
-                            fontWeight={400}
-                            color={"#075AD7"}
-                            variant="body2"
-                            fontSize={"10px"}
-                            fontFamily={"Poppins"}
-                          >
-                            Enable
-                          </Typography>
-                          <Typography
-                            fontWeight={400}
-                            color={"#075AD7"}
-                            variant="body2"
-                            fontSize={"10px"}
-                            fontFamily={"Poppins"}
-                          >
-                            Disable
-                          </Typography>
-                        </Box>
-                      </Box>
-                    </MenuItem>
-                  )}
-
-                  {showNotificationSettings && (
-                    <MenuItem>
-                      <Box
-                        mt={1}
-                        display={"flex"}
-                        width={"100%"}
-                        justifyContent={"space-between"}
-                        alignItems={"center"}
-                      >
-                        <Typography
-                          variant="h1"
-                          fontWeight={400}
-                          fontSize={"10px"}
-                          color={"#000000"}
-                          fontFamily={"Poppins"}
-                        >
-                          New Message Sound
-                        </Typography>
-                        <FormControl>
-                          <RadioGroup
-                            aria-labelledby="newMsgSoung"
-                            defaultValue="enable"
-                            name="newMsgSoung"
-                          >
-                            <Box width={"72px"}>
-                              <FormControlLabel
-                                value="enable"
-                                control={<Radio size="small" />}
-                                id="enableMsgSoundRadioBtn"
-                              />
-                              <FormControlLabel
-                                value="disable"
-                                control={<Radio size="small" />}
-                              />
-                            </Box>
-                          </RadioGroup>
-                        </FormControl>
-                      </Box>
-                    </MenuItem>
-                  )}
-                  {showNotificationSettings && (
-                    <MenuItem>
-                      <Box
-                        mt={1}
-                        display={"flex"}
-                        width={"100%"}
-                        justifyContent={"space-between"}
-                        alignItems={"center"}
-                      >
-                        <Typography
-                          variant="h1"
-                          fontWeight={400}
-                          fontSize={"10px"}
-                          color={"#000000"}
-                          fontFamily={"Poppins"}
-                        >
-                          New Notification Sound
-                        </Typography>
-                        <FormControl>
-                          <RadioGroup
-                            aria-labelledby="newNotificationSound"
-                            defaultValue="enable"
-                            name="newNotificationSound"
-                          >
-                            <Box width={"72px"}>
-                              <FormControlLabel
-                                value="enable"
-                                control={<Radio size="small" />}
-                              />
-                              <FormControlLabel
-                                value="disable"
-                                control={<Radio size="small" />}
-                              />
-                            </Box>
-                          </RadioGroup>
-                        </FormControl>
-                      </Box>
-                    </MenuItem>
-                  )}
-                </Menu>
 
                 <Button
                   sx={{
@@ -753,7 +329,6 @@ function SideBar() {
                     alignItems: "center",
                     borderRadius: "30px",
                   }}
-                  onClick={handleOpenUserMenu}
                 >
                   <Box sx={{ display: "flex", alignItems: "center" }}>
                     <Box sx={{ padding: "5px 10px" }}>
@@ -792,88 +367,6 @@ function SideBar() {
                     </Tooltip>
                   </Box>
                 </Button>
-                <Menu
-                  sx={{ mt: "45px" }}
-                  id="menu-appbar"
-                  anchorEl={anchorElUser}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={Boolean(anchorElUser)}
-                  onClose={handleCloseUserMenu}
-                >
-                  <MenuItem
-                    sx={{ flexDirection: "column" }}
-                    // onClick={handleEditProvider}
-                  >
-                    <Box
-                      width={"100%"}
-                      gap={1}
-                      display={"flex"}
-                      justifyContent={"center"}
-                      alignItems={"center"}
-                    >
-                      <Feedback fontSize="10px" />
-                      <Typography
-                        width={"60%"}
-                        textAlign={"start"}
-                        color={"#404040"}
-                        fontSize={"12px"}
-                        fontWeight={400}
-                      >
-                        Feedback
-                      </Typography>
-                    </Box>
-                  </MenuItem>
-                  <Modal
-                    open={openModal}
-                    onClose={handleCloseEditModal}
-                    aria-labelledby="edit-modal-title"
-                    aria-describedby="edit-modal-description"
-                    sx={{
-                      "& .MuiModal-backdrop": {
-                        opacity: "30 !important",
-                      },
-                    }}
-                  >
-                    <Box sx={{ style }}>FeedBack</Box>
-                  </Modal>
-
-                  <MenuItem
-                    sx={{ flexDirection: "column" }}
-                    onClick={() => {
-                      logoutFunc();
-                      navigate("/");
-                    }}
-                  >
-                    <Box
-                      width={"100%"}
-                      gap={1}
-                      display={"flex"}
-                      justifyContent={"center"}
-                      alignItems={"center"}
-                    >
-                      <Box>
-                        <LogoutIcon />
-                      </Box>
-                      <Typography
-                        width={"60%"}
-                        textAlign={"start"}
-                        color={"#404040"}
-                        fontSize={"12px"}
-                        fontWeight={400}
-                      >
-                        Logout
-                      </Typography>
-                    </Box>
-                  </MenuItem>
-                </Menu>
               </Box>
               {/* Menu Icon for XS and SM screens */}
               <Box
@@ -885,10 +378,7 @@ function SideBar() {
                   xl: "none",
                 }}
               >
-                <IconButton
-                  // onClick={handleOpenUserMenu}
-                  sx={{ p: 0, ml: "auto" }}
-                >
+                <IconButton sx={{ p: 0, ml: "auto" }}>
                   {/* Your Menu Icon  */}
                   <MenuIcon />
                 </IconButton>
@@ -931,15 +421,12 @@ function SideBar() {
                     fontSize: "32px",
                     textShadow:
                       "2px 2px 5px rgba(0, 0, 0, 0.3), 4px 4px 10px rgba(0, 0, 0, 0.2)",
-                    background:
-                      "linear-gradient(135deg, #0E4374, #4285F4)" /* Gradient effect */,
-                    WebkitBackgroundClip: "text" /* For gradient text color */,
-                    WebkitTextFillColor:
-                      "white" /* Ensure text is filled by the gradient */,
-
+                    background: "linear-gradient(135deg, #0E4374, #4285F4)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "white",
                     transform:
-                      "perspective(500px) rotateX(10deg) rotateY(5deg)" /* 3D perspective */,
-                    letterSpacing: "2px" /* Stylish letter spacing */,
+                      "perspective(500px) rotateX(10deg) rotateY(5deg)",
+                    letterSpacing: "2px",
                     display: "inline-block",
                   }}
                 >
@@ -963,16 +450,13 @@ function SideBar() {
                     fontWeight: "800",
                     fontSize: "28px",
                     textShadow:
-                      "2px 2px 5px rgba(0, 0, 0, 0.3), 4px 4px 10px rgba(0, 0, 0, 0.2)" /* 3D shadow effect */,
-                    background:
-                      "linear-gradient(135deg, #0E4374, #4285F4)" /* Gradient effect */,
-                    WebkitBackgroundClip: "text" /* For gradient text color */,
-                    WebkitTextFillColor:
-                      "white" /* Ensure text is filled by the gradient */,
-
+                      "2px 2px 5px rgba(0, 0, 0, 0.3), 4px 4px 10px rgba(0, 0, 0, 0.2)",
+                    background: "linear-gradient(135deg, #0E4374, #4285F4)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "white",
                     transform:
-                      "perspective(500px) rotateX(10deg) rotateY(5deg)" /* 3D perspective */,
-                    letterSpacing: "2px" /* Stylish letter spacing */,
+                      "perspective(500px) rotateX(10deg) rotateY(5deg)",
+                    letterSpacing: "2px",
                     display: "inline-block",
                   }}
                 >
@@ -982,132 +466,56 @@ function SideBar() {
             )}
           </DrawerHeader>
           <List onMouseEnter={handleDrawerOpen}>
-            {["Dashboard"].map((text, index) => (
-              <ListItem key={text} disablePadding sx={{ display: "block" }}>
-                <NavLink
-                  to={text === "User" ? "/user" : "dashboard"}
-                  className={({ isActive }) =>
-                    `${
-                      isActive
-                        ? "darksListItemsLinkTextsSelected"
-                        : "darksListItemsLinkTexts"
-                    }`
-                  }
-                >
-                  <ListItemButton
-                    sx={{
-                      minHeight: 48,
-                      justifyContent: open ? "initial" : "center",
-                      px: 2.5,
-                    }}
-                  >
-                    <ListItemIcon
-                      sx={{
-                        minWidth: 0,
-                        mr: open ? 3 : "auto",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <DashboardIcon
-                        style={{ display: "flex", color: "#fff" }}
-                      />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={text}
-                      sx={{
-                        opacity: open ? 1 : 0,
-                        color: "#FFFFFF",
-                      }}
-                    />
-                  </ListItemButton>
-                </NavLink>
-              </ListItem>
-            ))}
-          </List>
-
-          <Divider />
-          <List onMouseEnter={handleDrawerOpen}>
-            {["Settings"].map((text, index) => (
-              <ListItem key={text} disablePadding sx={{ display: "block" }}>
-                <NavLink
-                  to={text === "User" ? "/user" : "settings"}
-                  className={({ isActive }) =>
-                    `${
-                      isActive
-                        ? "darksListItemsLinkTextsSelected"
-                        : "darksListItemsLinkTexts"
-                    }`
-                  }
-                >
-                  <ListItemButton
-                    sx={{
-                      minHeight: 48,
-                      justifyContent: open ? "initial" : "center",
-                      px: 2.5,
-                    }}
-                  >
-                    <ListItemIcon
-                      sx={{
-                        minWidth: 0,
-                        mr: open ? 3 : "auto",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Settings style={{ display: "flex", color: "#fff" }} />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={text}
-                      sx={{
-                        opacity: open ? 1 : 0,
-                        color: "#FFFFFF",
-                      }}
-                    />
-                  </ListItemButton>
-                </NavLink>
-              </ListItem>
-            ))}
-          </List>
-          <List onMouseEnter={handleDrawerOpen}>
-            {["Logout"].map((text, index) => (
+            {menuItems?.map(({ text, icon, to, action }) => (
               <ListItem
                 key={text}
                 disablePadding
-                sx={{ display: "block" }}
+                sx={{
+                  display: "block",
+                  backgroundColor:
+                    activeItem === text ? "white" : "transparent",
+                  "&:hover": {
+                    backgroundColor: activeItem === text ? "white" : "Tomato",
+                  },
+                }}
                 onClick={() => {
-                  logoutFunc();
-                  navigate("/");
+                  if (action) action();
+                  else setActiveItem(text);
                 }}
               >
-                <ListItemButton
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
-                  }}
-                >
-                  <ListItemIcon
+                <NavLink to={to}>
+                  <ListItemButton
                     sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
+                      minHeight: 48,
+                      justifyContent: open ? "initial" : "center",
+                      px: 2.5,
                     }}
                   >
-                    <ExitToAppRoundedIcon
-                      style={{
-                        display: "flex",
-                        color: "white",
-                        width: "21.33px",
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : "auto",
+                        justifyContent: "center",
+                        color: activeItem === text ? "black" : "white",
                       }}
+                    >
+                      {icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={
+                        <Typography
+                          sx={{
+                            opacity: open ? 1 : 0,
+                            color: activeItem === text ? "black" : "#FFFFFF",
+                            fontWeight: activeItem === text ? "800" : "600",
+                          }}
+                        >
+                          {text}
+                        </Typography>
+                      }
                     />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={text}
-                    sx={{
-                      opacity: open ? 1 : 0,
-                      color: "#FFFFFF",
-                    }}
-                  />
-                </ListItemButton>
+                  </ListItemButton>
+                </NavLink>
               </ListItem>
             ))}
           </List>

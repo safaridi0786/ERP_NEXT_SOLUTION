@@ -340,3 +340,37 @@ export const dataGetCharts = async () => {
     return null;
   }
 };
+
+export const postedForgetSendOtop = async (email) => {
+  try {
+    const response = await postData(`${s.credentials.forgetSendOtop}${email}`);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const postedValidateOtp = async (email, otp, shanakht) => {
+  try {
+    const response = await postData(
+      `${s.credentials.validateOtp}`
+        .replace(`$[email]`, email)
+        .replace(`$[otp]`, otp)
+        .replace(`$[shanakht]`, shanakht)
+    );
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const postedValidateShanakht = async (email, shanakht) => {
+  try {
+    const response = await postData(
+      `${s.credentials.validateShanakht}`
+        .replace(`$[email]`, email)
+        .replace(`$[shanakht]`, shanakht)
+    );
+    return response;
+  } catch (error) {
+    return null;
+  }
+};

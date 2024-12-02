@@ -7,8 +7,9 @@ import Recover from "./app/main/pages/authentication/Recover/Recover";
 import Reset from "./app/main/pages/authentication/Reset/Reset";
 import Submit from "./app/main/pages/authentication/Submit/Submit";
 import OTPVerification from "./app/main/pages/authentication/OTP Verification/OTPVerification";
-import Dashboard from "./app/main/dashboard/Dashboard";
+import Dashboard from "./app/main/components/dashboard/Dashboard";
 import SideBar from "./app/main/components/navigation/SideBar";
+import Employees from "./app/main/components/employees/Employees";
 
 function AppRoutes() {
   return (
@@ -23,6 +24,7 @@ function AppRoutes() {
         <Route path="/submit" element={<Submit />} />
         <Route element={<SideBar />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/employees" element={<Employees />} />
         </Route>
       </Routes>
     </>

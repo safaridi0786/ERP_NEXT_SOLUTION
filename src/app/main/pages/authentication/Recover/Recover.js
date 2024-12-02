@@ -7,39 +7,44 @@ import EmailIcon from "@mui/icons-material/Email";
 import { TextField, InputAdornment } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
+import { postedForgetSendOtop } from "../../../../services/api/apiManager";
 import "./Recover.css";
 
 function Recover() {
   const navigate = useNavigate();
-  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState({
     openSnack: false,
     snackMessage: "",
   });
 
   // Api integration
-  // const postAthenticationData = async (data) => {
-  //   try {
-  //     const response = await login(data);
-  //     if (response?.data?.status === 200 && response?.data?.result?.token) {
-  //       // set data in localstorage
-  //       localStorage.setItem("access_token", response?.data?.result?.token);
-  //       localStorage.setItem("user_id", response?.data?.result?.user?.userId);
-  //       navigate("/admin");
-  //       setOpenSnackbar({
-  //         openSnack: false,
-  //         snackMessage: "success",
-  //       });
-  //     } else {
-  //       setOpenSnackbar({
-  //         openSnack: true,
-  //         snackMessage: "error",
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.warn(error);
-  //   }
-  // };
+  const postAthenticationData = async (email) => {
+    try {
+      if (email) {
+        const response = await postedForgetSendOtop(email);
+        console.log(`check response of forget Password`, response);
+        navigate("/otp");
+      }
+      // if (response?.data?.status === 200 && response?.data?.result?.token) {
+      //   // set data in localstorage
+      //   localStorage.setItem("access_token", response?.data?.result?.token);
+      //   localStorage.setItem("user_id", response?.data?.result?.user?.userId);
+      //   navigate("/admin");
+      //   setOpenSnackbar({
+      //     openSnack: false,
+      //     snackMessage: "success",
+      //   });
+      // } else {
+      //   setOpenSnackbar({
+      //     openSnack: true,
+      //     snackMessage: "error",
+      //   });
+      // }
+    } catch (error) {
+      console.warn(error);
+    }
+  };
   return (
     <>
       <Box
@@ -128,9 +133,9 @@ function Recover() {
               <ThemeProvider theme={theme}>
                 <Box pt={2}>
                   <TextField
-                    value={userName}
+                    value={email}
                     onChange={(e) => {
-                      setUserName(e.target.value);
+                      setEmail(e.target.value);
                     }}
                     variant="outlined"
                     fullWidth
@@ -149,7 +154,7 @@ function Recover() {
 
             <Box mt={2}>
               <Button
-                disabled={userName !== "" ? false : true}
+                disabled={email !== "" ? false : true}
                 variant="contained"
                 fullWidth
                 sx={{
@@ -160,8 +165,7 @@ function Recover() {
                   textTransform: "none",
                 }}
                 onClick={() => {
-                  navigate("/otp");
-                  //   postAthenticationData(data);
+                  postAthenticationData(email);
                 }}
               >
                 Reset Password

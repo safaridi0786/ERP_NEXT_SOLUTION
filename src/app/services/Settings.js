@@ -6,6 +6,11 @@ export const settings = {
     welcomeScreen: "/api/User/Welcome",
     setUpPassword: "/api/User/SetUpPass",
     setUpOrganization: "/api/User/AddOrganization",
+    forgetSendOtop: "/api/User/ForgetsendOTP?email=",
+    validateOtp:
+      "api/User/ValidateOtp?email=[email]&otp=[otp]&shanakht=[shanakht]",
+    validateShanakht:
+      "api/User/ValidateShanakht?email=[email]&shanakht=[shanakht]",
   },
   languages: {
     getLanguage: "/api/User/GetLanguages",
