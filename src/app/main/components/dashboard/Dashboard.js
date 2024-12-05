@@ -617,7 +617,7 @@ function Dashboard() {
           pageSizeOptions={[5, 25, 50, 100]}
           sx={{
             "& .MuiDataGrid-columnHeader": {
-              backgroundColor: "#2081B8",
+              backgroundColor: "#0E4374",
               color: "#FFFFFF",
               fontFamily: "Poppins",
               fontWeight: "300",
