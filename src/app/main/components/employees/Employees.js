@@ -13,7 +13,6 @@ import {
 } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import SaveIcon from "@mui/icons-material/Save";
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
@@ -23,23 +22,21 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import AddBoxIcon from "@mui/icons-material/AddBox";
-import NumbersIcon from "@mui/icons-material/Numbers";
-import DialpadIcon from "@mui/icons-material/Dialpad";
-import BadgeIcon from "@mui/icons-material/Badge";
 import TitleIcon from "@mui/icons-material/Title";
-import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
-import PermIdentityIcon from "@mui/icons-material/PermIdentity";
 import EmailIcon from "@mui/icons-material/Email";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import AddIcon from "@mui/icons-material/Add";
+import HomeIcon from "@mui/icons-material/Home";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 // import dayjs from "dayjs";
 
 function Employees() {
   const [open, setOpen] = React.useState(false);
   const [chooseFileopen, setChooseFileOpen] = React.useState(false);
+  const [openAddingModal, setAddingOpenModal] = React.useState(false);
   const [image, setImage] = React.useState(null);
   const [tempImage, setTempImage] = React.useState(null);
   const fileInputRef = React.useRef(null);
@@ -48,6 +45,13 @@ function Employees() {
   const handleChooseFileClose = () => {
     setTempImage(null);
     setChooseFileOpen(false);
+  };
+
+  // Adding Form Open Modal
+
+  const handleFormOpenModal = () => setAddingOpenModal(true);
+  const handleFormCloseModal = () => {
+    setAddingOpenModal(false);
   };
 
   // Modal
@@ -98,14 +102,14 @@ function Employees() {
     {
       field: "firstName",
       headerName: "First name",
-      width: 150,
+      flex: 1,
       sortable: false,
       disableColumnMenu: true,
     },
     {
       field: "lastName",
       headerName: "Last name",
-      width: 150,
+      flex: 1,
       sortable: false,
       disableColumnMenu: true,
     },
@@ -116,46 +120,6 @@ function Employees() {
       width: 110,
       sortable: false,
       disableColumnMenu: true,
-    },
-    {
-      field: "fullName",
-      headerName: "Full name",
-      description: "This column has a value getter and is not sortable.",
-      sortable: false,
-      disableColumnMenu: true,
-      width: 160,
-      valueGetter: (value, row) =>
-        `${row.firstName || ""} ${row.lastName || ""}`,
-    },
-    {
-      field: "fullName",
-      headerName: "Full name",
-      description: "This column has a value getter and is not sortable.",
-      sortable: false,
-      disableColumnMenu: true,
-      width: 160,
-      valueGetter: (value, row) =>
-        `${row.firstName || ""} ${row.lastName || ""}`,
-    },
-    {
-      field: "fullName",
-      headerName: "Full name",
-      description: "This column has a value getter and is not sortable.",
-      sortable: false,
-      disableColumnMenu: true,
-      width: 160,
-      valueGetter: (value, row) =>
-        `${row.firstName || ""} ${row.lastName || ""}`,
-    },
-    {
-      field: "fullName",
-      headerName: "Full name",
-      description: "This column has a value getter and is not sortable.",
-      sortable: false,
-      disableColumnMenu: true,
-      flex: 1,
-      valueGetter: (value, row) =>
-        `${row.firstName || ""} ${row.lastName || ""}`,
     },
     {
       field: "Action",
@@ -224,12 +188,12 @@ function Employees() {
     { id: 2, lastName: "Lannister", firstName: "Cersei", age: 31 },
     { id: 3, lastName: "Lannister", firstName: "Jaime", age: 31 },
     { id: 4, lastName: "Stark", firstName: "Arya", age: 11 },
-    { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-    { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
+    { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: 23 },
+    { id: 6, lastName: "Melisandre", firstName: "ali", age: 150 },
     { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
     { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
     { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
-    { id: 10, lastName: "Melisandre", firstName: null, age: 150 },
+    { id: 10, lastName: "Melisandre", firstName: "Turk", age: 150 },
     { id: 11, lastName: "Clifford", firstName: "Ferrara", age: 44 },
     { id: 12, lastName: "Frances", firstName: "Rossini", age: 36 },
     { id: 13, lastName: "Roxie", firstName: "Harvey", age: 65 },
@@ -246,6 +210,95 @@ function Employees() {
     { label: "Schindler's List", year: 1993 },
     { label: "Pulp Fiction", year: 1994 },
   ];
+
+  // PDF Generate for Report
+
+  const downloadFilterData = () => {
+    const doc = new jsPDF({ orientation: "landscape" });
+
+    // Add Title
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const textWidth =
+      (doc.getStringUnitWidth("Employees Report") *
+        doc.internal.getFontSize()) /
+      doc.internal.scaleFactor;
+    const xPos = (pageWidth - textWidth) / 2;
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Employees Report", xPos, 15);
+
+    // Add a box (rectangle) for additional information
+    const boxStartY = 20;
+    const boxHeight = 50;
+    const boxPadding = 5;
+    doc.rect(10, boxStartY, pageWidth - 20, boxHeight); // Box dimensions
+
+    doc.setFontSize(10);
+
+    // Left-aligned content inside the box
+    let leftStartX = 15; // Left-side padding
+    let leftY = boxStartY + boxPadding; // Vertical start position
+    const lineSpacing = 6; // Space between lines
+
+    doc.text("S#: 1", leftStartX, leftY);
+    leftY += lineSpacing; // Move to next line
+    doc.text("Pers #: 32019639", leftStartX, leftY);
+    leftY += lineSpacing;
+    doc.text("Buckle No #: 12345", leftStartX, leftY);
+    leftY += lineSpacing;
+    doc.text("Name: Farzana Perveen (Lady Health Worker)", leftStartX, leftY);
+    leftY += lineSpacing;
+    doc.text("CNIC: 3210534893483", leftStartX, leftY);
+    leftY += lineSpacing;
+    doc.text("GPF Interest: Applied", leftStartX, leftY);
+
+    // Right-aligned content inside the box
+    const rightPadding = 15; // Padding from right edge
+    let rightY = boxStartY + boxPadding;
+    const rightStartX = pageWidth - rightPadding; // Far-right position
+
+    doc.text("P Sec: 002", rightStartX, rightY, { align: "right" });
+    rightY += lineSpacing;
+    doc.text(`Date: ${new Date().toLocaleDateString()}`, rightStartX, rightY, {
+      align: "right",
+    });
+    rightY += lineSpacing;
+    doc.text(
+      "MV9029 - National Programme for Famin. Of Health",
+      rightStartX,
+      rightY,
+      { align: "right" }
+    );
+    rightY += lineSpacing;
+    doc.text("NTN: 987654321", rightStartX, rightY, { align: "right" });
+    rightY += lineSpacing;
+    doc.text("GPF#: 00123", rightStartX, rightY, { align: "right" });
+    rightY += lineSpacing;
+    doc.text("Old#: 00001", rightStartX, rightY, { align: "right" });
+
+    // Adjust start position for the table
+    const tableStartY = boxStartY + boxHeight + 10;
+
+    // Map DataGrid rows and columns to autoTable
+    const tableColumns = columns.map((col) => col.headerName);
+    const tableRows = rows.map((row) =>
+      columns.map((col) =>
+        typeof col.valueGetter === "function"
+          ? col.valueGetter({ row })
+          : row[col.field]
+      )
+    );
+
+    // Generate Table
+    doc.autoTable({
+      startY: tableStartY,
+      head: [tableColumns],
+      body: tableRows,
+    });
+
+    // Save the PDF
+    doc.save("Employees_Report.pdf");
+  };
 
   return (
     <>
@@ -323,7 +376,7 @@ function Employees() {
           >
             <Button
               variant="contained"
-              // onClick={handleOpen}
+              onClick={downloadFilterData}
               sx={{
                 gap: 1,
                 backgroundColor: "#5a32a3",
@@ -491,13 +544,6 @@ function Employees() {
                   autoComplete="off"
                   label="Personal Number"
                   variant="outlined"
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <NumbersIcon sx={{ color: "darkblue" }} />
-                      </InputAdornment>
-                    ),
-                  }}
                 />
 
                 <TextField
@@ -506,13 +552,6 @@ function Employees() {
                   label="CNIC"
                   autoComplete="off"
                   variant="outlined"
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <PermIdentityIcon sx={{ color: "darkblue" }} />
-                      </InputAdornment>
-                    ),
-                  }}
                 />
               </Grid>
               <Grid item xl={8} lg={8} md={8} sm={8} xs={8} align={`right`}>
@@ -566,12 +605,19 @@ function Employees() {
                 </Box>
               </Grid>
             </Grid>
-            <Box sx={{ backgroundColor: "#93C572", mt: 1, p: 0.5 }}>
+            <Box
+              sx={{
+                backgroundColor: "#93C572",
+                mt: 1,
+                p: 1,
+                borderRadius: "5px",
+              }}
+            >
               <Typography
                 sx={{
                   textAlign: "center",
                   color: "black",
-                  fontSize: "16px",
+                  fontSize: "18px",
                   fontWeight: "800",
                 }}
               >
@@ -611,21 +657,29 @@ function Employees() {
                       <TextField {...params} label="DDO Description" />
                     )}
                   />
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: 35,
-                      height: 38,
-                      border: "1px solid #0E4374",
-                      borderRadius: "5px",
-                      backgroundColor: "#0E4374",
-                    }}
-                    onClick={handleChooseFileOpen}
-                  >
-                    <AddBoxIcon fontSize="small" sx={{ color: "white" }} />
-                  </Box>
+                  <Tooltip title="Add" placement="right">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 35,
+                        height: 37,
+                        border: "1px solid #0E4374",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#0E4374",
+                          "& svg": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                      onClick={handleFormOpenModal}
+                    >
+                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                    </Box>
+                  </Tooltip>
                 </Grid>
                 <Grid
                   item
@@ -656,21 +710,29 @@ function Employees() {
                       <TextField {...params} label="DDO Code" />
                     )}
                   />
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: 35,
-                      height: 38,
-                      border: "1px solid #0E4374",
-                      borderRadius: "5px",
-                      backgroundColor: "#0E4374",
-                    }}
-                    onClick={handleChooseFileOpen}
-                  >
-                    <AddBoxIcon fontSize="small" sx={{ color: "white" }} />
-                  </Box>
+                  <Tooltip title="Add" placement="right">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 35,
+                        height: 37,
+                        border: "1px solid #0E4374",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#0E4374",
+                          "& svg": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                      onClick={handleFormOpenModal}
+                    >
+                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                    </Box>
+                  </Tooltip>
                 </Grid>
                 <Grid
                   item
@@ -704,21 +766,29 @@ function Employees() {
                       />
                     )}
                   />
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: 35,
-                      height: 38,
-                      border: "1px solid #0E4374",
-                      borderRadius: "5px",
-                      backgroundColor: "#0E4374",
-                    }}
-                    onClick={handleChooseFileOpen}
-                  >
-                    <AddBoxIcon fontSize="small" sx={{ color: "white" }} />
-                  </Box>
+                  <Tooltip title="Add" placement="right">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 35,
+                        height: 37,
+                        border: "1px solid #0E4374",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#0E4374",
+                          "& svg": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                      onClick={handleFormOpenModal}
+                    >
+                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                    </Box>
+                  </Tooltip>
                 </Grid>
               </Grid>
               <Grid container spacing={1}>
@@ -751,21 +821,29 @@ function Employees() {
                       <TextField {...params} label="Ministry Code" />
                     )}
                   />
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: 35,
-                      height: 38,
-                      border: "1px solid #0E4374",
-                      borderRadius: "5px",
-                      backgroundColor: "#0E4374",
-                    }}
-                    onClick={handleChooseFileOpen}
-                  >
-                    <AddBoxIcon fontSize="small" sx={{ color: "white" }} />
-                  </Box>
+                  <Tooltip title="Add" placement="right">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 35,
+                        height: 37,
+                        border: "1px solid #0E4374",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#0E4374",
+                          "& svg": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                      onClick={handleFormOpenModal}
+                    >
+                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                    </Box>
+                  </Tooltip>
                 </Grid>
                 <Grid
                   item
@@ -796,21 +874,29 @@ function Employees() {
                       <TextField {...params} label="BPS" />
                     )}
                   />
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: 35,
-                      height: 38,
-                      border: "1px solid #0E4374",
-                      borderRadius: "5px",
-                      backgroundColor: "#0E4374",
-                    }}
-                    onClick={handleChooseFileOpen}
-                  >
-                    <AddBoxIcon fontSize="small" sx={{ color: "white" }} />
-                  </Box>
+                  <Tooltip title="Add" placement="right">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 35,
+                        height: 37,
+                        border: "1px solid #0E4374",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#0E4374",
+                          "& svg": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                      onClick={handleFormOpenModal}
+                    >
+                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                    </Box>
+                  </Tooltip>
                 </Grid>
                 <Grid
                   item
@@ -844,21 +930,29 @@ function Employees() {
                       />
                     )}
                   />
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: 35,
-                      height: 38,
-                      border: "1px solid #0E4374",
-                      borderRadius: "5px",
-                      backgroundColor: "#0E4374",
-                    }}
-                    onClick={handleChooseFileOpen}
-                  >
-                    <AddBoxIcon fontSize="small" sx={{ color: "white" }} />
-                  </Box>
+                  <Tooltip title="Add" placement="right">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 35,
+                        height: 37,
+                        border: "1px solid #0E4374",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#0E4374",
+                          "& svg": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                      onClick={handleFormOpenModal}
+                    >
+                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                    </Box>
+                  </Tooltip>
                 </Grid>
               </Grid>
 
@@ -892,21 +986,29 @@ function Employees() {
                       <TextField {...params} label="Gazetted/Non-Gazetted" />
                     )}
                   />
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: 35,
-                      height: 38,
-                      border: "1px solid #0E4374",
-                      borderRadius: "5px",
-                      backgroundColor: "#0E4374",
-                    }}
-                    onClick={handleChooseFileOpen}
-                  >
-                    <AddBoxIcon fontSize="small" sx={{ color: "white" }} />
-                  </Box>
+                  <Tooltip title="Add" placement="right">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 35,
+                        height: 37,
+                        border: "1px solid #0E4374",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#0E4374",
+                          "& svg": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                      onClick={handleFormOpenModal}
+                    >
+                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                    </Box>
+                  </Tooltip>
                 </Grid>
                 <Grid
                   item
@@ -1036,21 +1138,29 @@ function Employees() {
                       <TextField {...params} label="Transfor From" />
                     )}
                   />
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: 35,
-                      height: 38,
-                      border: "1px solid #0E4374",
-                      borderRadius: "5px",
-                      backgroundColor: "#0E4374",
-                    }}
-                    onClick={handleChooseFileOpen}
-                  >
-                    <AddBoxIcon fontSize="small" sx={{ color: "white" }} />
-                  </Box>
+                  <Tooltip title="Add" placement="right">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 35,
+                        height: 37,
+                        border: "1px solid #0E4374",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#0E4374",
+                          "& svg": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                      onClick={handleFormOpenModal}
+                    >
+                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                    </Box>
+                  </Tooltip>
                 </Grid>
                 <Grid
                   item
@@ -1115,21 +1225,29 @@ function Employees() {
                       <TextField {...params} label="Transfor To" />
                     )}
                   />
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: 35,
-                      height: 38,
-                      border: "1px solid #0E4374",
-                      borderRadius: "5px",
-                      backgroundColor: "#0E4374",
-                    }}
-                    onClick={handleChooseFileOpen}
-                  >
-                    <AddBoxIcon fontSize="small" sx={{ color: "white" }} />
-                  </Box>
+                  <Tooltip title="Add" placement="right">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 35,
+                        height: 37,
+                        border: "1px solid #0E4374",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#0E4374",
+                          "& svg": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                      onClick={handleFormOpenModal}
+                    >
+                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                    </Box>
+                  </Tooltip>
                 </Grid>
                 <Grid
                   item
@@ -1192,21 +1310,29 @@ function Employees() {
                       <TextField {...params} label="Designation" />
                     )}
                   />
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: 35,
-                      height: 38,
-                      border: "1px solid #0E4374",
-                      borderRadius: "5px",
-                      backgroundColor: "#0E4374",
-                    }}
-                    onClick={handleChooseFileOpen}
-                  >
-                    <AddBoxIcon fontSize="small" sx={{ color: "white" }} />
-                  </Box>
+                  <Tooltip title="Add" placement="right">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 35,
+                        height: 37,
+                        border: "1px solid #0E4374",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#0E4374",
+                          "& svg": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                      onClick={handleFormOpenModal}
+                    >
+                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                    </Box>
+                  </Tooltip>
                 </Grid>
               </Grid>
               <Grid container spacing={1}>
@@ -1239,21 +1365,29 @@ function Employees() {
                       <TextField {...params} label="Last Designation" />
                     )}
                   />
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: 35,
-                      height: 38,
-                      border: "1px solid #0E4374",
-                      borderRadius: "5px",
-                      backgroundColor: "#0E4374",
-                    }}
-                    onClick={handleChooseFileOpen}
-                  >
-                    <AddBoxIcon fontSize="small" sx={{ color: "white" }} />
-                  </Box>
+                  <Tooltip title="Add" placement="right">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 35,
+                        height: 37,
+                        border: "1px solid #0E4374",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#0E4374",
+                          "& svg": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                      onClick={handleFormOpenModal}
+                    >
+                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                    </Box>
+                  </Tooltip>
                 </Grid>
                 <Grid item xl={4} lg={4} md={4} sm={4} xs={4}>
                   <TextField
@@ -1262,13 +1396,6 @@ function Employees() {
                     autoComplete="off"
                     label="Buckle No"
                     variant="outlined"
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <DialpadIcon sx={{ color: "darkblue" }} />
-                        </InputAdornment>
-                      ),
-                    }}
                   />
                 </Grid>
                 <Grid item xl={4} lg={4} md={4} sm={4} xs={4}>
@@ -1278,23 +1405,23 @@ function Employees() {
                     autoComplete="off"
                     label="Page No"
                     variant="outlined"
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <DialpadIcon sx={{ color: "darkblue" }} />
-                        </InputAdornment>
-                      ),
-                    }}
                   />
                 </Grid>
               </Grid>
             </Box>
-            <Box sx={{ backgroundColor: "#93C572", mt: 1, p: 0.5 }}>
+            <Box
+              sx={{
+                backgroundColor: "#93C572",
+                mt: 1,
+                p: 1,
+                borderRadius: "5px",
+              }}
+            >
               <Typography
                 sx={{
                   textAlign: "center",
                   color: "black",
-                  fontSize: "16px",
+                  fontSize: "18px",
                   fontWeight: "800",
                 }}
               >
@@ -1329,13 +1456,6 @@ function Employees() {
                     autoComplete="off"
                     label="Name"
                     variant="outlined"
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <BadgeIcon sx={{ color: "darkblue" }} />
-                        </InputAdornment>
-                      ),
-                    }}
                   />
                 </Grid>
                 <Grid item xl={4} lg={4} md={4} sm={4} xs={4}>
@@ -1345,13 +1465,6 @@ function Employees() {
                     autoComplete="off"
                     label="Father Name"
                     variant="outlined"
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <BadgeIcon sx={{ color: "darkblue" }} />
-                        </InputAdornment>
-                      ),
-                    }}
                   />
                 </Grid>
               </Grid>
@@ -1366,7 +1479,7 @@ function Employees() {
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
-                          <AlternateEmailIcon sx={{ color: "darkblue" }} />
+                          <HomeIcon sx={{ color: "darkblue" }} />
                         </InputAdornment>
                       ),
                     }}
@@ -1401,21 +1514,29 @@ function Employees() {
                       <TextField {...params} label="Sect" />
                     )}
                   />
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: 35,
-                      height: 38,
-                      border: "1px solid #0E4374",
-                      borderRadius: "5px",
-                      backgroundColor: "#0E4374",
-                    }}
-                    onClick={handleChooseFileOpen}
-                  >
-                    <AddBoxIcon fontSize="small" sx={{ color: "white" }} />
-                  </Box>
+                  <Tooltip title="Add" placement="right">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 35,
+                        height: 37,
+                        border: "1px solid #0E4374",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#0E4374",
+                          "& svg": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                      onClick={handleFormOpenModal}
+                    >
+                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                    </Box>
+                  </Tooltip>
                 </Grid>
                 <Grid
                   item
@@ -1446,21 +1567,29 @@ function Employees() {
                       <TextField {...params} label="Marital Status" />
                     )}
                   />
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: 35,
-                      height: 38,
-                      border: "1px solid #0E4374",
-                      borderRadius: "5px",
-                      backgroundColor: "#0E4374",
-                    }}
-                    onClick={handleChooseFileOpen}
-                  >
-                    <AddBoxIcon fontSize="small" sx={{ color: "white" }} />
-                  </Box>
+                  <Tooltip title="Add" placement="right">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 35,
+                        height: 37,
+                        border: "1px solid #0E4374",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#0E4374",
+                          "& svg": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                      onClick={handleFormOpenModal}
+                    >
+                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                    </Box>
+                  </Tooltip>
                 </Grid>
               </Grid>
               <Grid container spacing={1}>
@@ -1493,21 +1622,29 @@ function Employees() {
                       <TextField {...params} label="Cast" />
                     )}
                   />
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: 35,
-                      height: 38,
-                      border: "1px solid #0E4374",
-                      borderRadius: "5px",
-                      backgroundColor: "#0E4374",
-                    }}
-                    onClick={handleChooseFileOpen}
-                  >
-                    <AddBoxIcon fontSize="small" sx={{ color: "white" }} />
-                  </Box>
+                  <Tooltip title="Add" placement="right">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 35,
+                        height: 37,
+                        border: "1px solid #0E4374",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#0E4374",
+                          "& svg": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                      onClick={handleFormOpenModal}
+                    >
+                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                    </Box>
+                  </Tooltip>
                 </Grid>
                 <Grid
                   item
@@ -1538,21 +1675,29 @@ function Employees() {
                       <TextField {...params} label="Religion" />
                     )}
                   />
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: 35,
-                      height: 38,
-                      border: "1px solid #0E4374",
-                      borderRadius: "5px",
-                      backgroundColor: "#0E4374",
-                    }}
-                    onClick={handleChooseFileOpen}
-                  >
-                    <AddBoxIcon fontSize="small" sx={{ color: "white" }} />
-                  </Box>
+                  <Tooltip title="Add" placement="right">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 35,
+                        height: 37,
+                        border: "1px solid #0E4374",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#0E4374",
+                          "& svg": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                      onClick={handleFormOpenModal}
+                    >
+                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                    </Box>
+                  </Tooltip>
                 </Grid>
                 <Grid item xl={4} lg={4} md={4} sm={4} xs={4}>
                   <TextField
@@ -1606,12 +1751,19 @@ function Employees() {
                 </Grid>
               </Grid>
             </Box>
-            <Box sx={{ backgroundColor: "#93C572", mt: 1, p: 0.5 }}>
+            <Box
+              sx={{
+                backgroundColor: "#93C572",
+                mt: 1,
+                p: 1,
+                borderRadius: "5px",
+              }}
+            >
               <Typography
                 sx={{
                   textAlign: "center",
                   color: "black",
-                  fontSize: "16px",
+                  fontSize: "18px",
                   fontWeight: "800",
                 }}
               >
@@ -1651,21 +1803,29 @@ function Employees() {
                       <TextField {...params} label="Bank Name" />
                     )}
                   />
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: 35,
-                      height: 38,
-                      border: "1px solid #0E4374",
-                      borderRadius: "5px",
-                      backgroundColor: "#0E4374",
-                    }}
-                    onClick={handleChooseFileOpen}
-                  >
-                    <AddBoxIcon fontSize="small" sx={{ color: "white" }} />
-                  </Box>
+                  <Tooltip title="Add" placement="right">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 35,
+                        height: 37,
+                        border: "1px solid #0E4374",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#0E4374",
+                          "& svg": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                      onClick={handleFormOpenModal}
+                    >
+                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                    </Box>
+                  </Tooltip>
                 </Grid>
                 <Grid
                   item
@@ -1696,21 +1856,29 @@ function Employees() {
                       <TextField {...params} label="Bank Branch" />
                     )}
                   />
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: 35,
-                      height: 38,
-                      border: "1px solid #0E4374",
-                      borderRadius: "5px",
-                      backgroundColor: "#0E4374",
-                    }}
-                    onClick={handleChooseFileOpen}
-                  >
-                    <AddBoxIcon fontSize="small" sx={{ color: "white" }} />
-                  </Box>
+                  <Tooltip title="Add" placement="right">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 35,
+                        height: 37,
+                        border: "1px solid #0E4374",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#0E4374",
+                          "& svg": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                      onClick={handleFormOpenModal}
+                    >
+                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                    </Box>
+                  </Tooltip>
                 </Grid>
                 <Grid item xl={4} lg={4} md={4} sm={4} xs={4}>
                   <TextField
@@ -1719,15 +1887,6 @@ function Employees() {
                     autoComplete="off"
                     label="Bank Account No"
                     variant="outlined"
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <AccountBalanceWalletIcon
-                            sx={{ color: "darkblue" }}
-                          />
-                        </InputAdornment>
-                      ),
-                    }}
                   />
                 </Grid>
               </Grid>
@@ -1739,13 +1898,6 @@ function Employees() {
                     autoComplete="off"
                     label="NTN"
                     variant="outlined"
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <AccountBoxIcon sx={{ color: "darkblue" }} />
-                        </InputAdornment>
-                      ),
-                    }}
                   />
                 </Grid>
                 <Grid item xl={4} lg={4} md={4} sm={4} xs={4}>
@@ -1755,13 +1907,6 @@ function Employees() {
                     autoComplete="off"
                     label="GPF Account No"
                     variant="outlined"
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <AccountBoxIcon sx={{ color: "darkblue" }} />
-                        </InputAdornment>
-                      ),
-                    }}
                   />
                 </Grid>
                 <Grid item xl={4} lg={4} md={4} sm={4} xs={4}>
@@ -1771,13 +1916,6 @@ function Employees() {
                     autoComplete="off"
                     label="GPF Last Balance"
                     variant="outlined"
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <AccountBoxIcon sx={{ color: "darkblue" }} />
-                        </InputAdornment>
-                      ),
-                    }}
                   />
                 </Grid>
               </Grid>
@@ -1819,7 +1957,7 @@ function Employees() {
           </Box>
         </Box>
       </Modal>
-
+      {/* For Upload Image Modal */}
       <Modal open={chooseFileopen} onClose={handleChooseFileClose}>
         <Box
           sx={{
@@ -1904,6 +2042,100 @@ function Employees() {
                 variant="contained"
                 color="error"
                 onClick={handleChooseFileClose}
+                sx={{ gap: 1 }}
+              >
+                Close
+              </Button>
+              <Button
+                variant="contained"
+                color="success"
+                onClick={handleSubmitFile}
+                disabled={!tempImage}
+                sx={{ gap: 1 }}
+              >
+                Add
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
+
+      {/* For Add Form Modal */}
+      <Modal open={openAddingModal} onClose={handleFormCloseModal}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            borderRadius: "10px",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              p: "8px 15px",
+              backgroundColor: "#0E4374",
+              borderTopLeftRadius: "10px",
+              borderTopRightRadius: "10px",
+            }}
+          >
+            <Typography
+              sx={{
+                textAlign: "center",
+                fontSize: "24px",
+                fontWeight: "800",
+                color: "white",
+              }}
+            >
+              Add Form
+            </Typography>
+            <Box
+              onClick={handleFormCloseModal}
+              sx={{
+                cursor: "pointer",
+              }}
+            >
+              <CancelIcon sx={{ color: "white", fontSize: "28px" }} />
+            </Box>
+          </Box>
+
+          <Box sx={{ p: 2 }}>
+            <TextField
+              fullWidth
+              size="small"
+              autoComplete="off"
+              placeholder="Search By Name"
+              variant="outlined"
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#0E4374",
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  "&.Mui-focused": {
+                    color: "#0E4374",
+                  },
+                },
+              }}
+            />
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: 2,
+              }}
+            >
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleFormCloseModal}
                 sx={{ gap: 1 }}
               >
                 Close
