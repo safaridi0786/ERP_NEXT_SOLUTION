@@ -33,6 +33,8 @@ import CreditCardIcon from "@mui/icons-material/CreditCard";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import ManageHistoryIcon from "@mui/icons-material/ManageHistory";
+import QueueIcon from "@mui/icons-material/Queue";
+import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 
 function SideBar() {
   const drawerWidth = 240;
@@ -124,6 +126,9 @@ function SideBar() {
 
   const navigate = useNavigate();
   const [activeItem, setActiveItem] = React.useState("Dashboard");
+  const [activeParent, setActiveParent] = React.useState(null);
+  const [lastActiveItem, setLastActiveItem] = React.useState(null);
+
   const menuItems = [
     {
       text: "Dashboard",
@@ -134,6 +139,14 @@ function SideBar() {
       text: "Employees",
       icon: <PeopleAltIcon />,
       to: "/employees",
+      children: [
+        { text: "Queue", icon: <QueueIcon />, to: "/queue" },
+        {
+          text: "Underprocess",
+          icon: <AssignmentTurnedInIcon />,
+          to: "/underprocess",
+        },
+      ],
     },
     {
       text: "Approvals",
@@ -177,10 +190,16 @@ function SideBar() {
   const [open, setOpen] = React.useState(null);
   const handleDrawerOpen = () => {
     setOpen(true);
+    if (lastActiveItem) {
+      setActiveItem(lastActiveItem);
+    }
   };
   const closeSidebar = () => {
     if (open === true) {
       setOpen(false);
+      if (activeParent) {
+        setActiveItem(activeParent);
+      }
     }
   };
   return (
@@ -230,7 +249,7 @@ function SideBar() {
                     },
                   }}
                 >
-                  Welcome, Dibbendo!
+                  Welcome, GINFOTECH!
                 </Typography>
                 <Typography
                   color={"silver"}
@@ -465,58 +484,129 @@ function SideBar() {
               </IconButton>
             )}
           </DrawerHeader>
+
           <List onMouseEnter={handleDrawerOpen}>
-            {menuItems?.map(({ text, icon, to, action }) => (
-              <ListItem
-                key={text}
-                disablePadding
-                sx={{
-                  display: "block",
-                  backgroundColor:
-                    activeItem === text ? "white" : "transparent",
-                  "&:hover": {
-                    backgroundColor: activeItem === text ? "white" : "Tomato",
-                  },
-                }}
-                onClick={() => {
-                  if (action) action();
-                  else setActiveItem(text);
-                }}
-              >
-                <NavLink to={to}>
-                  <ListItemButton
-                    sx={{
-                      minHeight: 48,
-                      justifyContent: open ? "initial" : "center",
-                      px: 2.5,
-                    }}
-                  >
-                    <ListItemIcon
+            {menuItems?.map(({ text, icon, to, action, children }) => (
+              <React.Fragment key={text}>
+                {/* Parent Item */}
+                <ListItem
+                  disablePadding
+                  sx={{
+                    display: "block",
+                    backgroundColor:
+                      activeItem === text ? "white" : "transparent",
+                    "&:hover": {
+                      backgroundColor: activeItem === text ? "white" : "Tomato",
+                    },
+                  }}
+                  onClick={() => {
+                    if (action) action();
+                    else {
+                      setActiveItem(text);
+                      setActiveParent(null); // Reset parent tracking when selecting a top-level item
+                      setLastActiveItem(null); // Clear nested item tracking
+                    }
+                  }}
+                >
+                  <NavLink to={to || "#"}>
+                    <ListItemButton
                       sx={{
-                        minWidth: 0,
-                        mr: open ? 3 : "auto",
-                        justifyContent: "center",
-                        color: activeItem === text ? "black" : "white",
+                        minHeight: 48,
+                        justifyContent: open ? "initial" : "center",
+                        px: 2.5,
                       }}
                     >
-                      {icon}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={
-                        <Typography
-                          sx={{
-                            opacity: open ? 1 : 0,
-                            color: activeItem === text ? "black" : "#FFFFFF",
-                            fontWeight: activeItem === text ? "800" : "600",
-                          }}
-                        >
-                          {text}
-                        </Typography>
-                      }
-                    />
-                  </ListItemButton>
-                </NavLink>
-              </ListItem>
+                      <ListItemIcon
+                        sx={{
+                          minWidth: 0,
+                          mr: open ? 3 : "auto",
+                          justifyContent: "center",
+                          color: activeItem === text ? "black" : "white",
+                        }}
+                      >
+                        {icon}
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={
+                          <Typography
+                            sx={{
+                              opacity: open ? 1 : 0,
+                              color: activeItem === text ? "black" : "#FFFFFF",
+                              fontWeight: activeItem === text ? "800" : "600",
+                            }}
+                          >
+                            {text}
+                          </Typography>
+                        }
+                      />
+                    </ListItemButton>
+                  </NavLink>
+                </ListItem>
+
+                {/* Render Nested Items */}
+                {open && children && (
+                  <List sx={{ pl: 4 }}>
+                    {children.map((child) => (
+                      <ListItem
+                        key={child.text}
+                        disablePadding
+                        sx={{
+                          display: "block",
+                          backgroundColor:
+                            activeItem === child.text ? "white" : "transparent",
+                          "&:hover": {
+                            backgroundColor:
+                              activeItem === child.text ? "white" : "Tomato",
+                          },
+                        }}
+                        onClick={() => {
+                          setActiveItem(child.text); // Set the child as active
+                          setLastActiveItem(child.text); // Track the last selected nested item
+                          setActiveParent(text); // Track the parent item
+                        }}
+                      >
+                        <NavLink to={child.to}>
+                          <ListItemButton
+                            sx={{
+                              minHeight: 40,
+                              justifyContent: open ? "initial" : "center",
+                              px: 2.5,
+                            }}
+                          >
+                            <ListItemIcon
+                              sx={{
+                                minWidth: 0,
+                                mr: open ? 3 : "auto",
+                                justifyContent: "center",
+                                color:
+                                  activeItem === child.text ? "black" : "white",
+                              }}
+                            >
+                              {child.icon}
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={
+                                <Typography
+                                  sx={{
+                                    color:
+                                      activeItem === child.text
+                                        ? "black"
+                                        : "#FFFFFF",
+                                    fontWeight:
+                                      activeItem === child.text ? "700" : "500",
+                                  }}
+                                >
+                                  {child.text}
+                                </Typography>
+                              }
+                            />
+                          </ListItemButton>
+                        </NavLink>
+                      </ListItem>
+                    ))}
+                  </List>
+                )}
+              </React.Fragment>
             ))}
           </List>
         </Drawer>

@@ -3,6 +3,7 @@ import {
   Autocomplete,
   Box,
   Button,
+  Checkbox,
   Grid,
   IconButton,
   InputAdornment,
@@ -12,14 +13,12 @@ import {
   Typography,
 } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import SaveIcon from "@mui/icons-material/Save";
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import { DataGrid } from "@mui/x-data-grid";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
-// import DeleteIcon from "@mui/icons-material/Delete";
-// import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import TitleIcon from "@mui/icons-material/Title";
@@ -31,12 +30,9 @@ import AddIcon from "@mui/icons-material/Add";
 import HomeIcon from "@mui/icons-material/Home";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
-import logo from "../../../../assets/png/logo.png";
-import PreviewIcon from "@mui/icons-material/Preview";
-import { CheckBox } from "@mui/icons-material";
 // import dayjs from "dayjs";
 
-function Employees() {
+function Queue() {
   const [open, setOpen] = React.useState(false);
   const [chooseFileopen, setChooseFileOpen] = React.useState(false);
   const [openAddingModal, setAddingOpenModal] = React.useState(false);
@@ -96,7 +92,6 @@ function Employees() {
     setOpen(false);
     setImage(null);
     setTempImage(null);
-    setShowAutocomplete(false);
   };
 
   const handleImageChange = (event) => {
@@ -197,42 +192,11 @@ function Employees() {
       headerAlign: "center",
       renderCell: (params) => (
         <Box>
-          <Tooltip title="Preview">
-            <IconButton
-              color="primary"
-              // onClick={() => handleEdit(params.row.id)}
-              onClick={handleOpen}
-              size="small"
-            >
-              <PreviewIcon
-                style={{
-                  color: "#0E4374",
-                  cursor: "pointer",
-                  fontSize: "24px",
-                }}
-              />
-            </IconButton>
-          </Tooltip>
-          {/* <Tooltip title="Add">
-            <IconButton
-              color="primary"
-              // onClick={() => handleEdit(params.row.id)}
-              onClick={handleOpen}
-              size="small"
-            >
-              <AddCircleIcon
-                style={{
-                  color: "#0E4374",
-                  cursor: "pointer",
-                  fontSize: "24px",
-                }}
-              />
-            </IconButton>
-          </Tooltip>
           <Tooltip title="Edit">
             <IconButton
               color="primary"
-              // onClick={() => handleEdit(params.row.id)}
+              //   onClick={() => handleEdit(params.row.id)}
+              onClick={handleOpen}
               size="small"
             >
               <ModeEditIcon
@@ -244,21 +208,6 @@ function Employees() {
               />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Delete">
-            <IconButton
-              color="error"
-              // onClick={() => handleDelete(params.row.id)}
-              size="small"
-            >
-              <DeleteIcon
-                sx={{
-                  color: "red",
-                  cursor: "pointer",
-                  fontSize: "24px",
-                }}
-              />
-            </IconButton>
-          </Tooltip> */}
         </Box>
       ),
     },
@@ -457,145 +406,6 @@ function Employees() {
     // Save the PDF
     doc.save("Employees_Report.pdf");
   };
-  const downloadApplicationReport = () => {
-    const doc = new jsPDF({ orientation: "portrait" });
-
-    // Title
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(16);
-    doc.text("Government of Pakistan", 105, 10, { align: "center" });
-    doc.setFontSize(14);
-    doc.text("District Accounts Office D.G. Khan", 105, 17, {
-      align: "center",
-    });
-    doc.setFontSize(12);
-    doc.text("Monthly Salary Statement (November-2024)", 105, 25, {
-      align: "center",
-    });
-
-    // Add Logo to the Right
-    doc.addImage(logo, "PNG", 170, 4, 30, 25); // (image, format, x, y, width, height)
-
-    // Box for Personal Information
-    doc.setFontSize(10);
-    const boxStartY = 30;
-    doc.rect(10, boxStartY, 190, 35); // Rectangle
-    doc.text(
-      "Personal Information of Mr MUHAMMAD ISMAIL d/w/s of ALLAH BUKHSH",
-      15,
-      boxStartY + 5
-    );
-    doc.text("Personnel Number: 30555994", 15, boxStartY + 12);
-    doc.text("CNIC: 3210282530795", 15, boxStartY + 19);
-    doc.text("Designation: ASST. ACCOUNTS OFFICER", 15, boxStartY + 26);
-    doc.text(
-      "Length of Service: 18 Years 03 Months 003 Days",
-      15,
-      boxStartY + 33
-    );
-
-    // Pay and Allowances Section
-    const payAllowancesStartY = boxStartY + 45;
-    doc.setFont("helvetica", "bold");
-    doc.text("Pay and Allowances:", 15, payAllowancesStartY);
-    doc.setFont("helvetica", "normal");
-
-    doc.autoTable({
-      startY: payAllowancesStartY + 5,
-      head: [["Wage Type", "Amount", "Wage Type", "Amount"]],
-      body: [
-        ["Basic Pay", "40,000", "Basic Pay", "40,000"],
-        [
-          "House Rent Allowance 45%",
-          "18,000",
-          "House Rent Allowance 45%",
-          "18,000",
-        ],
-        ["Computer Allowance", "1,500", "Computer Allowance", "1,500"],
-        [
-          "Adhoc Relief Allowance 2023",
-          "28,281",
-          "Adhoc Relief Allowance 2023",
-          "28,281",
-        ],
-      ],
-      styles: { halign: "center" },
-      theme: "grid",
-    });
-
-    // Deductions General Section
-    const deductionsGeneralStartY = doc.previousAutoTable.finalY + 10;
-    doc.setFont("helvetica", "bold");
-    doc.text("Deductions: General", 15, deductionsGeneralStartY);
-    doc.setFont("helvetica", "normal");
-
-    doc.autoTable({
-      startY: deductionsGeneralStartY + 5,
-      head: [["Wage type", "Amount", "Wage type", "Amount"]],
-      body: [
-        ["GPF Subscription", "-3,500", "GPF Subscription", "-3,500"],
-        ["Income Tax", "-7,655", "Income Tax", "-7,655"],
-        ["Group Insurance", "-230", "Group Insurance", "-230"],
-      ],
-      styles: { halign: "center" },
-      theme: "grid",
-    });
-    // Deductions Loans & Advances Section
-    const deductionsStartY = doc.previousAutoTable.finalY + 10;
-    doc.setFont("helvetica", "bold");
-    doc.text("Deductions: Loans & Advances", 15, deductionsStartY);
-    doc.setFont("helvetica", "normal");
-
-    doc.autoTable({
-      startY: deductionsStartY + 5,
-      head: [["Description", "Amount", "Description", "Amount"]],
-      body: [
-        ["GPF Subscription", "-3,500", "GPF Subscription", "-3,500"],
-        ["Income Tax", "-7,655", "Income Tax", "-7,655"],
-        ["Group Insurance", "-230", "Group Insurance", "-230"],
-      ],
-      styles: { halign: "center" },
-      theme: "grid",
-    });
-
-    // Footer Information
-    const footerStartY = doc.previousAutoTable.finalY + 5;
-    doc.setFont("helvetica", "bold");
-    doc.text("Deductions: Income Tax", 15, footerStartY);
-    doc.setFont("helvetica", "normal");
-    doc.text("Payable: 91,067.78", 15, footerStartY + 8);
-    doc.text("Recovered till - Nov 2022: 78,067.78", 80, footerStartY + 8);
-    doc.text("Recoverable: 54,067.78", 160, footerStartY + 8);
-    const nextLineY = footerStartY + 15;
-    doc.setFont("helvetica", "bold");
-    doc.text("Gross Pay (Rs): 771,000.00", 15, nextLineY);
-    doc.text("Deduction (Rs): -100,000.00", 90, nextLineY);
-    doc.text("Net Pay (Rs): 36,000.00", 160, nextLineY);
-    const nextDataY = footerStartY;
-    doc.setFont("helvetica", "normal");
-    doc.text("Payee Name: MUHAMMAD ISMAIL", 15, nextDataY + 20);
-    doc.text("Account Number: 6400159141400013", 15, nextDataY + 25);
-    doc.text("Bank Details: THE BANK OF PUNJAB, DG KHAN", 15, nextDataY + 30);
-    const nextLeavesY = footerStartY + 40;
-    doc.setFont("helvetica", "bold");
-    doc.text("Leaves", 15, nextLeavesY);
-    doc.text("Opening Balance", 50, nextLeavesY);
-    doc.text("Availed", 100, nextLeavesY);
-    doc.text("Earned", 150, nextLeavesY);
-    // Draw a horizontal line
-    const lineStartY = nextLeavesY + 15;
-    doc.line(15, lineStartY, 200, lineStartY);
-
-    const lastDataY = footerStartY + 50;
-    doc.setFont("helvetica", "normal");
-    doc.text("Address:", 15, lastDataY + 10);
-    doc.text("City: D.G.Khan", 15, lastDataY + 15);
-    doc.text("Email:", 15, lastDataY + 20);
-    doc.text("Domicile:", 15, lastDataY + 25);
-
-    // Save PDF
-    doc.save("Salary_Report_November_2023.pdf");
-  };
 
   return (
     <>
@@ -669,23 +479,8 @@ function Employees() {
             md={6}
             sm={6}
             xs={6}
-            sx={{ display: "flex", gap: 1, justifyContent: "right" }}
+            sx={{ display: "flex", justifyContent: "right" }}
           >
-            <Button
-              variant="contained"
-              onClick={downloadApplicationReport}
-              sx={{
-                gap: 1,
-                backgroundColor: "#5a32a3",
-                color: "white",
-
-                "&:hover": {
-                  backgroundColor: "#5a32a3",
-                },
-              }}
-            >
-              <FileUploadIcon /> Export Application Report
-            </Button>
             <Button
               variant="contained"
               onClick={downloadFilterData}
@@ -700,21 +495,6 @@ function Employees() {
               }}
             >
               <FileUploadIcon /> Export to PDF
-            </Button>
-            <Button
-              variant="contained"
-              onClick={handleOpen}
-              sx={{
-                gap: 1,
-                backgroundColor: "#0E4374",
-                color: "white",
-
-                "&:hover": {
-                  backgroundColor: "#0E4374",
-                },
-              }}
-            >
-              <AddCircleIcon /> Add Employees
             </Button>
           </Grid>
         </Grid>
@@ -2552,7 +2332,6 @@ function Employees() {
                 </Button>
               </Grid>
             </Grid>
-
             {/* Show Autocomplete and Submit Button */}
             {showAutocomplete && (
               <Box
@@ -2628,7 +2407,7 @@ function Employees() {
                           {...props}
                           sx={{ display: "flex", alignItems: "center", gap: 1 }}
                         >
-                          <CheckBox
+                          <Checkbox
                             checked={selectedOption?.value === option.value}
                             onChange={() => setSelectedOption(option)}
                           />
@@ -2931,4 +2710,4 @@ function Employees() {
   );
 }
 
-export default Employees;
+export default Queue;

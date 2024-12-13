@@ -10,6 +10,8 @@ import OTPVerification from "./app/main/pages/authentication/OTP Verification/OT
 import Dashboard from "./app/main/components/dashboard/Dashboard";
 import SideBar from "./app/main/components/navigation/SideBar";
 import Employees from "./app/main/components/employees/Employees";
+import Queue from "./app/main/components/employees/employeeList/Queue";
+import UnderProcess from "./app/main/components/employees/employeeList/UnderProcess";
 
 function AppRoutes() {
   return (
@@ -25,6 +27,8 @@ function AppRoutes() {
         <Route element={<SideBar />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/employees" element={<Employees />} />
+          <Route path="/queue" element={<Queue />} />
+          <Route path="/underprocess" element={<UnderProcess />} />
         </Route>
       </Routes>
     </>
