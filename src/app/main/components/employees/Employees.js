@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Autocomplete,
   Box,
   Button,
+  CircularProgress,
   Grid,
   IconButton,
   InputAdornment,
@@ -34,6 +35,28 @@ import "jspdf-autotable";
 import logo from "../../../../assets/png/logo.png";
 import PreviewIcon from "@mui/icons-material/Preview";
 import { CheckBox } from "@mui/icons-material";
+import {
+  getEmployeeForm,
+  ListGetBankBranch,
+  ListGetBankName,
+  ListGetReligion,
+  ListGetDistrict,
+  ListGetCast,
+  ListGetMaritalStatus,
+  ListGetSect,
+  ListGetDepartment,
+  ListGetLastDesignation,
+  ListGetDesignation,
+  ListGetTransforFrom,
+  ListGetTransforTo,
+  ListGetBps,
+  ListGetEmpStatus,
+  ListGetGazettedNonGazetted,
+  ListGetDdoDescription,
+  ListGetDdoCode,
+  ListGetMinistryDD,
+  ListGetMinistryCode,
+} from "../../../services/api/apiManager";
 // import dayjs from "dayjs";
 
 function Employees() {
@@ -43,6 +66,50 @@ function Employees() {
   const [image, setImage] = React.useState(null);
   const [tempImage, setTempImage] = React.useState(null);
   const fileInputRef = React.useRef(null);
+
+  // For Employee List Data
+  const [employeeTableData, setEmployeeTableData] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  // Add Employee Form States here
+  const [ddoCode, setDdoCode] = React.useState(null);
+  const [ddoDescription, setDdoDescription] = React.useState(null);
+  const [ministryCode, setMinistryCode] = React.useState(null);
+  const [ministryDD, setMinistryDD] = React.useState(null);
+  const [bankName, setBankName] = React.useState(null);
+  const [bankBranch, setBankBranch] = React.useState(null);
+  const [religion, setReligion] = React.useState(null);
+  const [cast, setCast] = React.useState(null);
+  const [maritalStatus, setMaritalStatus] = React.useState(null);
+  const [sect, setSect] = React.useState(null);
+  const [lastDesignation, setLastDesignation] = React.useState(null);
+  const [designation, setDesignation] = React.useState(null);
+  const [gazettedNonG, setGazettedNonG] = React.useState(null);
+  const [empStatus, setEmpStatus] = React.useState(null);
+  const [transforTo, setTransforTo] = React.useState(null);
+  const [transforFrom, setTransforFrom] = React.useState(null);
+  const [bps, setBps] = React.useState(null);
+
+  // Add Employee Form Data
+  const [dDOCodeGet, setDDOCodeGet] = React.useState([]);
+  const [dDescriptionGet, setDDescriptionGet] = React.useState([]);
+  const [ministryCodeGet, setMinistryCodeGet] = React.useState([]);
+  const [ministryDDGet, setMinistryDDGet] = React.useState([]);
+  const [bpsGet, setBpsGet] = React.useState([]);
+  const [empStatusGet, setEmpStatusGet] = React.useState([]);
+  const [gazettedNonGGet, setGazettedNonGGet] = React.useState([]);
+  const [transforFromGet, setTransforFromGet] = React.useState([]);
+  const [transforToGet, setTransforToGet] = React.useState([]);
+  const [designationGet, setDesignationGet] = React.useState([]);
+  const [lastDesignationGet, setLastDesignationGet] = React.useState([]);
+  const [sectGet, setSectGet] = React.useState([]);
+  const [maritalStatusGet, setMaritalStatusGet] = React.useState([]);
+  const [castGet, setCastGet] = React.useState([]);
+  const [religionGet, setReligionGet] = React.useState([]);
+  const [bankNameGet, setBankNameGet] = React.useState([]);
+  const [bankBranchGet, setBankBranchGet] = React.useState([]);
+  const [districtGet, setDistrictGet] = React.useState([]);
+  const [departmentGet, setDepartmentGet] = React.useState([]);
 
   // Show Submitted Person
   const [showAutocomplete, setShowAutocomplete] = React.useState(false);
@@ -137,48 +204,45 @@ function Employees() {
       disableColumnMenu: true,
     },
     {
-      field: "Name",
+      field: "name",
       headerName: "Name",
       flex: 1,
       sortable: false,
       disableColumnMenu: true,
     },
     {
-      field: "Designation",
+      field: "designation",
       headerName: "Designation",
       flex: 1,
       sortable: false,
       disableColumnMenu: true,
     },
     {
-      field: "Department",
+      field: "department",
       headerName: "Department",
-      type: "number",
       flex: 1,
       // width: 110,
       sortable: false,
       disableColumnMenu: true,
     },
     {
-      field: "Mobile_Number",
+      field: "mobile_Number",
       headerName: "Mobile Number",
-      type: "number",
       flex: 1,
       // width: 110,
       sortable: false,
       disableColumnMenu: true,
     },
     {
-      field: "District",
+      field: "district",
       headerName: "District",
-      // type: "number",
       flex: 1,
       // width: 110,
       sortable: false,
       disableColumnMenu: true,
     },
     {
-      field: "Emp_status",
+      field: "employee_Status",
       headerName: "Emp Status",
       flex: 1,
       // type: "number",
@@ -264,99 +328,6 @@ function Employees() {
     },
   ];
 
-  const rows = [
-    {
-      id: 1,
-      Name: "Snow",
-      Designation: "IT Incharge",
-      Department: "IT",
-      Mobile_Number: "033375838483",
-      District: "DGK",
-      Emp_status: "Process",
-    },
-    {
-      id: 2,
-      Name: "Snow",
-      Designation: "IT Incharge",
-      Department: "IT",
-      Mobile_Number: "033375838483",
-      District: "DGK",
-      Emp_status: "Process",
-    },
-    {
-      id: 3,
-      Name: "Snow",
-      Designation: "IT Incharge",
-      Department: "IT",
-      Mobile_Number: "033375838483",
-      District: "DGK",
-      Emp_status: "Process",
-    },
-    {
-      id: 4,
-      Name: "Snow",
-      Designation: "IT Incharge",
-      Department: "IT",
-      Mobile_Number: "033375838483",
-      District: "DGK",
-      Emp_status: "Process",
-    },
-    {
-      id: 5,
-      Name: "Snow",
-      Designation: "IT Incharge",
-      Department: "IT",
-      Mobile_Number: "033375838483",
-      District: "DGK",
-      Emp_status: "Process",
-    },
-    {
-      id: 6,
-      Name: "Snow",
-      Designation: "IT Incharge",
-      Department: "IT",
-      Mobile_Number: "033375838483",
-      District: "DGK",
-      Emp_status: "Process",
-    },
-    {
-      id: 7,
-      Name: "Snow",
-      Designation: "IT Incharge",
-      Department: "IT",
-      Mobile_Number: "033375838483",
-      District: "DGK",
-      Emp_status: "Process",
-    },
-    {
-      id: 8,
-      Name: "Snow",
-      Designation: "IT Incharge",
-      Department: "IT",
-      Mobile_Number: "033375838483",
-      District: "DGK",
-      Emp_status: "Process",
-    },
-    {
-      id: 9,
-      Name: "Snow",
-      Designation: "IT Incharge",
-      Department: "IT",
-      Mobile_Number: "033375838483",
-      District: "DGK",
-      Emp_status: "Process",
-    },
-    {
-      id: 10,
-      Name: "Snow",
-      Designation: "IT Incharge",
-      Department: "IT",
-      Mobile_Number: "033375838483",
-      District: "DGK",
-      Emp_status: "Process",
-    },
-  ];
-
   // AutoComplete
 
   const top100Films = [
@@ -438,8 +409,10 @@ function Employees() {
     const tableStartY = boxStartY + boxHeight + 10;
 
     // Map DataGrid rows and columns to autoTable
-    const tableColumns = columns.map((col) => col.headerName);
-    const tableRows = rows.map((row) =>
+    const tableColumns = columns
+      ?.filter((col) => col.headerName !== "Action")
+      .map((col) => col.headerName);
+    const tableRows = employeeTableData?.map((row) =>
       columns.map((col) =>
         typeof col.valueGetter === "function"
           ? col.valueGetter({ row })
@@ -597,6 +570,240 @@ function Employees() {
     doc.save("Salary_Report_November_2023.pdf");
   };
 
+  // UseEffect here
+
+  const fetchEmployeeData = async () => {
+    try {
+      setLoading(true);
+      const response = await getEmployeeForm();
+      if (response?.status === 200) {
+        setLoading(false);
+        setEmployeeTableData(response?.data?.result);
+      }
+    } catch (error) {
+      setLoading(true);
+    }
+  };
+  useEffect(() => {
+    fetchEmployeeData();
+  }, []);
+
+  // Get Lists of Form of Employee Data
+  const funcOFDDOCode = async () => {
+    try {
+      const response = await ListGetDdoCode();
+      if (response?.status === 200) {
+        setDDOCodeGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOFDDODescription = async (ddoCode) => {
+    try {
+      const response = await ListGetDdoDescription(ddoCode?.ddocid);
+      if (response?.status === 200) {
+        setDDescriptionGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const funcOfMinistryDD = async (ministryCode) => {
+    try {
+      const response = await ListGetMinistryDD(ministryCode?.mincid);
+      if (response?.status === 200) {
+        setMinistryDDGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfMinistryCode = async () => {
+    try {
+      const response = await ListGetMinistryCode();
+      if (response?.status === 200) {
+        setMinistryCodeGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfEmpStatus = async () => {
+    try {
+      const response = await ListGetEmpStatus();
+      if (response?.status === 200) {
+        setEmpStatusGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfBps = async (designation) => {
+    try {
+      const response = await ListGetBps(designation?.bpsid);
+      if (response?.status === 200) {
+        setBpsGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfGazettedNonGazetted = async () => {
+    try {
+      const response = await ListGetGazettedNonGazetted();
+      if (response?.status === 200) {
+        setGazettedNonGGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfTransforFrom = async () => {
+    try {
+      const response = await ListGetTransforFrom();
+      if (response?.status === 200) {
+        setTransforFromGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfTransforTo = async () => {
+    try {
+      const response = await ListGetTransforTo();
+      console.log(`check response`, response);
+      if (response?.status === 200) {
+        setTransforToGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfDesignation = async () => {
+    try {
+      const response = await ListGetDesignation();
+      if (response?.status === 200) {
+        setDesignationGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfLastDesignation = async () => {
+    try {
+      const response = await ListGetLastDesignation();
+
+      if (response?.status === 200) {
+        setLastDesignationGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfDepartment = async () => {
+    try {
+      const response = await ListGetDepartment();
+      if (response?.status === 200) {
+        setDepartmentGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfSect = async () => {
+    try {
+      const response = await ListGetSect();
+      if (response?.status === 200) {
+        setSectGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfMaritalStatus = async () => {
+    try {
+      const response = await ListGetMaritalStatus();
+      if (response?.status === 200) {
+        setMaritalStatusGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfCast = async () => {
+    try {
+      const response = await ListGetCast();
+      if (response?.status === 200) {
+        setCastGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfBankBranch = async (bankName) => {
+    try {
+      const response = await ListGetBankBranch(bankName?.bankid);
+      if (response?.status === 200) {
+        setBankBranchGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfBankName = async () => {
+    try {
+      const response = await ListGetBankName();
+      if (response?.status === 200) {
+        setBankNameGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfReligion = async () => {
+    try {
+      const response = await ListGetReligion();
+      if (response?.status === 200) {
+        setReligionGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfDistrict = async () => {
+    try {
+      const response = await ListGetDistrict();
+      if (response?.status === 200) {
+        setDistrictGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    funcOFDDODescription(ddoCode);
+    funcOFDDOCode();
+    funcOfMinistryDD(ministryCode);
+    funcOfMinistryCode();
+    funcOfEmpStatus();
+    funcOfBps(designation);
+    funcOfTransforTo();
+    funcOfTransforFrom();
+    funcOfGazettedNonGazetted();
+    funcOfDepartment();
+    funcOfLastDesignation();
+    funcOfDesignation();
+    funcOfCast();
+    funcOfMaritalStatus();
+    funcOfSect();
+    funcOfDistrict();
+    funcOfReligion();
+    funcOfBankName();
+    funcOfBankBranch(bankName);
+  }, [ddoCode, bankName, ministryCode, designation]);
+
   return (
     <>
       <Box sx={{ p: 2, display: "flex", flexDirection: "column", gap: 2 }}>
@@ -720,7 +927,8 @@ function Employees() {
         </Grid>
         <Box sx={{ height: 400 }}>
           <DataGrid
-            rows={rows}
+            rows={employeeTableData}
+            loading={loading === true ? <CircularProgress /> : null}
             columns={columns}
             initialState={{
               pagination: {
@@ -981,60 +1189,12 @@ function Employees() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "&.Mui-focused fieldset": {
-                          borderColor: "#0E4374",
-                        },
-                      },
-                      "& .MuiInputLabel-root": {
-                        "&.Mui-focused": {
-                          color: "#0E4374",
-                        },
-                      },
+                    options={dDOCodeGet || []}
+                    getOptionLabel={(option) => `${option?.ddoc}`}
+                    value={ddoCode}
+                    onChange={(event, newValue) => {
+                      setDdoCode(newValue);
                     }}
-                    renderInput={(params) => (
-                      <TextField {...params} label="DDO Description" />
-                    )}
-                  />
-                  <Tooltip title="Add" placement="right">
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: 35,
-                        height: 37,
-                        border: "1px solid #0E4374",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                        "&:hover": {
-                          backgroundColor: "#0E4374",
-                          "& svg": {
-                            color: "#FFFFFF",
-                          },
-                        },
-                      }}
-                      onClick={handleFormOpenModal}
-                    >
-                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
-                    </Box>
-                  </Tooltip>
-                </Grid>
-                <Grid
-                  item
-                  xl={3}
-                  lg={3}
-                  md={3}
-                  sm={3}
-                  xs={3}
-                  sx={{ display: "flex", flexDirection: "row", gap: "5px" }}
-                >
-                  <Autocomplete
-                    fullWidth
-                    size="small"
-                    options={top100Films}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
@@ -1087,26 +1247,31 @@ function Employees() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
+                    options={dDescriptionGet || []}
+                    getOptionLabel={(option) =>
+                      `${option?.codeS_DETAILS?.ddodes}`
+                    }
+                    value={ddoDescription}
+                    onChange={(event, newValue) => {
+                      setDdoDescription(newValue);
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
                           borderColor: "#0E4374",
                         },
-                        "& .MuiInputLabel-root": {
-                          "&.Mui-focused": {
-                            color: "#0E4374",
-                          },
+                      },
+                      "& .MuiInputLabel-root": {
+                        "&.Mui-focused": {
+                          color: "#0E4374",
                         },
                       },
                     }}
                     renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Ministry Department Description"
-                      />
+                      <TextField {...params} label="DDO Description" />
                     )}
                   />
+
                   <Tooltip title="Add" placement="right">
                     <Box
                       sx={{
@@ -1143,7 +1308,12 @@ function Employees() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
+                    options={ministryCodeGet || []}
+                    getOptionLabel={(option) => `${option?.minc}`}
+                    value={ministryCode}
+                    onChange={(event, newValue) => {
+                      setMinistryCode(newValue);
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
@@ -1184,6 +1354,70 @@ function Employees() {
                     </Box>
                   </Tooltip>
                 </Grid>
+                <Grid
+                  item
+                  xl={3}
+                  lg={3}
+                  md={3}
+                  sm={3}
+                  xs={3}
+                  sx={{ display: "flex", flexDirection: "row", gap: "5px" }}
+                >
+                  <Autocomplete
+                    fullWidth
+                    size="small"
+                    options={ministryDDGet || []}
+                    getOptionLabel={(option) =>
+                      `${option?.ministarY_DETAILS?.mindep}`
+                    }
+                    value={ministryDD}
+                    onChange={(event, newValue) => {
+                      setMinistryDD(newValue);
+                    }}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#0E4374",
+                        },
+                        "& .MuiInputLabel-root": {
+                          "&.Mui-focused": {
+                            color: "#0E4374",
+                          },
+                        },
+                      },
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Ministry Department Description"
+                      />
+                    )}
+                  />
+
+                  <Tooltip title="Add" placement="right">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 35,
+                        height: 37,
+                        border: "1px solid #0E4374",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#0E4374",
+                          "& svg": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                      onClick={handleFormOpenModal}
+                    >
+                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                    </Box>
+                  </Tooltip>
+                </Grid>
               </Grid>
               <Grid container spacing={1}>
                 <Grid
@@ -1198,7 +1432,70 @@ function Employees() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
+                    options={designationGet || []}
+                    getOptionLabel={(option) => option?.desig}
+                    value={designation}
+                    onChange={(event, newValue) => {
+                      setDesignation(newValue);
+                    }}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#0E4374",
+                        },
+                        "& .MuiInputLabel-root": {
+                          "&.Mui-focused": {
+                            color: "#0E4374",
+                          },
+                        },
+                      },
+                    }}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Designation" />
+                    )}
+                  />
+                  <Tooltip title="Add" placement="right">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 35,
+                        height: 37,
+                        border: "1px solid #0E4374",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#0E4374",
+                          "& svg": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                      onClick={handleFormOpenModal}
+                    >
+                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                    </Box>
+                  </Tooltip>
+                </Grid>
+                <Grid
+                  item
+                  xl={3}
+                  lg={3}
+                  md={3}
+                  sm={3}
+                  xs={3}
+                  sx={{ display: "flex", flexDirection: "row", gap: "5px" }}
+                >
+                  <Autocomplete
+                    fullWidth
+                    size="small"
+                    options={bpsGet || []}
+                    getOptionLabel={(option) => option?.details?.basic_Pay}
+                    value={bps}
+                    onChange={(event, newValue) => {
+                      setBps(newValue);
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
@@ -1239,6 +1536,7 @@ function Employees() {
                     </Box>
                   </Tooltip>
                 </Grid>
+
                 <Grid
                   item
                   xl={3}
@@ -1251,7 +1549,70 @@ function Employees() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
+                    options={lastDesignationGet || []}
+                    getOptionLabel={(option) => option?.ldesig}
+                    value={lastDesignation}
+                    onChange={(event, newValue) => {
+                      setLastDesignation(newValue);
+                    }}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#0E4374",
+                        },
+                        "& .MuiInputLabel-root": {
+                          "&.Mui-focused": {
+                            color: "#0E4374",
+                          },
+                        },
+                      },
+                    }}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Last Designation" />
+                    )}
+                  />
+                  <Tooltip title="Add" placement="right">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 35,
+                        height: 37,
+                        border: "1px solid #0E4374",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#0E4374",
+                          "& svg": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                      onClick={handleFormOpenModal}
+                    >
+                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                    </Box>
+                  </Tooltip>
+                </Grid>
+                <Grid
+                  item
+                  xl={3}
+                  lg={3}
+                  md={3}
+                  sm={3}
+                  xs={3}
+                  sx={{ display: "flex", flexDirection: "row", gap: "5px" }}
+                >
+                  <Autocomplete
+                    fullWidth
+                    size="small"
+                    options={empStatusGet || []}
+                    getOptionLabel={(option) => option?.empst}
+                    value={empStatus}
+                    onChange={(event, newValue) => {
+                      setEmpStatus(newValue);
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
@@ -1295,6 +1656,9 @@ function Employees() {
                     </Box>
                   </Tooltip>
                 </Grid>
+              </Grid>
+
+              <Grid container spacing={1}>
                 <Grid
                   item
                   xl={3}
@@ -1307,7 +1671,12 @@ function Employees() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
+                    options={gazettedNonGGet || []}
+                    getOptionLabel={(option) => option?.gzt}
+                    value={gazettedNonG}
+                    onChange={(event, newValue) => {
+                      setGazettedNonG(newValue);
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
@@ -1348,41 +1717,6 @@ function Employees() {
                     </Box>
                   </Tooltip>
                 </Grid>
-                <Grid
-                  item
-                  xl={3}
-                  lg={3}
-                  md={3}
-                  sm={3}
-                  xs={3}
-                  sx={{ marginTop: "-8px" }}
-                >
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DemoContainer components={["DatePicker"]}>
-                      <DatePicker
-                        label="Date of Birth"
-                        size="small"
-                        slotProps={{
-                          textField: { size: "small" },
-                          openPickerButton: {
-                            sx: {
-                              color: "#0E4374",
-                              "&:hover": {
-                                color: "#0E4374",
-                              },
-                            },
-                          },
-                        }}
-                        sx={{
-                          width: "100%",
-                        }}
-                      />
-                    </DemoContainer>
-                  </LocalizationProvider>
-                </Grid>
-              </Grid>
-
-              <Grid container spacing={1}>
                 <Grid
                   item
                   xl={3}
@@ -1460,7 +1794,12 @@ function Employees() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
+                    options={transforFromGet || []}
+                    getOptionLabel={(option) => option?.trafrm}
+                    value={transforFrom}
+                    onChange={(event, newValue) => {
+                      setTransforFrom(newValue);
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
@@ -1501,6 +1840,8 @@ function Employees() {
                     </Box>
                   </Tooltip>
                 </Grid>
+              </Grid>
+              <Grid container spacing={1}>
                 <Grid
                   item
                   xl={3}
@@ -1533,8 +1874,6 @@ function Employees() {
                     </DemoContainer>
                   </LocalizationProvider>
                 </Grid>
-              </Grid>
-              <Grid container spacing={1}>
                 <Grid
                   item
                   xl={3}
@@ -1547,7 +1886,12 @@ function Employees() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
+                    options={transforToGet || []}
+                    getOptionLabel={(option) => option?.trato}
+                    value={transforTo}
+                    onChange={(event, newValue) => {
+                      setTransforTo(newValue);
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
@@ -1627,104 +1971,30 @@ function Employees() {
                   md={3}
                   sm={3}
                   xs={3}
-                  sx={{ display: "flex", flexDirection: "row", gap: "5px" }}
+                  sx={{ marginTop: "-8px" }}
                 >
-                  <Autocomplete
-                    fullWidth
-                    size="small"
-                    options={top100Films}
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "&.Mui-focused fieldset": {
-                          borderColor: "#0E4374",
-                        },
-                        "& .MuiInputLabel-root": {
-                          "&.Mui-focused": {
-                            color: "#0E4374",
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DemoContainer components={["DatePicker"]}>
+                      <DatePicker
+                        label="Date of Birth"
+                        size="small"
+                        slotProps={{
+                          textField: { size: "small" },
+                          openPickerButton: {
+                            sx: {
+                              color: "#0E4374",
+                              "&:hover": {
+                                color: "#0E4374",
+                              },
+                            },
                           },
-                        },
-                      },
-                    }}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Designation" />
-                    )}
-                  />
-                  <Tooltip title="Add" placement="right">
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: 35,
-                        height: 37,
-                        border: "1px solid #0E4374",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                        "&:hover": {
-                          backgroundColor: "#0E4374",
-                          "& svg": {
-                            color: "#FFFFFF",
-                          },
-                        },
-                      }}
-                      onClick={handleFormOpenModal}
-                    >
-                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
-                    </Box>
-                  </Tooltip>
-                </Grid>
-                <Grid
-                  item
-                  xl={3}
-                  lg={3}
-                  md={3}
-                  sm={3}
-                  xs={3}
-                  sx={{ display: "flex", flexDirection: "row", gap: "5px" }}
-                >
-                  <Autocomplete
-                    fullWidth
-                    size="small"
-                    options={top100Films}
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "&.Mui-focused fieldset": {
-                          borderColor: "#0E4374",
-                        },
-                        "& .MuiInputLabel-root": {
-                          "&.Mui-focused": {
-                            color: "#0E4374",
-                          },
-                        },
-                      },
-                    }}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Last Designation" />
-                    )}
-                  />
-                  <Tooltip title="Add" placement="right">
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: 35,
-                        height: 37,
-                        border: "1px solid #0E4374",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                        "&:hover": {
-                          backgroundColor: "#0E4374",
-                          "& svg": {
-                            color: "#FFFFFF",
-                          },
-                        },
-                      }}
-                      onClick={handleFormOpenModal}
-                    >
-                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
-                    </Box>
-                  </Tooltip>
+                        }}
+                        sx={{
+                          width: "100%",
+                        }}
+                      />
+                    </DemoContainer>
+                  </LocalizationProvider>
                 </Grid>
               </Grid>
               <Grid container spacing={1}>
@@ -1960,7 +2230,12 @@ function Employees() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
+                    options={sectGet || []}
+                    getOptionLabel={(option) => option?.sect}
+                    value={sect}
+                    onChange={(event, newValue) => {
+                      setSect(newValue);
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
@@ -2013,7 +2288,12 @@ function Employees() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
+                    options={maritalStatusGet || []}
+                    getOptionLabel={(option) => option?.mertst}
+                    value={maritalStatus}
+                    onChange={(event, newValue) => {
+                      setMaritalStatus(newValue);
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
@@ -2066,7 +2346,12 @@ function Employees() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
+                    options={castGet || []}
+                    getOptionLabel={(option) => option?.cast}
+                    value={cast}
+                    onChange={(event, newValue) => {
+                      setCast(newValue);
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
@@ -2258,7 +2543,12 @@ function Employees() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
+                    options={religionGet || []}
+                    getOptionLabel={(option) => option?.relig}
+                    value={religion}
+                    onChange={(event, newValue) => {
+                      setReligion(newValue);
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
@@ -2335,7 +2625,12 @@ function Employees() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
+                    options={bankNameGet || []}
+                    getOptionLabel={(option) => option?.bank}
+                    value={bankName}
+                    onChange={(event, newValue) => {
+                      setBankName(newValue);
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
@@ -2388,7 +2683,12 @@ function Employees() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
+                    options={bankBranchGet || []}
+                    getOptionLabel={(option) => option?.banK_BRACHES?.bankbr}
+                    value={bankBranch}
+                    onChange={(event, newValue) => {
+                      setBankBranch(newValue);
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {

@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Autocomplete,
   Box,
   Button,
   Checkbox,
+  CircularProgress,
   Grid,
   IconButton,
   InputAdornment,
@@ -30,6 +31,7 @@ import AddIcon from "@mui/icons-material/Add";
 import HomeIcon from "@mui/icons-material/Home";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
+import { getEmployeeForm } from "../../../../services/api/apiManager";
 // import dayjs from "dayjs";
 
 function Queue() {
@@ -39,6 +41,10 @@ function Queue() {
   const [image, setImage] = React.useState(null);
   const [tempImage, setTempImage] = React.useState(null);
   const fileInputRef = React.useRef(null);
+
+  // For Employee Data
+  const [employeeTableData, setEmployeeTableData] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
 
   // Show Submitted Person
   const [showAutocomplete, setShowAutocomplete] = React.useState(false);
@@ -132,48 +138,45 @@ function Queue() {
       disableColumnMenu: true,
     },
     {
-      field: "Name",
+      field: "name",
       headerName: "Name",
       flex: 1,
       sortable: false,
       disableColumnMenu: true,
     },
     {
-      field: "Designation",
+      field: "designation",
       headerName: "Designation",
       flex: 1,
       sortable: false,
       disableColumnMenu: true,
     },
     {
-      field: "Department",
+      field: "department",
       headerName: "Department",
-      type: "number",
       flex: 1,
       // width: 110,
       sortable: false,
       disableColumnMenu: true,
     },
     {
-      field: "Mobile_Number",
+      field: "mobile_Number",
       headerName: "Mobile Number",
-      type: "number",
       flex: 1,
       // width: 110,
       sortable: false,
       disableColumnMenu: true,
     },
     {
-      field: "District",
+      field: "district",
       headerName: "District",
-      // type: "number",
       flex: 1,
       // width: 110,
       sortable: false,
       disableColumnMenu: true,
     },
     {
-      field: "Emp_status",
+      field: "employee_Status",
       headerName: "Emp Status",
       flex: 1,
       // type: "number",
@@ -210,99 +213,6 @@ function Queue() {
           </Tooltip>
         </Box>
       ),
-    },
-  ];
-
-  const rows = [
-    {
-      id: 1,
-      Name: "Snow",
-      Designation: "IT Incharge",
-      Department: "IT",
-      Mobile_Number: "033375838483",
-      District: "DGK",
-      Emp_status: "Process",
-    },
-    {
-      id: 2,
-      Name: "Snow",
-      Designation: "IT Incharge",
-      Department: "IT",
-      Mobile_Number: "033375838483",
-      District: "DGK",
-      Emp_status: "Process",
-    },
-    {
-      id: 3,
-      Name: "Snow",
-      Designation: "IT Incharge",
-      Department: "IT",
-      Mobile_Number: "033375838483",
-      District: "DGK",
-      Emp_status: "Process",
-    },
-    {
-      id: 4,
-      Name: "Snow",
-      Designation: "IT Incharge",
-      Department: "IT",
-      Mobile_Number: "033375838483",
-      District: "DGK",
-      Emp_status: "Process",
-    },
-    {
-      id: 5,
-      Name: "Snow",
-      Designation: "IT Incharge",
-      Department: "IT",
-      Mobile_Number: "033375838483",
-      District: "DGK",
-      Emp_status: "Process",
-    },
-    {
-      id: 6,
-      Name: "Snow",
-      Designation: "IT Incharge",
-      Department: "IT",
-      Mobile_Number: "033375838483",
-      District: "DGK",
-      Emp_status: "Process",
-    },
-    {
-      id: 7,
-      Name: "Snow",
-      Designation: "IT Incharge",
-      Department: "IT",
-      Mobile_Number: "033375838483",
-      District: "DGK",
-      Emp_status: "Process",
-    },
-    {
-      id: 8,
-      Name: "Snow",
-      Designation: "IT Incharge",
-      Department: "IT",
-      Mobile_Number: "033375838483",
-      District: "DGK",
-      Emp_status: "Process",
-    },
-    {
-      id: 9,
-      Name: "Snow",
-      Designation: "IT Incharge",
-      Department: "IT",
-      Mobile_Number: "033375838483",
-      District: "DGK",
-      Emp_status: "Process",
-    },
-    {
-      id: 10,
-      Name: "Snow",
-      Designation: "IT Incharge",
-      Department: "IT",
-      Mobile_Number: "033375838483",
-      District: "DGK",
-      Emp_status: "Process",
     },
   ];
 
@@ -387,8 +297,10 @@ function Queue() {
     const tableStartY = boxStartY + boxHeight + 10;
 
     // Map DataGrid rows and columns to autoTable
-    const tableColumns = columns.map((col) => col.headerName);
-    const tableRows = rows.map((row) =>
+    const tableColumns = columns
+      ?.filter((col) => col.headerName !== "Action")
+      .map((col) => col.headerName);
+    const tableRows = employeeTableData?.map((row) =>
       columns.map((col) =>
         typeof col.valueGetter === "function"
           ? col.valueGetter({ row })
@@ -406,6 +318,25 @@ function Queue() {
     // Save the PDF
     doc.save("Employees_Report.pdf");
   };
+
+  // UseEffect here
+
+  const fetchEmployeeData = async () => {
+    try {
+      setLoading(true);
+      const response = await getEmployeeForm();
+      console.log(`check response`, response);
+      if (response?.status === 200) {
+        setLoading(false);
+        setEmployeeTableData(response?.data?.result);
+      }
+    } catch (error) {
+      setLoading(true);
+    }
+  };
+  useEffect(() => {
+    fetchEmployeeData();
+  }, []);
 
   return (
     <>
@@ -500,7 +431,8 @@ function Queue() {
         </Grid>
         <Box sx={{ height: 400 }}>
           <DataGrid
-            rows={rows}
+            rows={employeeTableData}
+            loading={loading === true ? <CircularProgress /> : null}
             columns={columns}
             initialState={{
               pagination: {

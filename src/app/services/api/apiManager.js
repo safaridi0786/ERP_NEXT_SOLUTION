@@ -374,3 +374,202 @@ export const postedValidateShanakht = async (email, shanakht) => {
     return null;
   }
 };
+
+// For SideBar Tab
+
+export const getSideTab = async () => {
+  try {
+    const url = `${s.sideNavbar.tab}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+
+// For Employee Module
+
+export const getEmployeeForm = async () => {
+  try {
+    const url = `${s.employeeData.getEmployeeFormList}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+
+// For Get List of Employee Form Data
+
+export const ListGetDdoDescription = async (DDOCID) => {
+  try {
+    const url = `${s.employeeData.getEmployeeListsFormData.ListGetDdoDescription}${DDOCID}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const ListGetDdoCode = async () => {
+  try {
+    const url = `${s.employeeData.getEmployeeListsFormData.ListGetDdoCode}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const ListGetMinistryDD = async (MINID) => {
+  try {
+    const url = `${s.employeeData.getEmployeeListsFormData.ListGetMinistryDD}${MINID}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const ListGetMinistryCode = async () => {
+  try {
+    const url = `${s.employeeData.getEmployeeListsFormData.ListGetMinistryCode}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const ListGetBps = async (BPSID) => {
+  try {
+    const url = `${s.employeeData.getEmployeeListsFormData.ListGetBps}${BPSID}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const ListGetEmpStatus = async () => {
+  try {
+    const url = `${s.employeeData.getEmployeeListsFormData.ListGetEmpStatus}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const ListGetGazettedNonGazetted = async () => {
+  try {
+    const url = `${s.employeeData.getEmployeeListsFormData.ListGetGazettedNonGazetted}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const ListGetTransforFrom = async () => {
+  try {
+    const url = `${s.employeeData.getEmployeeListsFormData.ListGetTransforFrom}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const ListGetTransforTo = async () => {
+  try {
+    const url = `${s.employeeData.getEmployeeListsFormData.ListGetTransforTo}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const ListGetDesignation = async () => {
+  try {
+    const url = `${s.employeeData.getEmployeeListsFormData.ListGetDesignation}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const ListGetLastDesignation = async () => {
+  try {
+    const url = `${s.employeeData.getEmployeeListsFormData.ListGetLastDesignation}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const ListGetDepartment = async () => {
+  try {
+    const url = `${s.employeeData.getEmployeeListsFormData.ListGetDepartment}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const ListGetSect = async () => {
+  try {
+    const url = `${s.employeeData.getEmployeeListsFormData.ListGetSect}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const ListGetMaritalStatus = async () => {
+  try {
+    const url = `${s.employeeData.getEmployeeListsFormData.ListGetMaritalStatus}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const ListGetCast = async () => {
+  try {
+    const url = `${s.employeeData.getEmployeeListsFormData.ListGetCast}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const ListGetDistrict = async () => {
+  try {
+    const url = `${s.employeeData.getEmployeeListsFormData.ListGetDistrict}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const ListGetReligion = async () => {
+  try {
+    const url = `${s.employeeData.getEmployeeListsFormData.ListGetReligion}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const ListGetBankName = async () => {
+  try {
+    const url = `${s.employeeData.getEmployeeListsFormData.ListGetBankName}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const ListGetBankBranch = async (BANID) => {
+  try {
+    const url = `${s.employeeData.getEmployeeListsFormData.ListGetBankBranch}${BANID}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};

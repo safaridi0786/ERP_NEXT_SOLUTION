@@ -15,7 +15,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import "./SideBar.css";
 import { ExitToAppRounded as ExitToAppRoundedIcon } from "@mui/icons-material";
@@ -35,8 +35,10 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import ManageHistoryIcon from "@mui/icons-material/ManageHistory";
 import QueueIcon from "@mui/icons-material/Queue";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
+import { getSideTab } from "../../../services/api/apiManager";
 
 function SideBar() {
+  const [tabData, setTabData] = React.useState([]);
   const drawerWidth = 240;
   const openedMixin = (theme) => ({
     width: drawerWidth,
@@ -128,6 +130,7 @@ function SideBar() {
   const [activeItem, setActiveItem] = React.useState("Dashboard");
   const [activeParent, setActiveParent] = React.useState(null);
   const [lastActiveItem, setLastActiveItem] = React.useState(null);
+  const [expandedParent, setExpandedParent] = React.useState(null);
 
   const menuItems = [
     {
@@ -202,6 +205,25 @@ function SideBar() {
       }
     }
   };
+
+  // UseEffect here
+
+  const fetchEmployeeData = async () => {
+    try {
+      // setLoading(true);
+      const response = await getSideTab();
+      if (response?.status === 200) {
+        // console.log(`check response of Sidbar`, response?.data?.result);
+        //   setLoading(false);
+        setTabData(response?.data?.result);
+      }
+    } catch (error) {
+      // setLoading(true);
+    }
+  };
+  useEffect(() => {
+    fetchEmployeeData();
+  }, []);
   return (
     <>
       <Box sx={{ display: "flex" }}>
@@ -505,6 +527,7 @@ function SideBar() {
                       setActiveItem(text);
                       setActiveParent(null); // Reset parent tracking when selecting a top-level item
                       setLastActiveItem(null); // Clear nested item tracking
+                      setExpandedParent(expandedParent === text ? null : text); // Toggle expansion for this parent
                     }
                   }}
                 >
@@ -544,7 +567,7 @@ function SideBar() {
                 </ListItem>
 
                 {/* Render Nested Items */}
-                {open && children && (
+                {open && expandedParent === text && children && (
                   <List sx={{ pl: 4 }}>
                     {children.map((child) => (
                       <ListItem
