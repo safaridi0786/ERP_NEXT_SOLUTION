@@ -12,6 +12,7 @@ import { TextField, InputAdornment } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Link, useNavigate } from "react-router-dom";
 import GoogleIcon from "@mui/icons-material/Google";
+import { postedLogin } from "../../../../services/api/apiManager";
 
 function Login() {
   const navigate = useNavigate();
@@ -35,28 +36,29 @@ function Login() {
   };
 
   // Api integration
-  // const postAthenticationData = async (data) => {
-  //   try {
-  //     const response = await login(data);
-  //     if (response?.data?.status === 200 && response?.data?.result?.token) {
-  //       // set data in localstorage
-  //       localStorage.setItem("access_token", response?.data?.result?.token);
-  //       localStorage.setItem("user_id", response?.data?.result?.user?.userId);
-  //       navigate("/admin");
-  //       setOpenSnackbar({
-  //         openSnack: false,
-  //         snackMessage: "success",
-  //       });
-  //     } else {
-  //       setOpenSnackbar({
-  //         openSnack: true,
-  //         snackMessage: "error",
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.warn(error);
-  //   }
-  // };
+  const postAthenticationData = async (data) => {
+    try {
+      const response = await postedLogin(data?.username, data?.password);
+      if (response?.data?.status == 200 && response?.data?.result?.token) {
+        localStorage.setItem("access_token", response?.data?.result?.token);
+        localStorage.setItem("user_id", response?.data?.result?.user?.comp_ID);
+        localStorage.setItem("email", response?.data?.result?.user?.email);
+        localStorage.setItem("cStatus", response?.data?.result?.user?.cStatus);
+        navigate("/dashboard");
+        setOpenSnackbar({
+          openSnack: false,
+          snackMessage: "success",
+        });
+      } else {
+        setOpenSnackbar({
+          openSnack: true,
+          snackMessage: "error",
+        });
+      }
+    } catch (error) {
+      console.warn(error);
+    }
+  };
   return (
     <>
       <Box
@@ -264,8 +266,7 @@ function Login() {
                   textTransform: "none",
                 }}
                 onClick={() => {
-                  navigate("/dashboard");
-                  // postAthenticationData(data);
+                  postAthenticationData(data);
                 }}
               >
                 Login

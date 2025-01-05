@@ -23,26 +23,26 @@ function Recover() {
     try {
       if (email) {
         const response = await postedForgetSendOtop(email);
-        console.log(`check response of forget Password`, response);
-        navigate("/otp");
+        if (response?.data?.status === 200) {
+          console.log(`check response of forget Password`, response);
+          navigate("/otp");
+          setOpenSnackbar({
+            openSnack: false,
+            snackMessage: "success",
+          });
+        } else {
+          setOpenSnackbar({
+            openSnack: true,
+            snackMessage: "error",
+          });
+        }
       }
-      // if (response?.data?.status === 200 && response?.data?.result?.token) {
-      //   // set data in localstorage
-      //   localStorage.setItem("access_token", response?.data?.result?.token);
-      //   localStorage.setItem("user_id", response?.data?.result?.user?.userId);
-      //   navigate("/admin");
-      //   setOpenSnackbar({
-      //     openSnack: false,
-      //     snackMessage: "success",
-      //   });
-      // } else {
-      //   setOpenSnackbar({
-      //     openSnack: true,
-      //     snackMessage: "error",
-      //   });
-      // }
     } catch (error) {
       console.warn(error);
+      setOpenSnackbar({
+        openSnack: true,
+        snackMessage: "error",
+      });
     }
   };
   return (

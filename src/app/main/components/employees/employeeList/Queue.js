@@ -31,13 +31,50 @@ import AddIcon from "@mui/icons-material/Add";
 import HomeIcon from "@mui/icons-material/Home";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
-import { getEmployeeForm } from "../../../../services/api/apiManager";
+import {
+  getEmployeeForm,
+  ListGetBankBranch,
+  ListGetBankName,
+  ListGetReligion,
+  ListGetDistrict,
+  ListGetCast,
+  ListGetMaritalStatus,
+  ListGetSect,
+  ListGetDepartment,
+  ListGetLastDesignation,
+  ListGetDesignation,
+  ListGetTransforFrom,
+  ListGetTransforTo,
+  ListGetBps,
+  ListGetEmpStatus,
+  ListGetGazettedNonGazetted,
+  ListGetDdoDescription,
+  ListGetDdoCode,
+  ListGetMinistryDD,
+  ListGetMinistryCode,
+  postedAddEmployestatus,
+  postedAddMinistaryDeptDes,
+  postedAddCodesDescription,
+  postedAddCodes,
+  postedAddMinistarycodes,
+  postedAddGazzetted,
+  postedAddTrafnserFrom,
+  postedDesignation,
+  postedLastDesignation,
+  postedAddTrafnserTo,
+  postedAddSect,
+  postedAddCast,
+  postedAddReligiion,
+  postedAddBank,
+  postedAddBankBranch,
+} from "../../../../services/api/apiManager";
+import { CheckBox } from "@mui/icons-material";
+
 // import dayjs from "dayjs";
 
 function Queue() {
   const [open, setOpen] = React.useState(false);
   const [chooseFileopen, setChooseFileOpen] = React.useState(false);
-  const [openAddingModal, setAddingOpenModal] = React.useState(false);
   const [image, setImage] = React.useState(null);
   const [tempImage, setTempImage] = React.useState(null);
   const fileInputRef = React.useRef(null);
@@ -45,6 +82,168 @@ function Queue() {
   // For Employee Data
   const [employeeTableData, setEmployeeTableData] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
+
+  // Add Employee Form States here
+  const [ddoCode, setDdoCode] = React.useState(null);
+  const [ddoDescription, setDdoDescription] = React.useState(null);
+  const [ministryCode, setMinistryCode] = React.useState(null);
+  const [ministryDD, setMinistryDD] = React.useState(null);
+  const [bankName, setBankName] = React.useState(null);
+  const [bankBranch, setBankBranch] = React.useState(null);
+  const [religion, setReligion] = React.useState(null);
+  const [cast, setCast] = React.useState(null);
+  const [maritalStatus, setMaritalStatus] = React.useState(null);
+  const [sect, setSect] = React.useState(null);
+  const [lastDesignation, setLastDesignation] = React.useState(null);
+  const [designation, setDesignation] = React.useState(null);
+  const [gazettedNonG, setGazettedNonG] = React.useState(null);
+  const [empStatus, setEmpStatus] = React.useState(null);
+  const [transforTo, setTransforTo] = React.useState(null);
+  const [transforFrom, setTransforFrom] = React.useState(null);
+  const [bps, setBps] = React.useState(null);
+
+  // Add Employee Form Data
+  const [dDOCodeGet, setDDOCodeGet] = React.useState([]);
+  const [dDescriptionGet, setDDescriptionGet] = React.useState([]);
+  const [ministryCodeGet, setMinistryCodeGet] = React.useState([]);
+  const [ministryDDGet, setMinistryDDGet] = React.useState([]);
+  const [bpsGet, setBpsGet] = React.useState([]);
+  const [empStatusGet, setEmpStatusGet] = React.useState([]);
+  const [gazettedNonGGet, setGazettedNonGGet] = React.useState([]);
+  const [transforFromGet, setTransforFromGet] = React.useState([]);
+  const [transforToGet, setTransforToGet] = React.useState([]);
+  const [designationGet, setDesignationGet] = React.useState([]);
+  const [lastDesignationGet, setLastDesignationGet] = React.useState([]);
+  const [sectGet, setSectGet] = React.useState([]);
+  const [maritalStatusGet, setMaritalStatusGet] = React.useState([]);
+  const [castGet, setCastGet] = React.useState([]);
+  const [religionGet, setReligionGet] = React.useState([]);
+  const [bankNameGet, setBankNameGet] = React.useState([]);
+  const [bankBranchGet, setBankBranchGet] = React.useState([]);
+  const [districtGet, setDistrictGet] = React.useState([]);
+  const [departmentGet, setDepartmentGet] = React.useState([]);
+
+  // Add Form Data States here
+
+  const [addDdoCode, setAddDdoCode] = React.useState("");
+  const [addRemarks, setAddRemarks] = React.useState("");
+  const [addDdoDescription, setAddDdoDescription] = React.useState("");
+  const [addMinistryCode, setAddMinistryCode] = React.useState("");
+  const [addMinistryCodeDes, setAddMinistryCodeDes] = React.useState("");
+  const [addDesignation, setAddDesignation] = React.useState("");
+  const [addBPS, setBPS] = React.useState();
+  const [addLastDesignation, setAddLastDesignation] = React.useState("");
+  const [addEmpStatus, setAddEmpStatus] = React.useState("");
+  const [addGazettedN, setAddGazettedN] = React.useState("");
+  const [addTransforFrom, setAddTransforFrom] = React.useState("");
+  const [addTransforTo, setAddTransforTo] = React.useState("");
+  const [addSect, setAddSect] = React.useState("");
+  const [addCast, setAddCast] = React.useState("");
+  const [addReligion, setAddReligion] = React.useState("");
+  const [addbank, setAddBank] = React.useState("");
+  const [addBankBranch, setAddBankBranch] = React.useState("");
+
+  // Add Form Modals here
+
+  // Modal DDO Code
+  const [openAddDdoCodeModal, setOpenAddDdoCodeModal] = React.useState(false);
+  const handleFormOpenModal = () => setOpenAddDdoCodeModal(true);
+  const handleFormCloseModal = () => {
+    setOpenAddDdoCodeModal(false);
+  };
+  //Modal DDoCodeDescription
+  const [openAddDdoCodeDesModal, setOpenAddDdoCodeDesModal] =
+    React.useState(false);
+  const handleOpenAddDdoCodeDesModal = () => setOpenAddDdoCodeDesModal(true);
+  const handleCloseAddDdoCodeDesModal = () => {
+    setOpenAddDdoCodeDesModal(false);
+  };
+  //Modal Ministry Code
+  const [openAddMinistryCodeModal, setOpenAddMinistryCodeModal] =
+    React.useState(false);
+  const handleOpenAddMinistryCodeModal = () =>
+    setOpenAddMinistryCodeModal(true);
+  const handleCloseAddMinistryCodeModal = () => {
+    setOpenAddMinistryCodeModal(false);
+  };
+  //Modal Ministry Code Description
+  const [openAddMinistryCodeDesModal, setOpenAddMinistryCodeDesModal] =
+    React.useState(false);
+  const handleOpenAddMinistryCodeDesModal = () =>
+    setOpenAddMinistryCodeDesModal(true);
+  const handleCloseAddMinistryCodeDesModal = () => {
+    setOpenAddMinistryCodeDesModal(false);
+  };
+  //Modal Designation
+  const [openAddDesignationModal, setOpenAddDesignationModal] =
+    React.useState(false);
+  const handleOpenAddDesignationModal = () => setOpenAddDesignationModal(true);
+  const handleCloseAddDesignationModal = () => {
+    setOpenAddDesignationModal(false);
+  };
+  //Modal Last Designation
+  const [openAddLastDesignationModal, setOpenAddLastDesignationModal] =
+    React.useState(false);
+  const handleOpenAddLastDesignationModal = () =>
+    setOpenAddLastDesignationModal(true);
+  const handleCloseAddLastDesignationModal = () => {
+    setOpenAddLastDesignationModal(false);
+  };
+  //Modal Employee Status
+  const [openEmpStatusModal, setOpenEmpStatusModal] = React.useState(false);
+  const handleOpenEmpStatusModal = () => setOpenEmpStatusModal(true);
+  const handleCloseOpenEmpStatusModal = () => {
+    setOpenEmpStatusModal(false);
+  };
+  //Modal Gazetted/Non Gazetted
+  const [openGazettedNModal, setOpenGazettedNModal] = React.useState(false);
+  const handleOpenGazettedNModal = () => setOpenGazettedNModal(true);
+  const handleCloseGazettedNModal = () => {
+    setOpenGazettedNModal(false);
+  };
+  //Modal Transfor From
+  const [openTransforFromModal, setOpenTransforFromModal] =
+    React.useState(false);
+  const handleOpenTransforFromModal = () => setOpenTransforFromModal(true);
+  const handleCloseTransforFromModal = () => {
+    setOpenTransforFromModal(false);
+  };
+  //Modal Transfor To
+  const [openTransforToModal, setOpenTransforToModal] = React.useState(false);
+  const handleOpenTransforToModal = () => setOpenTransforToModal(true);
+  const handleCloseTransforToModal = () => {
+    setOpenTransforToModal(false);
+  };
+  //Modal Sect
+  const [openSectModal, setOpenSectModal] = React.useState(false);
+  const handleOpenSectModal = () => setOpenSectModal(true);
+  const handleCloseSectModal = () => {
+    setOpenSectModal(false);
+  };
+  //Modal Cast
+  const [openCastModal, setOpenCastModal] = React.useState(false);
+  const handleOpenCastModal = () => setOpenCastModal(true);
+  const handleCloseCastModal = () => {
+    setOpenCastModal(false);
+  };
+  //Modal Religion
+  const [openReligionModal, setOpenReligionModal] = React.useState(false);
+  const handleOpenReligionModal = () => setOpenReligionModal(true);
+  const handleCloseReligionModal = () => {
+    setOpenReligionModal(false);
+  };
+  //Modal Bank
+  const [openBankModal, setOpenBankModal] = React.useState(false);
+  const handleOpenBankModal = () => setOpenBankModal(true);
+  const handleCloseBankModal = () => {
+    setOpenBankModal(false);
+  };
+  //Modal Bank Branch
+  const [openBankBranchModal, setOpenBankBranchModal] = React.useState(false);
+  const handleOpenBankBranchModal = () => setOpenBankBranchModal(true);
+  const handleCloseBankBranchModal = () => {
+    setOpenBankBranchModal(false);
+  };
 
   // Show Submitted Person
   const [showAutocomplete, setShowAutocomplete] = React.useState(false);
@@ -83,13 +282,6 @@ function Queue() {
   const handleChooseFileClose = () => {
     setTempImage(null);
     setChooseFileOpen(false);
-  };
-
-  // Adding Form Open Modal
-
-  const handleFormOpenModal = () => setAddingOpenModal(true);
-  const handleFormCloseModal = () => {
-    setAddingOpenModal(false);
   };
 
   // Modal
@@ -338,6 +530,222 @@ function Queue() {
     fetchEmployeeData();
   }, []);
 
+  // Get Lists of Form of Employee Data
+  const funcOFDDOCode = async () => {
+    try {
+      const response = await ListGetDdoCode();
+      if (response?.status === 200) {
+        setDDOCodeGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOFDDODescription = async (ddoCode) => {
+    try {
+      const response = await ListGetDdoDescription(ddoCode?.ddocid);
+      if (response?.status === 200) {
+        setDDescriptionGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const funcOfMinistryDD = async (ministryCode) => {
+    try {
+      const response = await ListGetMinistryDD(ministryCode?.mincid);
+      if (response?.status === 200) {
+        setMinistryDDGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfMinistryCode = async () => {
+    try {
+      const response = await ListGetMinistryCode();
+      if (response?.status === 200) {
+        setMinistryCodeGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfEmpStatus = async () => {
+    try {
+      const response = await ListGetEmpStatus();
+      if (response?.status === 200) {
+        setEmpStatusGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfBps = async (designation) => {
+    try {
+      const response = await ListGetBps(designation?.bpsid);
+      if (response?.status === 200) {
+        setBpsGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfGazettedNonGazetted = async () => {
+    try {
+      const response = await ListGetGazettedNonGazetted();
+      if (response?.status === 200) {
+        setGazettedNonGGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfTransforFrom = async () => {
+    try {
+      const response = await ListGetTransforFrom();
+      if (response?.status === 200) {
+        setTransforFromGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfTransforTo = async () => {
+    try {
+      const response = await ListGetTransforTo();
+      console.log(`check response`, response);
+      if (response?.status === 200) {
+        setTransforToGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfDesignation = async () => {
+    try {
+      const response = await ListGetDesignation();
+      if (response?.status === 200) {
+        setDesignationGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfLastDesignation = async () => {
+    try {
+      const response = await ListGetLastDesignation();
+
+      if (response?.status === 200) {
+        setLastDesignationGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfDepartment = async () => {
+    try {
+      const response = await ListGetDepartment();
+      if (response?.status === 200) {
+        setDepartmentGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfSect = async () => {
+    try {
+      const response = await ListGetSect();
+      if (response?.status === 200) {
+        setSectGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfMaritalStatus = async () => {
+    try {
+      const response = await ListGetMaritalStatus();
+      if (response?.status === 200) {
+        setMaritalStatusGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfCast = async () => {
+    try {
+      const response = await ListGetCast();
+      if (response?.status === 200) {
+        setCastGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfBankBranch = async (bankName) => {
+    try {
+      const response = await ListGetBankBranch(bankName?.bankid);
+      if (response?.status === 200) {
+        setBankBranchGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfBankName = async () => {
+    try {
+      const response = await ListGetBankName();
+      if (response?.status === 200) {
+        setBankNameGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfReligion = async () => {
+    try {
+      const response = await ListGetReligion();
+      if (response?.status === 200) {
+        setReligionGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const funcOfDistrict = async () => {
+    try {
+      const response = await ListGetDistrict();
+      if (response?.status === 200) {
+        setDistrictGet(response?.data?.result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    funcOFDDODescription(ddoCode);
+    funcOFDDOCode();
+    funcOfMinistryDD(ministryCode);
+    funcOfMinistryCode();
+    funcOfEmpStatus();
+    funcOfBps(designation);
+    funcOfTransforTo();
+    funcOfTransforFrom();
+    funcOfGazettedNonGazetted();
+    funcOfDepartment();
+    funcOfLastDesignation();
+    funcOfDesignation();
+    funcOfCast();
+    funcOfMaritalStatus();
+    funcOfSect();
+    funcOfDistrict();
+    funcOfReligion();
+    funcOfBankName();
+    funcOfBankBranch(bankName);
+  }, [ddoCode, bankName, ministryCode, designation]);
+
   return (
     <>
       <Box sx={{ p: 2, display: "flex", flexDirection: "column", gap: 2 }}>
@@ -568,6 +976,7 @@ function Queue() {
                 sx={{ display: "flex", flexDirection: "column", gap: 1 }}
               >
                 <TextField
+                  value={1}
                   fullWidth
                   size="small"
                   autoComplete="off"
@@ -577,6 +986,9 @@ function Queue() {
                     "& .MuiOutlinedInput-root": {
                       "&.Mui-focused fieldset": {
                         borderColor: "#0E4374",
+                      },
+                      "& input": {
+                        textAlign: "center",
                       },
                     },
                     "& .MuiInputLabel-root": {
@@ -693,60 +1105,12 @@ function Queue() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "&.Mui-focused fieldset": {
-                          borderColor: "#0E4374",
-                        },
-                      },
-                      "& .MuiInputLabel-root": {
-                        "&.Mui-focused": {
-                          color: "#0E4374",
-                        },
-                      },
+                    options={dDOCodeGet || []}
+                    getOptionLabel={(option) => `${option?.ddoc}`}
+                    value={ddoCode}
+                    onChange={(event, newValue) => {
+                      setDdoCode(newValue);
                     }}
-                    renderInput={(params) => (
-                      <TextField {...params} label="DDO Description" />
-                    )}
-                  />
-                  <Tooltip title="Add" placement="right">
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: 35,
-                        height: 37,
-                        border: "1px solid #0E4374",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                        "&:hover": {
-                          backgroundColor: "#0E4374",
-                          "& svg": {
-                            color: "#FFFFFF",
-                          },
-                        },
-                      }}
-                      onClick={handleFormOpenModal}
-                    >
-                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
-                    </Box>
-                  </Tooltip>
-                </Grid>
-                <Grid
-                  item
-                  xl={3}
-                  lg={3}
-                  md={3}
-                  sm={3}
-                  xs={3}
-                  sx={{ display: "flex", flexDirection: "row", gap: "5px" }}
-                >
-                  <Autocomplete
-                    fullWidth
-                    size="small"
-                    options={top100Films}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
@@ -799,27 +1163,32 @@ function Queue() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
+                    options={dDescriptionGet || []}
+                    getOptionLabel={(option) =>
+                      `${option?.codeS_DETAILS?.ddodes}`
+                    }
+                    value={ddoDescription}
+                    onChange={(event, newValue) => {
+                      setDdoDescription(newValue);
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
                           borderColor: "#0E4374",
                         },
-                        "& .MuiInputLabel-root": {
-                          "&.Mui-focused": {
-                            color: "#0E4374",
-                          },
+                      },
+                      "& .MuiInputLabel-root": {
+                        "&.Mui-focused": {
+                          color: "#0E4374",
                         },
                       },
                     }}
                     renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Ministry Department Description"
-                      />
+                      <TextField {...params} label="DDO Description" />
                     )}
                   />
-                  <Tooltip title="Add" placement="right">
+
+                  <Tooltip title={ddoCode ? "Add" : null} placement="right">
                     <Box
                       sx={{
                         display: "flex",
@@ -827,19 +1196,28 @@ function Queue() {
                         justifyContent: "center",
                         width: 35,
                         height: 37,
-                        border: "1px solid #0E4374",
+                        border: ddoCode
+                          ? "1px solid #0E4374"
+                          : "1px solid silver",
                         borderRadius: "5px",
                         cursor: "pointer",
                         "&:hover": {
-                          backgroundColor: "#0E4374",
+                          backgroundColor: ddoCode ? "#0E4374" : "silver",
                           "& svg": {
                             color: "#FFFFFF",
                           },
                         },
                       }}
-                      onClick={handleFormOpenModal}
+                      onClick={() => {
+                        if (ddoCode) {
+                          handleOpenAddDdoCodeDesModal();
+                        }
+                      }}
                     >
-                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                      <AddIcon
+                        fontSize="medium"
+                        sx={{ color: ddoCode ? "#0E4374" : "silver" }}
+                      />
                     </Box>
                   </Tooltip>
                 </Grid>
@@ -855,7 +1233,12 @@ function Queue() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
+                    options={ministryCodeGet || []}
+                    getOptionLabel={(option) => `${option?.minc}`}
+                    value={ministryCode}
+                    onChange={(event, newValue) => {
+                      setMinistryCode(newValue);
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
@@ -890,9 +1273,84 @@ function Queue() {
                           },
                         },
                       }}
-                      onClick={handleFormOpenModal}
+                      onClick={handleOpenAddMinistryCodeModal}
                     >
                       <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                    </Box>
+                  </Tooltip>
+                </Grid>
+                <Grid
+                  item
+                  xl={3}
+                  lg={3}
+                  md={3}
+                  sm={3}
+                  xs={3}
+                  sx={{ display: "flex", flexDirection: "row", gap: "5px" }}
+                >
+                  <Autocomplete
+                    fullWidth
+                    size="small"
+                    options={ministryDDGet || []}
+                    getOptionLabel={(option) =>
+                      `${option?.ministarY_DETAILS?.mindep}`
+                    }
+                    value={ministryDD}
+                    onChange={(event, newValue) => {
+                      setMinistryDD(newValue);
+                    }}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#0E4374",
+                        },
+                        "& .MuiInputLabel-root": {
+                          "&.Mui-focused": {
+                            color: "#0E4374",
+                          },
+                        },
+                      },
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Ministry Department Description"
+                      />
+                    )}
+                  />
+                  <Tooltip
+                    title={ministryCode ? "Add" : null}
+                    placement="right"
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 35,
+                        height: 37,
+                        border: ministryCode
+                          ? "1px solid #0E4374"
+                          : "1px solid silver",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: ministryCode ? "#0E4374" : "silver",
+                          "& svg": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                      onClick={() => {
+                        if (ministryCode) {
+                          handleOpenAddMinistryCodeDesModal();
+                        }
+                      }}
+                    >
+                      <AddIcon
+                        fontSize="medium"
+                        sx={{ color: ministryCode ? "#0E4374" : "silver" }}
+                      />
                     </Box>
                   </Tooltip>
                 </Grid>
@@ -910,7 +1368,70 @@ function Queue() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
+                    options={designationGet || []}
+                    getOptionLabel={(option) => option?.desig}
+                    value={designation}
+                    onChange={(event, newValue) => {
+                      setDesignation(newValue);
+                    }}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#0E4374",
+                        },
+                        "& .MuiInputLabel-root": {
+                          "&.Mui-focused": {
+                            color: "#0E4374",
+                          },
+                        },
+                      },
+                    }}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Designation" />
+                    )}
+                  />
+                  <Tooltip title="Add" placement="right">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 35,
+                        height: 37,
+                        border: "1px solid #0E4374",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#0E4374",
+                          "& svg": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                      onClick={handleOpenAddDesignationModal}
+                    >
+                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                    </Box>
+                  </Tooltip>
+                </Grid>
+                <Grid
+                  item
+                  xl={3}
+                  lg={3}
+                  md={3}
+                  sm={3}
+                  xs={3}
+                  sx={{ display: "flex", flexDirection: "row", gap: "5px" }}
+                >
+                  <Autocomplete
+                    fullWidth
+                    size="small"
+                    options={bpsGet || []}
+                    getOptionLabel={(option) => option?.details?.basic_Pay}
+                    value={bps}
+                    onChange={(event, newValue) => {
+                      setBps(newValue);
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
@@ -927,7 +1448,7 @@ function Queue() {
                       <TextField {...params} label="BPS" />
                     )}
                   />
-                  <Tooltip title="Add" placement="right">
+                  {/* <Tooltip title="Add" placement="right">
                     <Box
                       sx={{
                         display: "flex",
@@ -949,6 +1470,65 @@ function Queue() {
                     >
                       <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
                     </Box>
+                  </Tooltip> */}
+                </Grid>
+
+                <Grid
+                  item
+                  xl={3}
+                  lg={3}
+                  md={3}
+                  sm={3}
+                  xs={3}
+                  sx={{ display: "flex", flexDirection: "row", gap: "5px" }}
+                >
+                  <Autocomplete
+                    fullWidth
+                    size="small"
+                    options={lastDesignationGet || []}
+                    getOptionLabel={(option) => option?.ldesig}
+                    value={lastDesignation}
+                    onChange={(event, newValue) => {
+                      setLastDesignation(newValue);
+                    }}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#0E4374",
+                        },
+                        "& .MuiInputLabel-root": {
+                          "&.Mui-focused": {
+                            color: "#0E4374",
+                          },
+                        },
+                      },
+                    }}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Last Designation" />
+                    )}
+                  />
+                  <Tooltip title="Add" placement="right">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 35,
+                        height: 37,
+                        border: "1px solid #0E4374",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#0E4374",
+                          "& svg": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                      onClick={handleOpenAddLastDesignationModal}
+                    >
+                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                    </Box>
                   </Tooltip>
                 </Grid>
                 <Grid
@@ -963,7 +1543,12 @@ function Queue() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
+                    options={empStatusGet || []}
+                    getOptionLabel={(option) => option?.empst}
+                    value={empStatus}
+                    onChange={(event, newValue) => {
+                      setEmpStatus(newValue);
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
@@ -1001,12 +1586,15 @@ function Queue() {
                           },
                         },
                       }}
-                      onClick={handleFormOpenModal}
+                      onClick={handleOpenEmpStatusModal}
                     >
                       <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
                     </Box>
                   </Tooltip>
                 </Grid>
+              </Grid>
+
+              <Grid container spacing={1}>
                 <Grid
                   item
                   xl={3}
@@ -1019,7 +1607,12 @@ function Queue() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
+                    options={gazettedNonGGet || []}
+                    getOptionLabel={(option) => option?.gzt}
+                    value={gazettedNonG}
+                    onChange={(event, newValue) => {
+                      setGazettedNonG(newValue);
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
@@ -1054,47 +1647,12 @@ function Queue() {
                           },
                         },
                       }}
-                      onClick={handleFormOpenModal}
+                      onClick={handleOpenGazettedNModal}
                     >
                       <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
                     </Box>
                   </Tooltip>
                 </Grid>
-                <Grid
-                  item
-                  xl={3}
-                  lg={3}
-                  md={3}
-                  sm={3}
-                  xs={3}
-                  sx={{ marginTop: "-8px" }}
-                >
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DemoContainer components={["DatePicker"]}>
-                      <DatePicker
-                        label="Date of Birth"
-                        size="small"
-                        slotProps={{
-                          textField: { size: "small" },
-                          openPickerButton: {
-                            sx: {
-                              color: "#0E4374",
-                              "&:hover": {
-                                color: "#0E4374",
-                              },
-                            },
-                          },
-                        }}
-                        sx={{
-                          width: "100%",
-                        }}
-                      />
-                    </DemoContainer>
-                  </LocalizationProvider>
-                </Grid>
-              </Grid>
-
-              <Grid container spacing={1}>
                 <Grid
                   item
                   xl={3}
@@ -1172,7 +1730,12 @@ function Queue() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
+                    options={transforFromGet || []}
+                    getOptionLabel={(option) => option?.trafrm}
+                    value={transforFrom}
+                    onChange={(event, newValue) => {
+                      setTransforFrom(newValue);
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
@@ -1207,12 +1770,14 @@ function Queue() {
                           },
                         },
                       }}
-                      onClick={handleFormOpenModal}
+                      onClick={handleOpenTransforFromModal}
                     >
                       <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
                     </Box>
                   </Tooltip>
                 </Grid>
+              </Grid>
+              <Grid container spacing={1}>
                 <Grid
                   item
                   xl={3}
@@ -1245,8 +1810,6 @@ function Queue() {
                     </DemoContainer>
                   </LocalizationProvider>
                 </Grid>
-              </Grid>
-              <Grid container spacing={1}>
                 <Grid
                   item
                   xl={3}
@@ -1259,7 +1822,12 @@ function Queue() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
+                    options={transforToGet || []}
+                    getOptionLabel={(option) => option?.trato}
+                    value={transforTo}
+                    onChange={(event, newValue) => {
+                      setTransforTo(newValue);
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
@@ -1294,7 +1862,7 @@ function Queue() {
                           },
                         },
                       }}
-                      onClick={handleFormOpenModal}
+                      onClick={handleOpenTransforToModal}
                     >
                       <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
                     </Box>
@@ -1339,104 +1907,30 @@ function Queue() {
                   md={3}
                   sm={3}
                   xs={3}
-                  sx={{ display: "flex", flexDirection: "row", gap: "5px" }}
+                  sx={{ marginTop: "-8px" }}
                 >
-                  <Autocomplete
-                    fullWidth
-                    size="small"
-                    options={top100Films}
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "&.Mui-focused fieldset": {
-                          borderColor: "#0E4374",
-                        },
-                        "& .MuiInputLabel-root": {
-                          "&.Mui-focused": {
-                            color: "#0E4374",
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DemoContainer components={["DatePicker"]}>
+                      <DatePicker
+                        label="Date of Birth"
+                        size="small"
+                        slotProps={{
+                          textField: { size: "small" },
+                          openPickerButton: {
+                            sx: {
+                              color: "#0E4374",
+                              "&:hover": {
+                                color: "#0E4374",
+                              },
+                            },
                           },
-                        },
-                      },
-                    }}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Designation" />
-                    )}
-                  />
-                  <Tooltip title="Add" placement="right">
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: 35,
-                        height: 37,
-                        border: "1px solid #0E4374",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                        "&:hover": {
-                          backgroundColor: "#0E4374",
-                          "& svg": {
-                            color: "#FFFFFF",
-                          },
-                        },
-                      }}
-                      onClick={handleFormOpenModal}
-                    >
-                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
-                    </Box>
-                  </Tooltip>
-                </Grid>
-                <Grid
-                  item
-                  xl={3}
-                  lg={3}
-                  md={3}
-                  sm={3}
-                  xs={3}
-                  sx={{ display: "flex", flexDirection: "row", gap: "5px" }}
-                >
-                  <Autocomplete
-                    fullWidth
-                    size="small"
-                    options={top100Films}
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "&.Mui-focused fieldset": {
-                          borderColor: "#0E4374",
-                        },
-                        "& .MuiInputLabel-root": {
-                          "&.Mui-focused": {
-                            color: "#0E4374",
-                          },
-                        },
-                      },
-                    }}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Last Designation" />
-                    )}
-                  />
-                  <Tooltip title="Add" placement="right">
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: 35,
-                        height: 37,
-                        border: "1px solid #0E4374",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                        "&:hover": {
-                          backgroundColor: "#0E4374",
-                          "& svg": {
-                            color: "#FFFFFF",
-                          },
-                        },
-                      }}
-                      onClick={handleFormOpenModal}
-                    >
-                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
-                    </Box>
-                  </Tooltip>
+                        }}
+                        sx={{
+                          width: "100%",
+                        }}
+                      />
+                    </DemoContainer>
+                  </LocalizationProvider>
                 </Grid>
               </Grid>
               <Grid container spacing={1}>
@@ -1672,7 +2166,12 @@ function Queue() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
+                    options={sectGet || []}
+                    getOptionLabel={(option) => option?.sect}
+                    value={sect}
+                    onChange={(event, newValue) => {
+                      setSect(newValue);
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
@@ -1707,7 +2206,7 @@ function Queue() {
                           },
                         },
                       }}
-                      onClick={handleFormOpenModal}
+                      onClick={handleOpenSectModal}
                     >
                       <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
                     </Box>
@@ -1725,7 +2224,12 @@ function Queue() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
+                    options={maritalStatusGet || []}
+                    getOptionLabel={(option) => option?.mertst}
+                    value={maritalStatus}
+                    onChange={(event, newValue) => {
+                      setMaritalStatus(newValue);
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
@@ -1742,7 +2246,7 @@ function Queue() {
                       <TextField {...params} label="Marital Status" />
                     )}
                   />
-                  <Tooltip title="Add" placement="right">
+                  {/* <Tooltip title="Add" placement="right">
                     <Box
                       sx={{
                         display: "flex",
@@ -1764,7 +2268,7 @@ function Queue() {
                     >
                       <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
                     </Box>
-                  </Tooltip>
+                  </Tooltip> */}
                 </Grid>
                 <Grid
                   item
@@ -1778,7 +2282,12 @@ function Queue() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
+                    options={castGet || []}
+                    getOptionLabel={(option) => option?.cast}
+                    value={cast}
+                    onChange={(event, newValue) => {
+                      setCast(newValue);
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
@@ -1813,7 +2322,7 @@ function Queue() {
                           },
                         },
                       }}
-                      onClick={handleFormOpenModal}
+                      onClick={handleOpenCastModal}
                     >
                       <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
                     </Box>
@@ -1874,6 +2383,64 @@ function Queue() {
                 </Grid>
               </Grid>
               <Grid container spacing={1}>
+                <Grid
+                  item
+                  xl={3}
+                  lg={3}
+                  md={3}
+                  sm={3}
+                  xs={3}
+                  sx={{ display: "flex", flexDirection: "row", gap: "5px" }}
+                >
+                  <Autocomplete
+                    fullWidth
+                    size="small"
+                    options={religionGet || []}
+                    getOptionLabel={(option) => option?.relig}
+                    value={religion}
+                    onChange={(event, newValue) => {
+                      setReligion(newValue);
+                    }}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#0E4374",
+                        },
+                        "& .MuiInputLabel-root": {
+                          "&.Mui-focused": {
+                            color: "#0E4374",
+                          },
+                        },
+                      },
+                    }}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Religion" />
+                    )}
+                  />
+                  <Tooltip title="Add" placement="right">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 35,
+                        height: 37,
+                        border: "1px solid #0E4374",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#0E4374",
+                          "& svg": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                      onClick={handleOpenReligionModal}
+                    >
+                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                    </Box>
+                  </Tooltip>
+                </Grid>
                 <Grid item xl={3} lg={3} md={3} sm={3} xs={3}>
                   <TextField
                     fullWidth
@@ -1958,59 +2525,6 @@ function Queue() {
                     }}
                   />
                 </Grid>
-                <Grid
-                  item
-                  xl={3}
-                  lg={3}
-                  md={3}
-                  sm={3}
-                  xs={3}
-                  sx={{ display: "flex", flexDirection: "row", gap: "5px" }}
-                >
-                  <Autocomplete
-                    fullWidth
-                    size="small"
-                    options={top100Films}
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "&.Mui-focused fieldset": {
-                          borderColor: "#0E4374",
-                        },
-                        "& .MuiInputLabel-root": {
-                          "&.Mui-focused": {
-                            color: "#0E4374",
-                          },
-                        },
-                      },
-                    }}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Religion" />
-                    )}
-                  />
-                  <Tooltip title="Add" placement="right">
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: 35,
-                        height: 37,
-                        border: "1px solid #0E4374",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                        "&:hover": {
-                          backgroundColor: "#0E4374",
-                          "& svg": {
-                            color: "#FFFFFF",
-                          },
-                        },
-                      }}
-                      onClick={handleFormOpenModal}
-                    >
-                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
-                    </Box>
-                  </Tooltip>
-                </Grid>
               </Grid>
             </Box>
             <Box
@@ -2047,7 +2561,12 @@ function Queue() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
+                    options={bankNameGet || []}
+                    getOptionLabel={(option) => option?.bank}
+                    value={bankName}
+                    onChange={(event, newValue) => {
+                      setBankName(newValue);
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
@@ -2082,7 +2601,7 @@ function Queue() {
                           },
                         },
                       }}
-                      onClick={handleFormOpenModal}
+                      onClick={handleOpenBankModal}
                     >
                       <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
                     </Box>
@@ -2100,7 +2619,12 @@ function Queue() {
                   <Autocomplete
                     fullWidth
                     size="small"
-                    options={top100Films}
+                    options={bankBranchGet || []}
+                    getOptionLabel={(option) => option?.banK_BRACHES?.bankbr}
+                    value={bankBranch}
+                    onChange={(event, newValue) => {
+                      setBankBranch(newValue);
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
@@ -2117,7 +2641,8 @@ function Queue() {
                       <TextField {...params} label="Bank Branch" />
                     )}
                   />
-                  <Tooltip title="Add" placement="right">
+
+                  <Tooltip title={bankName ? "Add" : null} placement="right">
                     <Box
                       sx={{
                         display: "flex",
@@ -2125,19 +2650,28 @@ function Queue() {
                         justifyContent: "center",
                         width: 35,
                         height: 37,
-                        border: "1px solid #0E4374",
+                        border: bankName
+                          ? "1px solid #0E4374"
+                          : "1px solid silver",
                         borderRadius: "5px",
                         cursor: "pointer",
                         "&:hover": {
-                          backgroundColor: "#0E4374",
+                          backgroundColor: bankName ? "#0E4374" : "silver",
                           "& svg": {
                             color: "#FFFFFF",
                           },
                         },
                       }}
-                      onClick={handleFormOpenModal}
+                      onClick={() => {
+                        if (bankName) {
+                          handleOpenBankBranchModal();
+                        }
+                      }}
                     >
-                      <AddIcon fontSize="medium" sx={{ color: "#0E4374" }} />
+                      <AddIcon
+                        fontSize="medium"
+                        sx={{ color: bankName ? "#0E4374" : "silver" }}
+                      />
                     </Box>
                   </Tooltip>
                 </Grid>
@@ -2264,6 +2798,7 @@ function Queue() {
                 </Button>
               </Grid>
             </Grid>
+
             {/* Show Autocomplete and Submit Button */}
             {showAutocomplete && (
               <Box
@@ -2339,7 +2874,7 @@ function Queue() {
                           {...props}
                           sx={{ display: "flex", alignItems: "center", gap: 1 }}
                         >
-                          <Checkbox
+                          <CheckBox
                             checked={selectedOption?.value === option.value}
                             onChange={() => setSelectedOption(option)}
                           />
@@ -2475,100 +3010,6 @@ function Queue() {
         </Box>
       </Modal>
 
-      {/* For Add Form Modal */}
-      <Modal open={openAddingModal} onClose={handleFormCloseModal}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            borderRadius: "10px",
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              p: "8px 15px",
-              backgroundColor: "#0E4374",
-              borderTopLeftRadius: "10px",
-              borderTopRightRadius: "10px",
-            }}
-          >
-            <Typography
-              sx={{
-                textAlign: "center",
-                fontSize: "24px",
-                fontWeight: "800",
-                color: "white",
-              }}
-            >
-              Add Form
-            </Typography>
-            <Box
-              onClick={handleFormCloseModal}
-              sx={{
-                cursor: "pointer",
-              }}
-            >
-              <CancelIcon sx={{ color: "white", fontSize: "28px" }} />
-            </Box>
-          </Box>
-
-          <Box sx={{ p: 2 }}>
-            <TextField
-              fullWidth
-              size="small"
-              autoComplete="off"
-              placeholder="Search By Name"
-              variant="outlined"
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  "&.Mui-focused fieldset": {
-                    borderColor: "#0E4374",
-                  },
-                },
-                "& .MuiInputLabel-root": {
-                  "&.Mui-focused": {
-                    color: "#0E4374",
-                  },
-                },
-              }}
-            />
-
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginTop: 2,
-              }}
-            >
-              <Button
-                variant="contained"
-                color="error"
-                onClick={handleFormCloseModal}
-                sx={{ gap: 1 }}
-              >
-                Close
-              </Button>
-              <Button
-                variant="contained"
-                color="success"
-                onClick={handleSubmitFile}
-                disabled={!tempImage}
-                sx={{ gap: 1 }}
-              >
-                Add
-              </Button>
-            </Box>
-          </Box>
-        </Box>
-      </Modal>
-
       {/* For Confirmation Submitted Form */}
       <Modal open={openModal} onClose={handleModalClose}>
         <Box
@@ -2603,14 +3044,20 @@ function Queue() {
             >
               Confirmation
             </Typography>
-            <Box
+
+            <CancelIcon
               onClick={handleModalClose}
               sx={{
                 cursor: "pointer",
+                color: "white",
+                fontSize: "25px",
+                "&:hover": {
+                  color: "red",
+                  backgroundColor: "white",
+                  borderRadius: "40px",
+                },
               }}
-            >
-              <CancelIcon sx={{ color: "white", fontSize: "28px" }} />
-            </Box>
+            />
           </Box>
 
           <Box sx={{ p: 2 }}>
@@ -2633,6 +3080,2146 @@ function Queue() {
                 onClick={handleConfirm}
               >
                 Yes
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
+
+      {/* For Add Form Data Modals */}
+      <Modal open={openAddDdoCodeModal} onClose={handleFormCloseModal}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            borderRadius: "10px",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              p: "8px 15px",
+              backgroundColor: "#0E4374",
+              borderTopLeftRadius: "10px",
+              borderTopRightRadius: "10px",
+            }}
+          >
+            <Typography
+              sx={{
+                textAlign: "center",
+                fontSize: "16px",
+                fontWeight: "800",
+                color: "white",
+              }}
+            >
+              Add DDO Code
+            </Typography>
+
+            <CancelIcon
+              onClick={handleFormCloseModal}
+              sx={{
+                cursor: "pointer",
+                color: "white",
+                fontSize: "25px",
+                "&:hover": {
+                  color: "red",
+                  backgroundColor: "white",
+                  borderRadius: "40px",
+                },
+              }}
+            />
+          </Box>
+
+          <Box sx={{ p: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+              <TextField
+                fullWidth
+                value={addDdoCode}
+                onChange={(e) => {
+                  setAddDdoCode(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter DDO Code"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+              <TextField
+                fullWidth
+                value={addRemarks}
+                onChange={(e) => {
+                  setAddRemarks(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Remarks"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: 2,
+              }}
+            >
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleFormCloseModal}
+                sx={{ gap: 1 }}
+              >
+                Close
+              </Button>
+              <Button
+                variant="contained"
+                disabled={addDdoCode && addRemarks === "" ? true : false}
+                onClick={async () => {
+                  if (addDdoCode && addRemarks) {
+                    const data = {
+                      ddoc: addDdoCode,
+                      remarks: addRemarks,
+                      islive: 1,
+                      USesID: 0,
+                    };
+                    await postedAddCodes(data);
+                    handleFormCloseModal();
+                    setAddRemarks("");
+                  }
+                }}
+                color="success"
+                sx={{ gap: 1 }}
+              >
+                Add
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
+
+      {/* Add DDo Description Modal */}
+      <Modal
+        open={openAddDdoCodeDesModal}
+        onClose={handleCloseAddDdoCodeDesModal}
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            borderRadius: "10px",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              p: "8px 15px",
+              backgroundColor: "#0E4374",
+              borderTopLeftRadius: "10px",
+              borderTopRightRadius: "10px",
+            }}
+          >
+            <Typography
+              sx={{
+                textAlign: "center",
+                fontSize: "16px",
+                fontWeight: "800",
+                color: "white",
+              }}
+            >
+              Add DDO Description
+            </Typography>
+
+            <CancelIcon
+              onClick={handleCloseAddDdoCodeDesModal}
+              sx={{
+                cursor: "pointer",
+                color: "white",
+                fontSize: "25px",
+                "&:hover": {
+                  color: "red",
+                  backgroundColor: "white",
+                  borderRadius: "40px",
+                },
+              }}
+            />
+          </Box>
+
+          <Box sx={{ p: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+              <TextField
+                fullWidth
+                value={addDdoDescription}
+                onChange={(e) => {
+                  setAddDdoDescription(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter DDO Description"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+              <TextField
+                fullWidth
+                value={addRemarks}
+                onChange={(e) => {
+                  setAddRemarks(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Remarks"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: 2,
+              }}
+            >
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleCloseAddDdoCodeDesModal}
+                sx={{ gap: 1 }}
+              >
+                Close
+              </Button>
+              <Button
+                variant="contained"
+                disabled={addDdoDescription && addRemarks === "" ? true : false}
+                onClick={async () => {
+                  if (ddoCode && addDdoDescription && addRemarks) {
+                    const data = {
+                      ddocid: ddoCode?.ddocid,
+                      ddodes: addDdoDescription,
+                      remarks: addRemarks,
+                      islive: 1,
+                      USesID: 0,
+                    };
+                    await postedAddCodesDescription(data);
+                    handleCloseAddDdoCodeDesModal();
+                    setAddRemarks("");
+                  }
+                }}
+                color="success"
+                sx={{ gap: 1 }}
+              >
+                Add
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
+      {/* Add Ministry Code Modal */}
+      <Modal
+        open={openAddMinistryCodeModal}
+        onClose={handleCloseAddMinistryCodeModal}
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            borderRadius: "10px",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              p: "8px 15px",
+              backgroundColor: "#0E4374",
+              borderTopLeftRadius: "10px",
+              borderTopRightRadius: "10px",
+            }}
+          >
+            <Typography
+              sx={{
+                textAlign: "center",
+                fontSize: "16px",
+                fontWeight: "800",
+                color: "white",
+              }}
+            >
+              Add Ministry Code
+            </Typography>
+
+            <CancelIcon
+              onClick={handleCloseAddMinistryCodeModal}
+              sx={{
+                cursor: "pointer",
+                color: "white",
+                fontSize: "25px",
+                "&:hover": {
+                  color: "red",
+                  backgroundColor: "white",
+                  borderRadius: "40px",
+                },
+              }}
+            />
+          </Box>
+
+          <Box sx={{ p: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+              <TextField
+                fullWidth
+                value={addMinistryCode}
+                onChange={(e) => {
+                  setAddMinistryCode(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Minisry Code"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+              <TextField
+                fullWidth
+                value={addRemarks}
+                onChange={(e) => {
+                  setAddRemarks(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Remarks"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: 2,
+              }}
+            >
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleCloseAddMinistryCodeModal}
+                sx={{ gap: 1 }}
+              >
+                Close
+              </Button>
+              <Button
+                variant="contained"
+                disabled={addMinistryCode && addRemarks === "" ? true : false}
+                onClick={async () => {
+                  if (addMinistryCode && addRemarks) {
+                    const data = {
+                      minc: addMinistryCode,
+                      remarks: addRemarks,
+                      islive: 1,
+                      USesID: 0,
+                    };
+                    await postedAddMinistarycodes(data);
+                    handleCloseAddMinistryCodeModal();
+                    setAddRemarks("");
+                  }
+                }}
+                color="success"
+                sx={{ gap: 1 }}
+              >
+                Add
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
+      {/* Add Ministry Code Description Modal */}
+      <Modal
+        open={openAddMinistryCodeDesModal}
+        onClose={handleCloseAddMinistryCodeDesModal}
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            borderRadius: "10px",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              p: "8px 15px",
+              backgroundColor: "#0E4374",
+              borderTopLeftRadius: "10px",
+              borderTopRightRadius: "10px",
+            }}
+          >
+            <Typography
+              sx={{
+                textAlign: "center",
+                fontSize: "16px",
+                fontWeight: "800",
+                color: "white",
+              }}
+            >
+              Add Ministry Code Description
+            </Typography>
+
+            <CancelIcon
+              onClick={handleCloseAddMinistryCodeDesModal}
+              sx={{
+                cursor: "pointer",
+                color: "white",
+                fontSize: "25px",
+                "&:hover": {
+                  color: "red",
+                  backgroundColor: "white",
+                  borderRadius: "40px",
+                },
+              }}
+            />
+          </Box>
+
+          <Box sx={{ p: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+              <TextField
+                fullWidth
+                value={addMinistryCodeDes}
+                onChange={(e) => {
+                  setAddMinistryCodeDes(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Minisry Code Des..."
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+              <TextField
+                fullWidth
+                value={addRemarks}
+                onChange={(e) => {
+                  setAddRemarks(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Remarks"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: 2,
+              }}
+            >
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleCloseAddMinistryCodeDesModal}
+                sx={{ gap: 1 }}
+              >
+                Close
+              </Button>
+              <Button
+                variant="contained"
+                disabled={
+                  addMinistryCodeDes && addRemarks === "" ? true : false
+                }
+                onClick={async () => {
+                  if (ministryCode && addMinistryCodeDes && addRemarks) {
+                    const data = {
+                      mincid: ministryCode?.mincid,
+                      mindep: addMinistryCodeDes,
+                      remarks: addRemarks,
+                      islive: 1,
+                      USesID: 0,
+                    };
+                    await postedAddMinistaryDeptDes(data);
+                    handleCloseAddMinistryCodeDesModal();
+                    setAddRemarks("");
+                  }
+                }}
+                color="success"
+                sx={{ gap: 1 }}
+              >
+                Add
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
+
+      {/* Add Designation Modal */}
+      <Modal
+        open={openAddDesignationModal}
+        onClose={handleCloseAddDesignationModal}
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            borderRadius: "10px",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              p: "8px 15px",
+              backgroundColor: "#0E4374",
+              borderTopLeftRadius: "10px",
+              borderTopRightRadius: "10px",
+            }}
+          >
+            <Typography
+              sx={{
+                textAlign: "center",
+                fontSize: "16px",
+                fontWeight: "800",
+                color: "white",
+              }}
+            >
+              Add Designation
+            </Typography>
+
+            <CancelIcon
+              onClick={handleCloseAddDesignationModal}
+              sx={{
+                cursor: "pointer",
+                color: "white",
+                fontSize: "25px",
+                "&:hover": {
+                  color: "red",
+                  backgroundColor: "white",
+                  borderRadius: "40px",
+                },
+              }}
+            />
+          </Box>
+
+          <Box sx={{ p: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+              <TextField
+                fullWidth
+                value={addDesignation}
+                onChange={(e) => {
+                  setAddDesignation(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Designation"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+              <TextField
+                fullWidth
+                value={addBPS}
+                onChange={(e) => {
+                  setBPS(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter BPS"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+              <TextField
+                fullWidth
+                value={addRemarks}
+                onChange={(e) => {
+                  setAddRemarks(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Remarks"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: 2,
+              }}
+            >
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleCloseAddDesignationModal}
+                sx={{ gap: 1 }}
+              >
+                Close
+              </Button>
+              <Button
+                variant="contained"
+                disabled={
+                  addBPS && addDesignation && addRemarks === "" ? true : false
+                }
+                onClick={async () => {
+                  if (addBPS && addDesignation && addRemarks) {
+                    const data = {
+                      bpsid: addBPS,
+                      desig: addDesignation,
+                      remarks: addRemarks,
+                      islive: 1,
+                      USesID: 0,
+                    };
+                    await postedDesignation(data);
+                    handleCloseAddDesignationModal();
+                    setAddRemarks("");
+                  }
+                }}
+                color="success"
+                sx={{ gap: 1 }}
+              >
+                Add
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
+      {/* Add Last Designation Modal */}
+      <Modal
+        open={openAddLastDesignationModal}
+        onClose={handleCloseAddLastDesignationModal}
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            borderRadius: "10px",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              p: "8px 15px",
+              backgroundColor: "#0E4374",
+              borderTopLeftRadius: "10px",
+              borderTopRightRadius: "10px",
+            }}
+          >
+            <Typography
+              sx={{
+                textAlign: "center",
+                fontSize: "16px",
+                fontWeight: "800",
+                color: "white",
+              }}
+            >
+              Add Last Designation
+            </Typography>
+
+            <CancelIcon
+              onClick={handleCloseAddLastDesignationModal}
+              sx={{
+                cursor: "pointer",
+                color: "white",
+                fontSize: "25px",
+                "&:hover": {
+                  color: "red",
+                  backgroundColor: "white",
+                  borderRadius: "40px",
+                },
+              }}
+            />
+          </Box>
+
+          <Box sx={{ p: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+              <TextField
+                fullWidth
+                value={addLastDesignation}
+                onChange={(e) => {
+                  setAddLastDesignation(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Last Designation"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+              <TextField
+                fullWidth
+                value={addRemarks}
+                onChange={(e) => {
+                  setAddRemarks(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Remarks"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: 2,
+              }}
+            >
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleCloseAddLastDesignationModal}
+                sx={{ gap: 1 }}
+              >
+                Close
+              </Button>
+              <Button
+                variant="contained"
+                disabled={
+                  addLastDesignation && addRemarks === "" ? true : false
+                }
+                onClick={async () => {
+                  if (addLastDesignation && addRemarks) {
+                    const data = {
+                      ldesig: addLastDesignation,
+                      remarks: addRemarks,
+                      islive: 1,
+                      USesID: 0,
+                    };
+                    await postedLastDesignation(data);
+                    handleCloseAddLastDesignationModal();
+                    setAddRemarks("");
+                  }
+                }}
+                color="success"
+                sx={{ gap: 1 }}
+              >
+                Add
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
+      {/* Add Employee Status Modal */}
+      <Modal open={openEmpStatusModal} onClose={handleCloseOpenEmpStatusModal}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            borderRadius: "10px",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              p: "8px 15px",
+              backgroundColor: "#0E4374",
+              borderTopLeftRadius: "10px",
+              borderTopRightRadius: "10px",
+            }}
+          >
+            <Typography
+              sx={{
+                textAlign: "center",
+                fontSize: "16px",
+                fontWeight: "800",
+                color: "white",
+              }}
+            >
+              Add Employee Status
+            </Typography>
+
+            <CancelIcon
+              onClick={handleCloseOpenEmpStatusModal}
+              sx={{
+                cursor: "pointer",
+                color: "white",
+                fontSize: "25px",
+                "&:hover": {
+                  color: "red",
+                  backgroundColor: "white",
+                  borderRadius: "40px",
+                },
+              }}
+            />
+          </Box>
+
+          <Box sx={{ p: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+              <TextField
+                fullWidth
+                value={addEmpStatus}
+                onChange={(e) => {
+                  setAddEmpStatus(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Emp Status"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+              <TextField
+                fullWidth
+                value={addRemarks}
+                onChange={(e) => {
+                  setAddRemarks(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Remarks"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: 2,
+              }}
+            >
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleCloseOpenEmpStatusModal}
+                sx={{ gap: 1 }}
+              >
+                Close
+              </Button>
+              <Button
+                variant="contained"
+                disabled={addEmpStatus && addRemarks === "" ? true : false}
+                onClick={async () => {
+                  if (addEmpStatus && addRemarks) {
+                    const data = {
+                      empst: addEmpStatus,
+                      remarks: addRemarks,
+                      islive: 1,
+                      USesID: 0,
+                    };
+                    await postedAddEmployestatus(data);
+                    handleCloseOpenEmpStatusModal();
+                    setAddRemarks("");
+                  }
+                }}
+                color="success"
+                sx={{ gap: 1 }}
+              >
+                Add
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
+      {/* Add Gazetted/Non Gazetted Modal */}
+      <Modal open={openGazettedNModal} onClose={handleCloseGazettedNModal}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            borderRadius: "10px",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              p: "8px 15px",
+              backgroundColor: "#0E4374",
+              borderTopLeftRadius: "10px",
+              borderTopRightRadius: "10px",
+            }}
+          >
+            <Typography
+              sx={{
+                textAlign: "center",
+                fontSize: "16px",
+                fontWeight: "800",
+                color: "white",
+              }}
+            >
+              Add Gazetted/Non Gazetted
+            </Typography>
+
+            <CancelIcon
+              onClick={handleCloseGazettedNModal}
+              sx={{
+                cursor: "pointer",
+                color: "white",
+                fontSize: "25px",
+                "&:hover": {
+                  color: "red",
+                  backgroundColor: "white",
+                  borderRadius: "40px",
+                },
+              }}
+            />
+          </Box>
+
+          <Box sx={{ p: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+              <TextField
+                fullWidth
+                value={addGazettedN}
+                onChange={(e) => {
+                  setAddGazettedN(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Gazetted/Non Gazetted"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+              <TextField
+                fullWidth
+                value={addRemarks}
+                onChange={(e) => {
+                  setAddRemarks(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Remarks"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: 2,
+              }}
+            >
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleCloseGazettedNModal}
+                sx={{ gap: 1 }}
+              >
+                Close
+              </Button>
+              <Button
+                variant="contained"
+                disabled={addGazettedN && addRemarks === "" ? true : false}
+                onClick={async () => {
+                  if (addGazettedN && addRemarks) {
+                    const data = {
+                      gzt: addGazettedN,
+                      remarks: addRemarks,
+                      islive: 1,
+                      USesID: 0,
+                    };
+                    await postedAddGazzetted(data);
+                    handleCloseGazettedNModal();
+                    setAddRemarks("");
+                  }
+                }}
+                color="success"
+                sx={{ gap: 1 }}
+              >
+                Add
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
+      {/* Add Transfor From Modal */}
+      <Modal
+        open={openTransforFromModal}
+        onClose={handleCloseTransforFromModal}
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            borderRadius: "10px",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              p: "8px 15px",
+              backgroundColor: "#0E4374",
+              borderTopLeftRadius: "10px",
+              borderTopRightRadius: "10px",
+            }}
+          >
+            <Typography
+              sx={{
+                textAlign: "center",
+                fontSize: "16px",
+                fontWeight: "800",
+                color: "white",
+              }}
+            >
+              Add Transfor From
+            </Typography>
+
+            <CancelIcon
+              onClick={handleCloseTransforFromModal}
+              sx={{
+                cursor: "pointer",
+                color: "white",
+                fontSize: "25px",
+                "&:hover": {
+                  color: "red",
+                  backgroundColor: "white",
+                  borderRadius: "40px",
+                },
+              }}
+            />
+          </Box>
+
+          <Box sx={{ p: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+              <TextField
+                fullWidth
+                value={addTransforFrom}
+                onChange={(e) => {
+                  setAddTransforFrom(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Transfor From"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+              <TextField
+                fullWidth
+                value={addRemarks}
+                onChange={(e) => {
+                  setAddRemarks(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Remarks"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: 2,
+              }}
+            >
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleCloseTransforFromModal}
+                sx={{ gap: 1 }}
+              >
+                Close
+              </Button>
+              <Button
+                variant="contained"
+                disabled={addTransforFrom && addRemarks === "" ? true : false}
+                onClick={async () => {
+                  if (addTransforFrom && addRemarks) {
+                    const data = {
+                      trafrm: addTransforFrom,
+                      remarks: addRemarks,
+                      islive: 1,
+                      USesID: 0,
+                    };
+                    await postedAddTrafnserFrom(data);
+                    handleCloseTransforFromModal();
+                    setAddRemarks("");
+                  }
+                }}
+                color="success"
+                sx={{ gap: 1 }}
+              >
+                Add
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
+      {/* Add Transfor To Modal */}
+      <Modal open={openTransforToModal} onClose={handleCloseTransforToModal}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            borderRadius: "10px",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              p: "8px 15px",
+              backgroundColor: "#0E4374",
+              borderTopLeftRadius: "10px",
+              borderTopRightRadius: "10px",
+            }}
+          >
+            <Typography
+              sx={{
+                textAlign: "center",
+                fontSize: "16px",
+                fontWeight: "800",
+                color: "white",
+              }}
+            >
+              Add Transfor To
+            </Typography>
+
+            <CancelIcon
+              onClick={handleCloseTransforToModal}
+              sx={{
+                cursor: "pointer",
+                color: "white",
+                fontSize: "25px",
+                "&:hover": {
+                  color: "red",
+                  backgroundColor: "white",
+                  borderRadius: "40px",
+                },
+              }}
+            />
+          </Box>
+
+          <Box sx={{ p: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+              <TextField
+                fullWidth
+                value={addTransforTo}
+                onChange={(e) => {
+                  setAddTransforTo(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Transfor To"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+              <TextField
+                fullWidth
+                value={addRemarks}
+                onChange={(e) => {
+                  setAddRemarks(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Remarks"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: 2,
+              }}
+            >
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleCloseTransforToModal}
+                sx={{ gap: 1 }}
+              >
+                Close
+              </Button>
+              <Button
+                variant="contained"
+                disabled={addTransforTo && addRemarks === "" ? true : false}
+                onClick={async () => {
+                  if (addTransforTo && addRemarks) {
+                    const data = {
+                      trato: addTransforTo,
+                      remarks: addRemarks,
+                      islive: 1,
+                      USesID: 0,
+                    };
+                    await postedAddTrafnserTo(data);
+                    handleCloseTransforToModal();
+                    setAddRemarks("");
+                  }
+                }}
+                color="success"
+                sx={{ gap: 1 }}
+              >
+                Add
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
+      {/* Add Sect Modal */}
+      <Modal open={openSectModal} onClose={handleCloseSectModal}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            borderRadius: "10px",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              p: "8px 15px",
+              backgroundColor: "#0E4374",
+              borderTopLeftRadius: "10px",
+              borderTopRightRadius: "10px",
+            }}
+          >
+            <Typography
+              sx={{
+                textAlign: "center",
+                fontSize: "16px",
+                fontWeight: "800",
+                color: "white",
+              }}
+            >
+              Add Sect
+            </Typography>
+
+            <CancelIcon
+              onClick={handleCloseSectModal}
+              sx={{
+                cursor: "pointer",
+                color: "white",
+                fontSize: "25px",
+                "&:hover": {
+                  color: "red",
+                  backgroundColor: "white",
+                  borderRadius: "40px",
+                },
+              }}
+            />
+          </Box>
+
+          <Box sx={{ p: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+              <TextField
+                fullWidth
+                value={addSect}
+                onChange={(e) => {
+                  setAddSect(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Sect"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+              <TextField
+                fullWidth
+                value={addRemarks}
+                onChange={(e) => {
+                  setAddRemarks(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Remarks"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: 2,
+              }}
+            >
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleCloseSectModal}
+                sx={{ gap: 1 }}
+              >
+                Close
+              </Button>
+              <Button
+                variant="contained"
+                disabled={addSect && addRemarks === "" ? true : false}
+                onClick={async () => {
+                  if (addSect && addRemarks) {
+                    const data = {
+                      sect: addSect,
+                      remarks: addRemarks,
+                      islive: 1,
+                      USesID: 0,
+                    };
+                    await postedAddSect(data);
+                    handleCloseSectModal();
+                    setAddRemarks("");
+                  }
+                }}
+                color="success"
+                sx={{ gap: 1 }}
+              >
+                Add
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
+      {/* Add Cast Modal */}
+      <Modal open={openCastModal} onClose={handleCloseCastModal}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            borderRadius: "10px",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              p: "8px 15px",
+              backgroundColor: "#0E4374",
+              borderTopLeftRadius: "10px",
+              borderTopRightRadius: "10px",
+            }}
+          >
+            <Typography
+              sx={{
+                textAlign: "center",
+                fontSize: "16px",
+                fontWeight: "800",
+                color: "white",
+              }}
+            >
+              Add Cast
+            </Typography>
+
+            <CancelIcon
+              onClick={handleCloseCastModal}
+              sx={{
+                cursor: "pointer",
+                color: "white",
+                fontSize: "25px",
+                "&:hover": {
+                  color: "red",
+                  backgroundColor: "white",
+                  borderRadius: "40px",
+                },
+              }}
+            />
+          </Box>
+
+          <Box sx={{ p: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+              <TextField
+                fullWidth
+                value={addCast}
+                onChange={(e) => {
+                  setAddCast(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Cast"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+              <TextField
+                fullWidth
+                value={addRemarks}
+                onChange={(e) => {
+                  setAddRemarks(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Remarks"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: 2,
+              }}
+            >
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleCloseCastModal}
+                sx={{ gap: 1 }}
+              >
+                Close
+              </Button>
+              <Button
+                variant="contained"
+                disabled={addCast && addRemarks === "" ? true : false}
+                onClick={async () => {
+                  if (addCast && addRemarks) {
+                    const data = {
+                      cast: addCast,
+                      remarks: addRemarks,
+                      islive: 1,
+                      USesID: 0,
+                    };
+                    await postedAddCast(data);
+                    handleCloseCastModal();
+                    setAddRemarks("");
+                  }
+                }}
+                color="success"
+                sx={{ gap: 1 }}
+              >
+                Add
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
+      {/* Add Religion Modal */}
+      <Modal open={openReligionModal} onClose={handleCloseReligionModal}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            borderRadius: "10px",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              p: "8px 15px",
+              backgroundColor: "#0E4374",
+              borderTopLeftRadius: "10px",
+              borderTopRightRadius: "10px",
+            }}
+          >
+            <Typography
+              sx={{
+                textAlign: "center",
+                fontSize: "16px",
+                fontWeight: "800",
+                color: "white",
+              }}
+            >
+              Add Religion
+            </Typography>
+
+            <CancelIcon
+              onClick={handleCloseReligionModal}
+              sx={{
+                cursor: "pointer",
+                color: "white",
+                fontSize: "25px",
+                "&:hover": {
+                  color: "red",
+                  backgroundColor: "white",
+                  borderRadius: "40px",
+                },
+              }}
+            />
+          </Box>
+
+          <Box sx={{ p: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+              <TextField
+                fullWidth
+                value={addReligion}
+                onChange={(e) => {
+                  setAddReligion(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Cast"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+              <TextField
+                fullWidth
+                value={addRemarks}
+                onChange={(e) => {
+                  setAddRemarks(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Remarks"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: 2,
+              }}
+            >
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleCloseReligionModal}
+                sx={{ gap: 1 }}
+              >
+                Close
+              </Button>
+
+              <Button
+                variant="contained"
+                disabled={addReligion && addRemarks === "" ? true : false}
+                onClick={async () => {
+                  if (addReligion && addRemarks) {
+                    const data = {
+                      relig: addReligion,
+                      remarks: addRemarks,
+                      islive: 1,
+                      USesID: 0,
+                    };
+                    await postedAddReligiion(data);
+                    handleCloseReligionModal();
+                    setAddRemarks("");
+                  }
+                }}
+                color="success"
+                sx={{ gap: 1 }}
+              >
+                Add
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
+      {/* Add Bank Modal */}
+      <Modal open={openBankModal} onClose={handleCloseBankModal}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            borderRadius: "10px",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              p: "8px 15px",
+              backgroundColor: "#0E4374",
+              borderTopLeftRadius: "10px",
+              borderTopRightRadius: "10px",
+            }}
+          >
+            <Typography
+              sx={{
+                textAlign: "center",
+                fontSize: "16px",
+                fontWeight: "800",
+                color: "white",
+              }}
+            >
+              Add Bank
+            </Typography>
+
+            <CancelIcon
+              onClick={handleCloseBankModal}
+              sx={{
+                cursor: "pointer",
+                color: "white",
+                fontSize: "25px",
+                "&:hover": {
+                  color: "red",
+                  backgroundColor: "white",
+                  borderRadius: "40px",
+                },
+              }}
+            />
+          </Box>
+
+          <Box sx={{ p: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+              <TextField
+                fullWidth
+                value={addbank}
+                onChange={(e) => {
+                  setAddBank(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Bank"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+              <TextField
+                fullWidth
+                value={addRemarks}
+                onChange={(e) => {
+                  setAddRemarks(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Remarks"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: 2,
+              }}
+            >
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleCloseBankModal}
+                sx={{ gap: 1 }}
+              >
+                Close
+              </Button>
+              <Button
+                variant="contained"
+                disabled={addbank && addRemarks === "" ? true : false}
+                onClick={async () => {
+                  if (addbank && addRemarks) {
+                    const data = {
+                      bank: addbank,
+                      remarks: addRemarks,
+                      islive: 1,
+                      USesID: 0,
+                    };
+                    await postedAddBank(data);
+                    handleCloseBankModal();
+                    setAddRemarks("");
+                  }
+                }}
+                color="success"
+                sx={{ gap: 1 }}
+              >
+                Add
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
+      {/* Add Bank Branch Modal */}
+      <Modal open={openBankBranchModal} onClose={handleCloseBankBranchModal}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            borderRadius: "10px",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              p: "8px 15px",
+              backgroundColor: "#0E4374",
+              borderTopLeftRadius: "10px",
+              borderTopRightRadius: "10px",
+            }}
+          >
+            <Typography
+              sx={{
+                textAlign: "center",
+                fontSize: "16px",
+                fontWeight: "800",
+                color: "white",
+              }}
+            >
+              Add Bank Branch
+            </Typography>
+
+            <CancelIcon
+              onClick={handleCloseBankBranchModal}
+              sx={{
+                cursor: "pointer",
+                color: "white",
+                fontSize: "25px",
+                "&:hover": {
+                  color: "red",
+                  backgroundColor: "white",
+                  borderRadius: "40px",
+                },
+              }}
+            />
+          </Box>
+
+          <Box sx={{ p: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+              <TextField
+                fullWidth
+                value={addBankBranch}
+                onChange={(e) => {
+                  setAddBankBranch(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Bank Branch"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+              <TextField
+                fullWidth
+                value={addRemarks}
+                onChange={(e) => {
+                  setAddRemarks(e.target.value);
+                }}
+                size="small"
+                autoComplete="off"
+                placeholder="Enter Remarks"
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0E4374",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    "&.Mui-focused": {
+                      color: "#0E4374",
+                    },
+                  },
+                }}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: 2,
+              }}
+            >
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleCloseBankBranchModal}
+                sx={{ gap: 1 }}
+              >
+                Close
+              </Button>
+              <Button
+                variant="contained"
+                disabled={addBankBranch && addRemarks === "" ? true : false}
+                onClick={async () => {
+                  if (bankName && addBankBranch && addRemarks) {
+                    const data = {
+                      bankid: bankName?.bankid,
+                      bankbr: addBankBranch,
+                      remarks: addRemarks,
+                      islive: 1,
+                      USesID: 0,
+                    };
+                    await postedAddBankBranch(data);
+                    handleCloseBankBranchModal();
+                    setAddRemarks("");
+                  }
+                }}
+                color="success"
+                sx={{ gap: 1 }}
+              >
+                Add
               </Button>
             </Box>
           </Box>

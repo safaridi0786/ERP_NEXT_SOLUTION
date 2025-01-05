@@ -2,15 +2,16 @@ export const settings = {
   baseUrl: "http://192.168.100.78:8012",
 
   credentials: {
+    login: "/api/User/ValidateShanakhtinCompany",
     signup: "/api/User/AddUserReg",
     welcomeScreen: "/api/User/Welcome",
     setUpPassword: "/api/User/SetUpPass",
     setUpOrganization: "/api/User/AddOrganization",
     forgetSendOtop: "/api/User/ForgetsendOTP?email=",
     validateOtp:
-      "api/User/ValidateOtp?email=[email]&otp=[otp]&shanakht=[shanakht]",
+      "/api/User/ValidateOtp?email=[email]&otp=[otp]&shanakht=[shanakht]",
     validateShanakht:
-      "api/User/ValidateShanakht?email=[email]&shanakht=[shanakht]",
+      "/api/User/ValidateShanakht?email=[email]&shanakht=[shanakht]",
   },
   languages: {
     getLanguage: "/api/User/GetLanguages",
@@ -54,5 +55,25 @@ export const settings = {
       // ListGetDistrict: "/api/Dashboard/",
       // ListGetDepartment: "/api/Dashboard/",
     },
+    addEmployeeData: {
+      addCodes: "/api/Dashboard/AddCodes",
+      addCodesDescription: "/api/Dashboard/AddCodesDescription",
+      addMinistaryDeptDes: "/api/Dashboard/AddMinistaryDeptDes",
+      addMinistarycodes: "/api/Dashboard/AddMinistarycodes",
+      addBPS: "/api/Dashboard/AddBPS",
+      addEmployestatus: "/api/Dashboard/AddEmployestatus",
+      addGazzetted: "/api/Dashboard/AddGazzetted",
+      addTrafnserFrom: "/api/Dashboard/AddTrafnserFrom",
+      addTrafnserTo: "/api/Dashboard/AddTrafnserTo",
+      addDesignation: "/api/Dashboard/AddDesignation",
+      addLastDesignation: "/api/Dashboard/AddLastDesignation",
+      addSect: "/api/Dashboard/AddSect",
+      addCast: "/api/Dashboard/AddCast",
+      addReligion: "/api/Dashboard/AddReligion",
+      addBank: "/api/Dashboard/AddBank",
+      addBankBranch: "/api/Dashboard/AddBankBranch",
+    },
+    getPersonalId: "/api/Dashboard/GetPNO",
+    postEmployeeForm: "/api/Dashboard/EmployeeForm",
   },
 };

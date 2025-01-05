@@ -27,11 +27,13 @@ import MuiDrawer from "@mui/material/Drawer";
 import CircleNotificationsIcon from "@mui/icons-material/CircleNotifications";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import ApprovalIcon from "@mui/icons-material/Approval";
-import ReportIcon from "@mui/icons-material/Report";
-import CreditCardIcon from "@mui/icons-material/CreditCard";
-import ReceiptIcon from "@mui/icons-material/Receipt";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import LockIcon from "@mui/icons-material/Lock";
+// import ApprovalIcon from "@mui/icons-material/Approval";
+// import ReportIcon from "@mui/icons-material/Report";
+// import CreditCardIcon from "@mui/icons-material/CreditCard";
+// import ReceiptIcon from "@mui/icons-material/Receipt";
+// import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import BadgeIcon from "@mui/icons-material/Badge";
 import ManageHistoryIcon from "@mui/icons-material/ManageHistory";
 import QueueIcon from "@mui/icons-material/Queue";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
@@ -152,34 +154,37 @@ function SideBar() {
       ],
     },
     {
-      text: "Approvals",
-      icon: <ApprovalIcon />,
-      // to: "/approvals",
-      to: "/dashboard",
+      text: "Users",
+      icon: <BadgeIcon />,
+      to: "/userPage",
+    },
+    {
+      text: "Approval",
+      icon: <LockIcon />,
     },
     {
       text: "Reports",
-      icon: <ReportIcon />,
+      icon: <LockIcon />,
+      // icon: <ReportIcon />,
       // to: "/reports",
-      to: "/dashboard",
     },
     {
       text: "Loans",
-      icon: <CreditCardIcon />,
+      icon: <LockIcon />,
+      // icon: <CreditCardIcon />,
       // to: "/loans",
-      to: "/dashboard",
     },
     {
       text: "Invoices",
-      icon: <ReceiptIcon />,
+      icon: <LockIcon />,
+      // icon: <ReceiptIcon />,
       // to: "/invoices",
-      to: "/dashboard",
     },
     {
       text: "Requests",
-      icon: <HelpOutlineIcon />,
+      icon: <LockIcon />,
+      // icon: <HelpOutlineIcon />,
       // to: "/requests",
-      to: "/dashboard",
     },
     {
       text: "Logout",
@@ -525,9 +530,9 @@ function SideBar() {
                     if (action) action();
                     else {
                       setActiveItem(text);
-                      setActiveParent(null); // Reset parent tracking when selecting a top-level item
-                      setLastActiveItem(null); // Clear nested item tracking
-                      setExpandedParent(expandedParent === text ? null : text); // Toggle expansion for this parent
+                      setActiveParent(null);
+                      setLastActiveItem(null);
+                      setExpandedParent(expandedParent === text ? null : text);
                     }
                   }}
                 >
@@ -583,9 +588,9 @@ function SideBar() {
                           },
                         }}
                         onClick={() => {
-                          setActiveItem(child.text); // Set the child as active
-                          setLastActiveItem(child.text); // Track the last selected nested item
-                          setActiveParent(text); // Track the parent item
+                          setActiveItem(child.text);
+                          setLastActiveItem(child.text);
+                          setActiveParent(text);
                         }}
                       >
                         <NavLink to={child.to}>

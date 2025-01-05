@@ -271,6 +271,17 @@ export const addChatMessage = async (chatData) => {
 
 // ERP Tasks API's Fetching
 
+export const postedLogin = async (email, shanakht) => {
+  try {
+    const response = await postData(
+      `${s.credentials.login}?email=${email}&shanakht=${shanakht}`
+    );
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+
 export const getCountriesData = async (userId) => {
   try {
     const url = `${s.getCountries.countries}`;
@@ -567,6 +578,211 @@ export const ListGetBankName = async () => {
 export const ListGetBankBranch = async (BANID) => {
   try {
     const url = `${s.employeeData.getEmployeeListsFormData.ListGetBankBranch}${BANID}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+
+// Add Employee Form For List
+
+export const postedAddCodes = async (data) => {
+  try {
+    const response = await postData(
+      `${s.employeeData.addEmployeeData.addCodes}`,
+      data
+    );
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const postedAddCodesDescription = async (data) => {
+  try {
+    const response = await postData(
+      `${s.employeeData.addEmployeeData.addCodesDescription}`,
+      data
+    );
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const postedAddMinistaryDeptDes = async (data) => {
+  try {
+    const response = await postData(
+      `${s.employeeData.addEmployeeData.addMinistaryDeptDes}`,
+      data
+    );
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const postedAddMinistarycodes = async (data) => {
+  try {
+    const response = await postData(
+      `${s.employeeData.addEmployeeData.addMinistarycodes}`,
+      data
+    );
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const postedAddBPS = async (data) => {
+  try {
+    const response = await postData(
+      `${s.employeeData.addEmployeeData.addBPS}`,
+      data
+    );
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const postedDesignation = async (data) => {
+  try {
+    const response = await postData(
+      `${s.employeeData.addEmployeeData.addDesignation}`,
+      data
+    );
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const postedLastDesignation = async (data) => {
+  try {
+    const response = await postData(
+      `${s.employeeData.addEmployeeData.addLastDesignation}`,
+      data
+    );
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const postedAddEmployestatus = async (data) => {
+  try {
+    const response = await postData(
+      `${s.employeeData.addEmployeeData.addEmployestatus}`,
+      data
+    );
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const postedAddGazzetted = async (data) => {
+  try {
+    const response = await postData(
+      `${s.employeeData.addEmployeeData.addGazzetted}`,
+      data
+    );
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const postedAddTrafnserFrom = async (data) => {
+  try {
+    const response = await postData(
+      `${s.employeeData.addEmployeeData.addTrafnserFrom}`,
+      data
+    );
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const postedAddTrafnserTo = async (data) => {
+  try {
+    const response = await postData(
+      `${s.employeeData.addEmployeeData.addTrafnserTo}`,
+      data
+    );
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const postedAddSect = async (data) => {
+  try {
+    const response = await postData(
+      `${s.employeeData.addEmployeeData.addSect}`,
+      data
+    );
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const postedAddCast = async (data) => {
+  try {
+    const response = await postData(
+      `${s.employeeData.addEmployeeData.addCast}`,
+      data
+    );
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const postedAddReligiion = async (data) => {
+  try {
+    const response = await postData(
+      `${s.employeeData.addEmployeeData.addReligion}`,
+      data
+    );
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const postedAddBank = async (data) => {
+  try {
+    const response = await postData(
+      `${s.employeeData.addEmployeeData.addBank}`,
+      data
+    );
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+export const postedAddBankBranch = async (data) => {
+  try {
+    const response = await postData(
+      `${s.employeeData.addEmployeeData.addBankBranch}`,
+      data
+    );
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+
+// Posted Total Form Data Employee
+
+export const postedTotalEmployeeForm = async (data) => {
+  try {
+    const response = await postFormData(
+      `${s.employeeData.postEmployeeForm}`,
+      data
+    );
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+
+// get personal number of add form employee
+
+export const gettingPersonalId = async () => {
+  try {
+    const url = `${s.employeeData.getPersonalId}`;
     const response = await getData(url);
     return response;
   } catch (error) {
