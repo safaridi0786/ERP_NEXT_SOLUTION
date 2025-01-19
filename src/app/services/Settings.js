@@ -1,5 +1,5 @@
 export const settings = {
-  baseUrl: "http://192.168.100.78:8012",
+  baseUrl: "http://182.191.75.29:8012",
 
   credentials: {
     login: "/api/User/ValidateShanakhtinCompany",
@@ -29,6 +29,7 @@ export const settings = {
 
   sideNavbar: {
     tab: "/api/Dashboard/GetTabs",
+    nestedTabs: "/api/Dashboard/GetTabsSubCategories?DBTABS=",
   },
 
   // For Employees Data
@@ -75,5 +76,12 @@ export const settings = {
     },
     getPersonalId: "/api/Dashboard/GetPNO",
     postEmployeeForm: "/api/Dashboard/EmployeeForm",
+  },
+
+  settings: {
+    tabs: {
+      addMainTabName: "/api/Dashboard/AddMainTabs",
+      addSubTabName: "/api/Dashboard/AddSubTabs",
+    },
   },
 };

@@ -397,6 +397,17 @@ export const getSideTab = async () => {
     return null;
   }
 };
+// For SideBar Nested Tab
+
+export const getNestedSideTab = async (DBTABS) => {
+  try {
+    const url = `${s.sideNavbar.nestedTabs}${DBTABS}`;
+    const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
 
 // For Employee Module
 
@@ -784,6 +795,33 @@ export const gettingPersonalId = async () => {
   try {
     const url = `${s.employeeData.getPersonalId}`;
     const response = await getData(url);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+
+// Add Main Tab Name
+
+export const fetchAddMainTabNameAPI = async (MainName, Remarks) => {
+  try {
+    const response = await postData(
+      `${s.settings.tabs.addMainTabName}?MainName=${MainName}&Remarks=${Remarks}`
+    );
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+
+// Add Sub Tab Name
+
+export const fetchAddSubTabNameAPI = async (data) => {
+  try {
+    const response = await postFormData(
+      `${s.settings.tabs.addSubTabName}`,
+      data
+    );
     return response;
   } catch (error) {
     return null;

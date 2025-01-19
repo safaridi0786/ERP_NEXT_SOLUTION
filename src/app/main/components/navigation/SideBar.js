@@ -28,20 +28,16 @@ import CircleNotificationsIcon from "@mui/icons-material/CircleNotifications";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import LockIcon from "@mui/icons-material/Lock";
-// import ApprovalIcon from "@mui/icons-material/Approval";
-// import ReportIcon from "@mui/icons-material/Report";
-// import CreditCardIcon from "@mui/icons-material/CreditCard";
-// import ReceiptIcon from "@mui/icons-material/Receipt";
-// import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import BadgeIcon from "@mui/icons-material/Badge";
 import ManageHistoryIcon from "@mui/icons-material/ManageHistory";
 import QueueIcon from "@mui/icons-material/Queue";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
-import { getSideTab } from "../../../services/api/apiManager";
-
+import { getSideTab, getNestedSideTab } from "../../../services/api/apiManager";
+import ViewSidebarIcon from "@mui/icons-material/ViewSidebar";
 function SideBar() {
   const [tabData, setTabData] = React.useState([]);
-  const drawerWidth = 240;
+  const [nestedTabData, setNestedTabData] = React.useState([]);
+  const drawerWidth = 250;
   const openedMixin = (theme) => ({
     width: drawerWidth,
     transition: theme.transitions.create("width", {
@@ -136,25 +132,25 @@ function SideBar() {
 
   const menuItems = [
     {
-      text: "Dashboard",
+      text: "ADMIN PANEL",
       icon: <DashboardIcon />,
       to: "/dashboard",
     },
     {
-      text: "Employees",
+      text: "EMPLOYEES",
       icon: <PeopleAltIcon />,
       to: "/employees",
       children: [
-        { text: "Queue", icon: <QueueIcon />, to: "/queue" },
+        { text: "REQUESTS IN QUEUE", icon: <QueueIcon />, to: "/queue" },
         {
-          text: "Underprocess",
+          text: "APPROVED",
           icon: <AssignmentTurnedInIcon />,
           to: "/underprocess",
         },
       ],
     },
     {
-      text: "Users",
+      text: "USERS",
       icon: <BadgeIcon />,
       to: "/userPage",
     },
@@ -187,7 +183,14 @@ function SideBar() {
       // to: "/requests",
     },
     {
-      text: "Logout",
+      text: "SETTINGS",
+      icon: <SettingsIcon />,
+      // icon: <HelpOutlineIcon />,
+      // to: "/requests",
+      children: [{ text: "TABS", icon: <ViewSidebarIcon />, to: "/tabs" }],
+    },
+    {
+      text: "LOGOUT",
       icon: <ExitToAppRoundedIcon />,
       action: () => {
         logoutFunc();
@@ -213,12 +216,12 @@ function SideBar() {
 
   // UseEffect here
 
-  const fetchEmployeeData = async () => {
+  const fetchSideTab = async () => {
     try {
       // setLoading(true);
       const response = await getSideTab();
-      if (response?.status === 200) {
-        // console.log(`check response of Sidbar`, response?.data?.result);
+      if (response?.data?.status === 200) {
+        console.log(`check response of Sidbar`, response?.data?.result);
         //   setLoading(false);
         setTabData(response?.data?.result);
       }
@@ -226,8 +229,23 @@ function SideBar() {
       // setLoading(true);
     }
   };
+  const fetchNestedSideTabs = async (tabName) => {
+    try {
+      // setLoading(true);
+      const response = await getNestedSideTab(tabName);
+      if (response?.data?.status === 200) {
+        //   setLoading(false);
+        setNestedTabData((prev) => ({
+          ...prev,
+          [tabName]: response?.data?.result,
+        }));
+      }
+    } catch (error) {
+      // setLoading(true);
+    }
+  };
   useEffect(() => {
-    fetchEmployeeData();
+    fetchSideTab();
   }, []);
   return (
     <>
@@ -513,30 +531,35 @@ function SideBar() {
           </DrawerHeader>
 
           <List onMouseEnter={handleDrawerOpen}>
-            {menuItems?.map(({ text, icon, to, action, children }) => (
-              <React.Fragment key={text}>
-                {/* Parent Item */}
-                <ListItem
-                  disablePadding
-                  sx={{
-                    display: "block",
-                    backgroundColor:
-                      activeItem === text ? "white" : "transparent",
-                    "&:hover": {
-                      backgroundColor: activeItem === text ? "white" : "Tomato",
-                    },
-                  }}
-                  onClick={() => {
-                    if (action) action();
-                    else {
-                      setActiveItem(text);
-                      setActiveParent(null);
-                      setLastActiveItem(null);
-                      setExpandedParent(expandedParent === text ? null : text);
-                    }
-                  }}
-                >
-                  <NavLink to={to || "#"}>
+            {/* Dynamic Tabs */}
+            {tabData?.map((tab) => {
+              const predefinedTab = menuItems.find(
+                (item) => item.text == tab.dbtabs
+              );
+              return (
+                <React.Fragment key={tab?.dbtabid}>
+                  <ListItem
+                    disablePadding
+                    sx={{
+                      display: "block",
+                      backgroundColor:
+                        activeItem == tab?.dbtabs ? "white" : "transparent",
+                      "&:hover": {
+                        backgroundColor:
+                          activeItem == tab?.dbtabs ? "white" : "Tomato",
+                      },
+                    }}
+                    onClick={() => {
+                      setActiveItem(tab?.dbtabs);
+                      fetchNestedSideTabs(tab?.dbtabs);
+                      if (predefinedTab && predefinedTab.to) {
+                        navigate(predefinedTab.to);
+                      }
+                      setExpandedParent(
+                        expandedParent === tab.dbtabs ? null : tab.dbtabs
+                      );
+                    }}
+                  >
                     <ListItemButton
                       sx={{
                         minHeight: 48,
@@ -549,93 +572,121 @@ function SideBar() {
                           minWidth: 0,
                           mr: open ? 3 : "auto",
                           justifyContent: "center",
-                          color: activeItem === text ? "black" : "white",
+                          color: activeItem == tab?.dbtabs ? "black" : "white",
                         }}
                       >
-                        {icon}
+                        {predefinedTab ? predefinedTab.icon : <LockIcon />}
                       </ListItemIcon>
                       <ListItemText
                         primary={
                           <Typography
                             sx={{
                               opacity: open ? 1 : 0,
-                              color: activeItem === text ? "black" : "#FFFFFF",
-                              fontWeight: activeItem === text ? "800" : "600",
+                              color:
+                                activeItem == tab?.dbtabs ? "black" : "#FFFFFF",
+                              fontWeight:
+                                activeItem == tab?.dbtabs ? "800" : "600",
                             }}
                           >
-                            {text}
+                            {tab?.dbtabs}
                           </Typography>
                         }
                       />
                     </ListItemButton>
-                  </NavLink>
-                </ListItem>
+                  </ListItem>
 
-                {/* Render Nested Items */}
-                {open && expandedParent === text && children && (
-                  <List sx={{ pl: 4 }}>
-                    {children.map((child) => (
-                      <ListItem
-                        key={child.text}
-                        disablePadding
-                        sx={{
-                          display: "block",
-                          backgroundColor:
-                            activeItem === child.text ? "white" : "transparent",
-                          "&:hover": {
-                            backgroundColor:
-                              activeItem === child.text ? "white" : "Tomato",
-                          },
-                        }}
-                        onClick={() => {
-                          setActiveItem(child.text);
-                          setLastActiveItem(child.text);
-                          setActiveParent(text);
-                        }}
-                      >
-                        <NavLink to={child.to}>
-                          <ListItemButton
-                            sx={{
-                              minHeight: 40,
-                              justifyContent: open ? "initial" : "center",
-                              px: 2.5,
-                            }}
-                          >
-                            <ListItemIcon
+                  {open &&
+                    expandedParent == tab?.dbtabs &&
+                    nestedTabData[tab?.dbtabs] && (
+                      <List sx={{ pl: 4 }}>
+                        {nestedTabData[tab?.dbtabs]?.map((nestedTab) => {
+                          const matchedChild = predefinedTab?.children?.find(
+                            (child) => child.text == nestedTab.dbtabs
+                          );
+                          const isLocked = !matchedChild?.to;
+                          return (
+                            <ListItem
+                              key={nestedTab?.taB_S_CAT}
+                              disablePadding
                               sx={{
-                                minWidth: 0,
-                                mr: open ? 3 : "auto",
-                                justifyContent: "center",
-                                color:
-                                  activeItem === child.text ? "black" : "white",
+                                display: "block",
+                                backgroundColor:
+                                  activeItem == nestedTab.dbtabs
+                                    ? "white"
+                                    : "transparent",
+                                "&:hover": {
+                                  backgroundColor:
+                                    activeItem == nestedTab.dbtabs
+                                      ? "white"
+                                      : isLocked
+                                      ? "transparent"
+                                      : "Tomato",
+                                },
+                              }}
+                              onClick={() => {
+                                if (!isLocked) {
+                                  setActiveItem(nestedTab?.dbtabs);
+                                  setLastActiveItem(nestedTab?.dbtabs);
+                                  setActiveParent(nestedTab);
+                                  if (matchedChild?.to) {
+                                    navigate(matchedChild.to);
+                                  }
+                                }
                               }}
                             >
-                              {child.icon}
-                            </ListItemIcon>
-                            <ListItemText
-                              primary={
-                                <Typography
+                              <ListItemButton
+                                sx={{
+                                  minHeight: 40,
+                                  justifyContent: open ? "initial" : "center",
+                                  px: 2.5,
+                                  cursor: isLocked ? "not-allowed" : "pointer",
+                                }}
+                              >
+                                <ListItemIcon
                                   sx={{
+                                    minWidth: 0,
+                                    mr: open ? 3 : "auto",
+                                    justifyContent: "center",
                                     color:
-                                      activeItem === child.text
+                                      activeItem == nestedTab.dbtabs
                                         ? "black"
-                                        : "#FFFFFF",
-                                    fontWeight:
-                                      activeItem === child.text ? "700" : "500",
+                                        : isLocked
+                                        ? "gray"
+                                        : "white",
                                   }}
                                 >
-                                  {child.text}
-                                </Typography>
-                              }
-                            />
-                          </ListItemButton>
-                        </NavLink>
-                      </ListItem>
-                    ))}
-                  </List>
-                )}
-              </React.Fragment>
-            ))}
+                                  {matchedChild?.icon || <LockIcon />}
+                                </ListItemIcon>
+                                <ListItemText
+                                  primary={
+                                    <Typography
+                                      sx={{
+                                        color:
+                                          activeItem == nestedTab.dbtabs
+                                            ? "black"
+                                            : isLocked
+                                            ? "gray"
+                                            : "#FFFFFF",
+                                        fontWeight:
+                                          activeItem == nestedTab.dbtabs
+                                            ? "700"
+                                            : "600",
+                                        fontSize: "12px",
+                                      }}
+                                    >
+                                      {nestedTab?.dbtabs}
+                                    </Typography>
+                                  }
+                                />
+                              </ListItemButton>
+                            </ListItem>
+                          );
+                        })}
+                      </List>
+                    )}
+                </React.Fragment>
+              );
+            })}
           </List>
         </Drawer>
 

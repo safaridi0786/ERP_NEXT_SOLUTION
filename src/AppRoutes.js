@@ -13,6 +13,7 @@ import Employees from "./app/main/components/employees/Employees";
 import Queue from "./app/main/components/employees/employeeList/Queue";
 import UnderProcess from "./app/main/components/employees/employeeList/UnderProcess";
 import UserPage from "./app/main/components/user/UserPage";
+import Tabs from "./app/main/components/setting/Tab/Tabs";
 
 function AppRoutes() {
   return (
@@ -31,6 +32,7 @@ function AppRoutes() {
           <Route path="/queue" element={<Queue />} />
           <Route path="/underprocess" element={<UnderProcess />} />
           <Route path="/userPage" element={<UserPage />} />
+          <Route path="/tabs" element={<Tabs />} />
         </Route>
       </Routes>
     </>
