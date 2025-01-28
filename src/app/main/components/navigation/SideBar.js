@@ -34,6 +34,7 @@ import QueueIcon from "@mui/icons-material/Queue";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import { getSideTab, getNestedSideTab } from "../../../services/api/apiManager";
 import ViewSidebarIcon from "@mui/icons-material/ViewSidebar";
+import PlaylistAddCheckCircleIcon from "@mui/icons-material/PlaylistAddCheckCircle";
 function SideBar() {
   const [tabData, setTabData] = React.useState([]);
   const [nestedTabData, setNestedTabData] = React.useState([]);
@@ -187,7 +188,14 @@ function SideBar() {
       icon: <SettingsIcon />,
       // icon: <HelpOutlineIcon />,
       // to: "/requests",
-      children: [{ text: "TABS", icon: <ViewSidebarIcon />, to: "/tabs" }],
+      children: [
+        { text: "TABS", icon: <ViewSidebarIcon />, to: "/tabs" },
+        {
+          text: "Authority",
+          icon: <PlaylistAddCheckCircleIcon />,
+          to: "/authority",
+        },
+      ],
     },
     {
       text: "LOGOUT",

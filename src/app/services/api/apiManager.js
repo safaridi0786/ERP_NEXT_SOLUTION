@@ -816,12 +816,23 @@ export const fetchAddMainTabNameAPI = async (MainName, Remarks) => {
 
 // Add Sub Tab Name
 
-export const fetchAddSubTabNameAPI = async (data) => {
+export const fetchAddSubTabNameAPI = async (MainName, SubName, Remarks) => {
   try {
     const response = await postFormData(
-      `${s.settings.tabs.addSubTabName}`,
-      data
+      `${s.settings.tabs.addSubTabName}?MainName=${MainName}&SubName=${SubName}&Remarks=${Remarks}`
     );
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+
+// Get Authority Data in Setting Module
+
+export const getAuthorityAPI = async () => {
+  try {
+    const url = `${s.settings.authority.getRoles}`;
+    const response = await getData(url);
     return response;
   } catch (error) {
     return null;

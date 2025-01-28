@@ -46,19 +46,21 @@ function Tabs() {
         const response = await fetchAddMainTabNameAPI(mainTabName, remarks);
         if (response?.data?.status === 200) {
           fetchSideTab();
+          setShowMainTab(false);
           setMainTabName("");
           setRemarks("");
           setLoading(false);
         }
       } else if (activeTabName !== "" && subTabName !== "" && remarks !== "") {
-        const formData = new FormData();
-        formData.append("MainName", activeTabName);
-        formData.append("SubTabName", subTabName);
-        formData.append("Remarks", remarks);
-        const response = await fetchAddSubTabNameAPI(formData);
+        const response = await fetchAddSubTabNameAPI(
+          activeTabName,
+          subTabName,
+          remarks
+        );
         if (response?.data?.status === 200) {
-          console.log(`check response of subTab-->>`, response);
           fetchSideTab();
+          fetchSubTabs(activeTabName);
+          setShowSubTab(false);
           setMainTabName("");
           setSubTabName("");
           setRemarks("");

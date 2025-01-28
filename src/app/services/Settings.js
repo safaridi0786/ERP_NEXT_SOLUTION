@@ -83,5 +83,8 @@ export const settings = {
       addMainTabName: "/api/Dashboard/AddMainTabs",
       addSubTabName: "/api/Dashboard/AddSubTabs",
     },
+    authority: {
+      getRoles: "/api/Dashboard/GetRoles_Auth",
+    },
   },
 };
