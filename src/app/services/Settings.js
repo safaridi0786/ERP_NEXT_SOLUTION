@@ -85,6 +85,7 @@ export const settings = {
     },
     authority: {
       getRoles: "/api/Dashboard/GetRoles_Auth",
+      addRoles: "/api/Dashboard/DM_Authorities",
     },
   },
 };

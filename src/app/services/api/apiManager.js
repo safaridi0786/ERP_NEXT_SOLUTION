@@ -838,3 +838,27 @@ export const getAuthorityAPI = async () => {
     return null;
   }
 };
+
+// Add Authority Data in Setting Module
+
+export const fetchAddRoleAPI = async (
+  operation,
+  Auth,
+  Remarks,
+  islive,
+  View,
+  Insert,
+  Update,
+  Lock,
+  All,
+  Approval
+) => {
+  try {
+    const response = await postData(
+      `${s.settings.authority.addRoles}?operation=${operation}&Auth=${Auth}&Remarks=${Remarks}&islive=${islive}&View=${View}&Insert=${Insert}&Update=${Update}&Lock=${Lock}&All=${All}&Approval=${Approval}`
+    );
+    return response;
+  } catch (error) {
+    return null;
+  }
+};

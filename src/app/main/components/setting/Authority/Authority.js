@@ -26,39 +26,12 @@ import Divider from "@mui/material/Divider";
 import IndeterminateCheckBoxIcon from "@mui/icons-material/IndeterminateCheckBox";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { getAuthorityAPI } from "../../../../services/api/apiManager";
+import {
+  getAuthorityAPI,
+  fetchAddRoleAPI,
+} from "../../../../services/api/apiManager";
 
 function Authority() {
-  const [parentChecked, setParentChecked] = useState(false);
-  const [showChildren, setShowChildren] = useState(false);
-  const [childChecked, setChildChecked] = useState({
-    view: false,
-    update: false,
-    lock: false,
-    insert: false,
-  });
-
-  // Handle parent checkbox change
-  const handleParentChange = (event) => {
-    const isChecked = event.target.checked;
-    setParentChecked(isChecked);
-    setChildChecked({
-      view: isChecked,
-      update: isChecked,
-      lock: isChecked,
-      insert: isChecked,
-    });
-    setShowChildren(isChecked);
-  };
-
-  // Handle child checkbox change
-  const handleChildChange = (e, name) => {
-    const isChecked = e.target.checked;
-    setChildChecked((prevState) => ({
-      ...prevState,
-      [name]: isChecked,
-    }));
-  };
   const [allUserRoles, setAllUserRoles] = useState([]);
   const [showParent, setShowParent] = useState(false);
   const [showRightRules, setShowRightRules] = useState([]);
@@ -70,11 +43,75 @@ function Authority() {
   const [openDialog, setOpenDialog] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [error, setError] = useState(false);
+  const [parentChecked, setParentChecked] = useState(false);
+  const [parentIndeterminate, setParentIndeterminate] = useState(false);
+  const [showChildren, setShowChildren] = useState(false);
+  const [childChecked, setChildChecked] = useState({
+    view: false,
+    update: false,
+    lock: false,
+    insert: false,
+  });
 
+  const [checkboxState, setCheckboxState] = useState({
+    view: false,
+    update: false,
+    lock: false,
+    insert: false,
+    all: false,
+  });
+
+  console.log(`check checkBoxState--->>`, checkboxState);
+  // Handler to toggle checkbox state
+  const handleChildCheckboxChange = (name, checked) => {
+    if (hideRole) {
+      setCheckboxState((prevState) => {
+        const updatedState = { ...prevState, [name]: checked };
+        const allChecked = Object.values(updatedState).every((val) => val);
+        const someChecked = Object.values(updatedState).some((val) => val);
+        setParentChecked(someChecked);
+        setParentIndeterminate(!someChecked && allChecked);
+        return updatedState;
+      });
+
+      // setCheckboxState((prevState) => ({
+      //   ...prevState,
+      //   [name]: checked,
+      // }));
+    }
+  };
   const [snackbarInfo, setSnackbarInfo] = useState({
     snackbarMsg: "",
     snackbarColor: "",
   });
+
+  // Handle parent checkbox change
+  const handleParentChange = (event) => {
+    const isChecked = event.target.checked;
+    setParentChecked(isChecked);
+    setParentIndeterminate(false);
+    const updatedChildren = {
+      view: isChecked,
+      update: isChecked,
+      lock: isChecked,
+      insert: isChecked,
+    };
+    setChildChecked(updatedChildren);
+    setShowChildren(isChecked);
+  };
+
+  // Handle child checkbox change
+  const handleChildChange = (e, name) => {
+    const isChecked = e.target.checked;
+    setChildChecked((prevState) => {
+      const updatedState = { ...prevState, [name]: isChecked };
+      const allChecked = Object.values(updatedState).every((val) => val);
+      const someChecked = Object.values(updatedState).some((val) => val);
+      setParentChecked(someChecked);
+      setParentIndeterminate(!someChecked && allChecked);
+      return updatedState;
+    });
+  };
 
   // for chiled components
   const handleDialogOpen = () => {
@@ -98,8 +135,23 @@ function Authority() {
             <Typography
               style={{ cursor: "pointer" }}
               onClick={() => {
-                setShowParent(true);
-                setShowRightRules(cellValues?.row);
+                if (!showParent && !showChildren) {
+                  setShowParent(true);
+                  setShowRightRules(cellValues?.row);
+                } else {
+                  setShowChildren(false);
+                  setParentChecked(false);
+                  setParentIndeterminate(false);
+                  setChildChecked({
+                    view: false,
+                    update: false,
+                    lock: false,
+                    insert: false,
+                  });
+                }
+                setHideRole(false);
+                setNewRole("");
+                setSendIdRole(null);
               }}
             >
               <u>{nameParts}</u>
@@ -200,6 +252,22 @@ function Authority() {
     },
   ];
 
+  const SaveRoleAuthority = async (Auth, View, Insert, Update, Lock, All) => {
+    const response = await fetchAddRoleAPI(
+      "test",
+      Auth,
+      "test",
+      0,
+      View,
+      Insert,
+      Update,
+      Lock,
+      All,
+      "test"
+    );
+    console.log(`check response--->>`, response);
+  };
+
   const getUserRolesData = async () => {
     setLoading(true);
     try {
@@ -256,6 +324,16 @@ function Authority() {
               setHideRole(true);
               setNewRole("");
               setSendIdRole(null);
+              setShowParent(true);
+              setShowChildren(true);
+              setParentChecked(false);
+              setParentIndeterminate(false);
+              setChildChecked({
+                view: false,
+                update: false,
+                lock: false,
+                insert: false,
+              });
             }}
             sx={{
               gap: 1,
@@ -477,7 +555,6 @@ function Authority() {
                                       }
                                     />
                                   }
-                                  checked={parentChecked}
                                   onChange={handleParentChange}
                                   sx={{
                                     p: "0",
@@ -486,7 +563,14 @@ function Authority() {
                                   }}
                                 />
                                 <FormControlLabel
-                                  control={<Checkbox size="small" name="all" />}
+                                  control={
+                                    <Checkbox
+                                      size="small"
+                                      name="all"
+                                      checked={parentChecked}
+                                      indeterminate={parentIndeterminate}
+                                    />
+                                  }
                                   label="All"
                                   sx={{
                                     "& .MuiFormControlLabel-label": {
@@ -518,30 +602,30 @@ function Authority() {
                                       {
                                         name: "view",
                                         label: "View",
-                                        checked: showRightRules?._VIEW,
+                                        rule: "_VIEW",
                                       },
                                       {
                                         name: "update",
                                         label: "Update",
-                                        checked: showRightRules?._UPDATE,
+                                        rule: "_UPDATE",
                                       },
                                       {
                                         name: "lock",
                                         label: "Lock",
-                                        checked: showRightRules?._LOCK,
+                                        rule: "_LOCK",
                                       },
                                       {
                                         name: "insert",
                                         label: "Insert",
-                                        checked: showRightRules?._INSERT,
+                                        rule: "_INSERT",
                                       },
                                       {
                                         name: "all",
                                         label: "All",
-                                        checked: showRightRules?._ALL,
+                                        rule: "_ALL",
                                       },
-                                    ].map((checkbox) => (
-                                      <>
+                                    ]?.map((checkbox) => (
+                                      <React.Fragment key={checkbox.name}>
                                         <Box
                                           sx={{
                                             display: "flex",
@@ -554,7 +638,7 @@ function Authority() {
                                               <Checkbox
                                                 size="small"
                                                 name="view"
-                                                checked={childChecked.view}
+                                                checked={childChecked?.view}
                                                 onChange={handleChildChange}
                                                 icon={
                                                   <AddBoxIcon
@@ -579,8 +663,22 @@ function Authority() {
                                             control={
                                               <Checkbox
                                                 size="small"
-                                                name="all"
-                                                checked={checkbox.checked}
+                                                name={checkbox.name}
+                                                checked={
+                                                  hideRole
+                                                    ? checkboxState[
+                                                        checkbox.name
+                                                      ]
+                                                    : showRightRules?.[
+                                                        checkbox.rule
+                                                      ] || false
+                                                }
+                                                onChange={(e) =>
+                                                  handleChildCheckboxChange(
+                                                    checkbox.name,
+                                                    e.target.checked
+                                                  )
+                                                }
                                               />
                                             }
                                             label={checkbox.label}
@@ -598,7 +696,7 @@ function Authority() {
                                           />
                                         </Box>
                                         <Divider sx={{ bgcolor: "#000000" }} />
-                                      </>
+                                      </React.Fragment>
                                     ))}
                                   </Box>
                                 </Box>
@@ -612,114 +710,124 @@ function Authority() {
                 </Grid>
               </Grid>
             </Grid>
-            <Box
-              sx={{
-                display: "flex",
-                gap: "0.5rem",
-                flex: 1,
-                m: "10px 0px",
-                justifyContent: "flex-end",
-              }}
-            >
-              <Button
-                onClick={() => {
-                  setHideRole(false);
-                  setNewRole("");
-                  setSendIdRole(null);
-                  setError(false);
-                }}
-                variant="contained"
+            {hideRole && (
+              <Box
                 sx={{
-                  height: "32px",
-                  bgcolor: "#D7D7D7",
-                  color: "#15232B",
-                  fontWeight: "bold",
-                  textTransform: "capitalize",
-                  padding: "0.5rem 1.5rem",
-                  "&:hover": {
-                    bgcolor: "#D7D7D7",
-                  },
+                  display: "flex",
+                  gap: "0.5rem",
+                  flex: 1,
+                  m: "10px 0px",
+                  justifyContent: "flex-end",
                 }}
               >
-                Cancel
-              </Button>
-              <Tooltip
-                title={sendIdRole !== null ? "Update User" : "Add User"}
-                followCursor
-              >
-                <span>
-                  {sendIdRole !== null ? (
-                    <Button
-                      onClick={() => {
-                        // if (adduserrights) {
-                        // updateUserRoles({
-                        //   roleName: newRole,
-                        //   deleted: false,
-                        //   roleId: sendIdRole,
-                        // });
-                        // updateUserRights({
-                        //   roleId: sendIdRole,
-                        //   moduleRightId: rights?.map((i) => i?.moduleRightId),
-                        // });
-                        setHideRole(false);
-                        setSendIdRole(null);
-
-                        // }
-                      }}
-                      variant="contained"
-                      type="file"
-                      sx={{
-                        height: "32px",
-                        bgcolor: "#0E4374",
-                        color: "#F3F8FB",
-                        fontWeight: "bold",
-                        textTransform: "capitalize",
-                        padding: "0.5rem 2rem",
-                        "&:hover": {
-                          bgcolor: "#1A6C71",
-                        },
-                      }}
-                      // disabled={!adduserrights}
-                    >
-                      Update
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={() => {
-                        if (newRole !== "") {
-                          // addNewRoles({ roleName: newRole });
-                          setNewRole("");
+                <Button
+                  onClick={() => {
+                    setHideRole(false);
+                    setNewRole("");
+                    setSendIdRole(null);
+                    setError(false);
+                  }}
+                  variant="contained"
+                  sx={{
+                    height: "32px",
+                    bgcolor: "#D7D7D7",
+                    color: "#15232B",
+                    fontWeight: "bold",
+                    textTransform: "capitalize",
+                    padding: "0.5rem 1.5rem",
+                    "&:hover": {
+                      bgcolor: "#D7D7D7",
+                    },
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Tooltip
+                  title={sendIdRole !== null ? "Update User" : "Add User"}
+                  followCursor
+                >
+                  <span>
+                    {sendIdRole !== null ? (
+                      <Button
+                        onClick={() => {
+                          // if (adduserrights) {
+                          // updateUserRoles({
+                          //   roleName: newRole,
+                          //   deleted: false,
+                          //   roleId: sendIdRole,
+                          // });
+                          // updateUserRights({
+                          //   roleId: sendIdRole,
+                          //   moduleRightId: rights?.map((i) => i?.moduleRightId),
+                          // });
                           setHideRole(false);
-                        } else {
-                          setError(true);
-                          setSnackbarInfo({
-                            snackbarMsg: "formValidation",
-                            snackbarColor: "red",
-                          });
-                          setOpenSnackbar(true);
-                        }
-                      }}
-                      variant="contained"
-                      type="file"
-                      sx={{
-                        height: "32px",
-                        bgcolor: "#0E4374",
-                        color: "#F3F8FB",
-                        fontWeight: "bold",
-                        textTransform: "capitalize",
-                        padding: "0.5rem 2rem",
-                        "&:hover": {
-                          bgcolor: "#1A6C71",
-                        },
-                      }}
-                      // disabled={!adduserrights}
-                    >
-                      Add
-                    </Button>
-                  )}
-                </span>
-              </Tooltip>
-            </Box>
+                          setSendIdRole(null);
+
+                          // }
+                        }}
+                        variant="contained"
+                        type="file"
+                        sx={{
+                          height: "32px",
+                          bgcolor: "#0E4374",
+                          color: "#F3F8FB",
+                          fontWeight: "bold",
+                          textTransform: "capitalize",
+                          padding: "0.5rem 2rem",
+                          "&:hover": {
+                            bgcolor: "#1A6C71",
+                          },
+                        }}
+                        // disabled={!adduserrights}
+                      >
+                        Update
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => {
+                          if (newRole !== "") {
+                            SaveRoleAuthority(
+                              newRole,
+                              checkboxState?.view,
+                              checkboxState?.insert,
+                              checkboxState?.update,
+                              checkboxState?.lock,
+                              checkboxState?.all
+                            );
+                            setNewRole("");
+                            setHideRole(false);
+                          }
+                          // else {
+                          //   setError(true);
+                          //   setSnackbarInfo({
+                          //     snackbarMsg: "formValidation",
+                          //     snackbarColor: "red",
+                          //   });
+                          //   setOpenSnackbar(true);
+                          // }
+                        }}
+                        variant="contained"
+                        type="file"
+                        sx={{
+                          height: "32px",
+                          bgcolor: "#0E4374",
+                          color: "#F3F8FB",
+                          fontWeight: "bold",
+                          textTransform: "capitalize",
+                          padding: "0.5rem 2rem",
+                          "&:hover": {
+                            bgcolor: "#1A6C71",
+                          },
+                        }}
+                        // disabled={!adduserrights}
+                      >
+                        Add
+                      </Button>
+                    )}
+                  </span>
+                </Tooltip>
+              </Box>
+            )}
           </Box>
         )}
 
