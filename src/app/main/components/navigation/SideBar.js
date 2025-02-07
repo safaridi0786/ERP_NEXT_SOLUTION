@@ -35,6 +35,7 @@ import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import { getSideTab, getNestedSideTab } from "../../../services/api/apiManager";
 import ViewSidebarIcon from "@mui/icons-material/ViewSidebar";
 import PlaylistAddCheckCircleIcon from "@mui/icons-material/PlaylistAddCheckCircle";
+import PendingActionsIcon from "@mui/icons-material/PendingActions";
 function SideBar() {
   const [tabData, setTabData] = React.useState([]);
   const [nestedTabData, setNestedTabData] = React.useState([]);
@@ -138,7 +139,7 @@ function SideBar() {
       to: "/dashboard",
     },
     {
-      text: "EMPLOYEES",
+      text: "Employees",
       icon: <PeopleAltIcon />,
       to: "/employees",
       children: [
@@ -157,29 +158,29 @@ function SideBar() {
     },
     {
       text: "Approval",
-      icon: <LockIcon />,
+      icon: <PendingActionsIcon />,
     },
     {
       text: "Reports",
-      icon: <LockIcon />,
+      icon: <PendingActionsIcon />,
       // icon: <ReportIcon />,
       // to: "/reports",
     },
     {
       text: "Loans",
-      icon: <LockIcon />,
+      icon: <PendingActionsIcon />,
       // icon: <CreditCardIcon />,
       // to: "/loans",
     },
     {
       text: "Invoices",
-      icon: <LockIcon />,
+      icon: <PendingActionsIcon />,
       // icon: <ReceiptIcon />,
       // to: "/invoices",
     },
     {
       text: "Requests",
-      icon: <LockIcon />,
+      icon: <PendingActionsIcon />,
       // icon: <HelpOutlineIcon />,
       // to: "/requests",
     },
@@ -583,7 +584,11 @@ function SideBar() {
                           color: activeItem == tab?.dbtabs ? "black" : "white",
                         }}
                       >
-                        {predefinedTab ? predefinedTab.icon : <LockIcon />}
+                        {predefinedTab ? (
+                          predefinedTab.icon
+                        ) : (
+                          <PendingActionsIcon />
+                        )}
                       </ListItemIcon>
                       <ListItemText
                         primary={
@@ -663,7 +668,7 @@ function SideBar() {
                                         : "white",
                                   }}
                                 >
-                                  {matchedChild?.icon || <LockIcon />}
+                                  {matchedChild?.icon || <PendingActionsIcon />}
                                 </ListItemIcon>
                                 <ListItemText
                                   primary={

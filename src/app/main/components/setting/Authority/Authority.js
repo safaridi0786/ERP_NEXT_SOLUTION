@@ -29,6 +29,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import {
   getAuthorityAPI,
   fetchAddRoleAPI,
+  fetchDeleteUpdateRoleAPI,
 } from "../../../../services/api/apiManager";
 
 function Authority() {
@@ -60,8 +61,6 @@ function Authority() {
     insert: false,
     all: false,
   });
-
-  console.log(`check checkBoxState--->>`, checkboxState);
   // Handler to toggle checkbox state
   const handleChildCheckboxChange = (name, checked) => {
     if (hideRole) {
@@ -73,11 +72,6 @@ function Authority() {
         setParentIndeterminate(!someChecked && allChecked);
         return updatedState;
       });
-
-      // setCheckboxState((prevState) => ({
-      //   ...prevState,
-      //   [name]: checked,
-      // }));
     }
   };
   const [snackbarInfo, setSnackbarInfo] = useState({
@@ -88,16 +82,15 @@ function Authority() {
   // Handle parent checkbox change
   const handleParentChange = (event) => {
     const isChecked = event.target.checked;
-    setParentChecked(isChecked);
     setParentIndeterminate(false);
-    const updatedChildren = {
+    setShowChildren(isChecked);
+    setChildChecked({
       view: isChecked,
       update: isChecked,
       lock: isChecked,
       insert: isChecked,
-    };
-    setChildChecked(updatedChildren);
-    setShowChildren(isChecked);
+    });
+    setParentChecked(isChecked);
   };
 
   // Handle child checkbox change
@@ -107,8 +100,8 @@ function Authority() {
       const updatedState = { ...prevState, [name]: isChecked };
       const allChecked = Object.values(updatedState).every((val) => val);
       const someChecked = Object.values(updatedState).some((val) => val);
-      setParentChecked(someChecked);
-      setParentIndeterminate(!someChecked && allChecked);
+      setParentChecked(allChecked);
+      setParentIndeterminate(allChecked);
       return updatedState;
     });
   };
@@ -135,20 +128,25 @@ function Authority() {
             <Typography
               style={{ cursor: "pointer" }}
               onClick={() => {
-                if (!showParent && !showChildren) {
-                  setShowParent(true);
-                  setShowRightRules(cellValues?.row);
-                } else {
-                  setShowChildren(false);
-                  setParentChecked(false);
-                  setParentIndeterminate(false);
-                  setChildChecked({
-                    view: false,
-                    update: false,
-                    lock: false,
-                    insert: false,
-                  });
-                }
+                setShowParent(true);
+                setShowChildren(false);
+                setParentChecked(false);
+                setParentIndeterminate(false);
+                setChildChecked({
+                  view: false,
+                  update: false,
+                  lock: false,
+                  insert: false,
+                });
+                setCheckboxState({
+                  view: false,
+                  update: false,
+                  lock: false,
+                  insert: false,
+                  all: false,
+                });
+
+                setShowRightRules(cellValues?.row);
                 setHideRole(false);
                 setNewRole("");
                 setSendIdRole(null);
@@ -190,22 +188,35 @@ function Authority() {
                       backgroundColor: "transparent",
                     },
                   }}
-                  // disabled={!edituserrights}
                 >
                   <BorderColorOutlinedIcon
                     onClick={() => {
-                      // if (edituserrights) {
-                      //   setNewRole(cellValues?.row?.roleName);
-                      //   setSendIdRole(cellValues?.row?.roleId);
-                      //   setHideRole(true);
-                      //   if (cellValues?.row?.roleId !== sendIdRole) {
-                      //     setRights([]);
-                      //     setModule([]);
-                      //     setModuleMaster([]);
-                      //     setModuleId([]);
-                      //     setMasterId([]);
-                      //   }
-                      // }
+                      setHideRole(true);
+                      setNewRole(cellValues?.row?.auth);
+                      setSendIdRole(cellValues?.row?.authId);
+                      setShowParent(true);
+                      setShowChildren(true);
+                      setParentChecked(
+                        cellValues?.row?._ALL ||
+                          cellValues?.row?._VIEW ||
+                          cellValues?.row?._UPDATE ||
+                          cellValues?.row?._LOCK ||
+                          cellValues?.row?._INSERT
+                      );
+                      setParentIndeterminate(false);
+                      setChildChecked({
+                        view: cellValues?.row?._VIEW,
+                        update: cellValues?.row?._UPDATE,
+                        lock: cellValues?.row?._LOCK,
+                        insert: cellValues?.row?._INSERT,
+                      });
+                      setCheckboxState({
+                        view: cellValues?.row?._VIEW,
+                        update: cellValues?.row?._UPDATE,
+                        lock: cellValues?.row?._LOCK,
+                        insert: cellValues?.row?._INSERT,
+                        all: cellValues?.row?._ALL,
+                      });
                     }}
                     sx={{
                       color: "#003B72",
@@ -230,7 +241,6 @@ function Authority() {
                     },
                     cursor: "pointer",
                   }}
-                  // disabled={!deluserrights}
                 >
                   <DeleteOutlinedIcon
                     sx={{
@@ -238,9 +248,8 @@ function Authority() {
                       fontSize: "22px",
                     }}
                     onClick={() => {
-                      // if (deluserrights) {
-                      //   handleDeletePatient(cellValues?.row);
-                      // }
+                      setDeleteData(cellValues?.row);
+                      handleDialogOpen();
                     }}
                   />
                 </IconButton>
@@ -252,20 +261,154 @@ function Authority() {
     },
   ];
 
+  // Added Role Authority
+
   const SaveRoleAuthority = async (Auth, View, Insert, Update, Lock, All) => {
-    const response = await fetchAddRoleAPI(
-      "test",
-      Auth,
-      "test",
-      0,
-      View,
-      Insert,
-      Update,
-      Lock,
-      All,
-      "test"
-    );
-    console.log(`check response--->>`, response);
+    try {
+      const response = sendIdRole
+        ? await fetchDeleteUpdateRoleAPI(
+            "UPDATE",
+            sendIdRole,
+            Auth,
+            "test",
+            1,
+            View,
+            Insert,
+            Update,
+            Lock,
+            All,
+            "1"
+          )
+        : await fetchAddRoleAPI(
+            "INSERT",
+            Auth,
+            "test",
+            1,
+            View,
+            Insert,
+            Update,
+            Lock,
+            All,
+            "1"
+          );
+      if (response?.data?.status === 200) {
+        getUserRolesData();
+        setHideRole(false);
+        setNewRole("");
+        setSendIdRole(null);
+        setShowParent(false);
+        setShowChildren(false);
+        setParentChecked(false);
+        setParentIndeterminate(false);
+        setChildChecked({
+          view: false,
+          update: false,
+          lock: false,
+          insert: false,
+        });
+        setCheckboxState({
+          view: false,
+          update: false,
+          lock: false,
+          insert: false,
+          all: false,
+        });
+        // Show success snackbar
+        setSnackbarInfo({
+          snackbarMsg: sendIdRole ? "edit" : "add",
+          snackbarColor: "green",
+        });
+        setOpenSnackbar(true);
+      } else {
+        // Show error snackbar
+        setSnackbarInfo({
+          snackbarMsg: "error",
+          snackbarColor: "red",
+        });
+        setOpenSnackbar(true);
+      }
+    } catch (error) {
+      console.error("Error saving role:", error);
+      // Show error snackbar
+      setSnackbarInfo({
+        snackbarMsg: "error",
+        snackbarColor: "red",
+      });
+      setOpenSnackbar(true);
+    }
+  };
+
+  // Deleted Role Authority
+
+  const DeletedRoleAuthority = async (
+    id,
+    Auth,
+    View,
+    Insert,
+    Update,
+    Lock,
+    All
+  ) => {
+    try {
+      const response = await fetchDeleteUpdateRoleAPI(
+        "DELETE",
+        id,
+        Auth,
+        "test",
+        1,
+        View,
+        Insert,
+        Update,
+        Lock,
+        All,
+        "1"
+      );
+      if (response?.status === 200) {
+        getUserRolesData();
+        setHideRole(false);
+        setNewRole("");
+        setSendIdRole(null);
+        setShowParent(false);
+        setShowChildren(false);
+        setParentChecked(false);
+        setParentIndeterminate(false);
+        setChildChecked({
+          view: false,
+          update: false,
+          lock: false,
+          insert: false,
+        });
+        setCheckboxState({
+          view: false,
+          update: false,
+          lock: false,
+          insert: false,
+          all: false,
+        });
+        handleDialogClose();
+        // Show success snackbar
+        setSnackbarInfo({
+          snackbarMsg: "delete",
+          snackbarColor: "green",
+        });
+        setOpenSnackbar(true);
+      } else {
+        // Show error snackbar
+        setSnackbarInfo({
+          snackbarMsg: "error",
+          snackbarColor: "red",
+        });
+        setOpenSnackbar(true);
+      }
+    } catch (error) {
+      console.error("Error deleting role:", error);
+      // Show error snackbar
+      setSnackbarInfo({
+        snackbarMsg: "error",
+        snackbarColor: "red",
+      });
+      setOpenSnackbar(true);
+    }
   };
 
   const getUserRolesData = async () => {
@@ -280,7 +423,6 @@ function Authority() {
           })
         );
         setAllUserRoles(rowWithUserRolesIds);
-        console.log(`check response-->>`, rowWithUserRolesIds);
       } else {
         setAllUserRoles([]);
       }
@@ -295,6 +437,12 @@ function Authority() {
   useEffect(() => {
     getUserRolesData();
   }, []);
+
+  useEffect(() => {
+    if (!showChildren) {
+      setParentChecked(false);
+    }
+  }, [showChildren]);
 
   return (
     <>
@@ -333,6 +481,13 @@ function Authority() {
                 update: false,
                 lock: false,
                 insert: false,
+              });
+              setCheckboxState({
+                view: false,
+                update: false,
+                lock: false,
+                insert: false,
+                all: false,
               });
             }}
             sx={{
@@ -515,7 +670,7 @@ function Authority() {
                         border: "1px solid #ddd",
                         padding: "0 0.5rem",
                         overflowY: "auto",
-                        height: "500px",
+                        height: "400px",
                         // border: "1px solid black",
                       }}
                     >
@@ -750,20 +905,14 @@ function Authority() {
                     {sendIdRole !== null ? (
                       <Button
                         onClick={() => {
-                          // if (adduserrights) {
-                          // updateUserRoles({
-                          //   roleName: newRole,
-                          //   deleted: false,
-                          //   roleId: sendIdRole,
-                          // });
-                          // updateUserRights({
-                          //   roleId: sendIdRole,
-                          //   moduleRightId: rights?.map((i) => i?.moduleRightId),
-                          // });
-                          setHideRole(false);
-                          setSendIdRole(null);
-
-                          // }
+                          SaveRoleAuthority(
+                            newRole,
+                            checkboxState?.view === true ? 1 : 0,
+                            checkboxState?.insert === true ? 1 : 0,
+                            checkboxState?.update === true ? 1 : 0,
+                            checkboxState?.lock === true ? 1 : 0,
+                            checkboxState?.all === true ? 1 : 0
+                          );
                         }}
                         variant="contained"
                         type="file"
@@ -788,23 +937,21 @@ function Authority() {
                           if (newRole !== "") {
                             SaveRoleAuthority(
                               newRole,
-                              checkboxState?.view,
-                              checkboxState?.insert,
-                              checkboxState?.update,
-                              checkboxState?.lock,
-                              checkboxState?.all
+                              checkboxState?.view === true ? 1 : 0,
+                              checkboxState?.insert === true ? 1 : 0,
+                              checkboxState?.update === true ? 1 : 0,
+                              checkboxState?.lock === true ? 1 : 0,
+                              checkboxState?.all === true ? 1 : 0
                             );
                             setNewRole("");
                             setHideRole(false);
+                          } else {
+                            setSnackbarInfo({
+                              snackbarMsg: "formValidation",
+                              snackbarColor: "red",
+                            });
+                            setOpenSnackbar(true);
                           }
-                          // else {
-                          //   setError(true);
-                          //   setSnackbarInfo({
-                          //     snackbarMsg: "formValidation",
-                          //     snackbarColor: "red",
-                          //   });
-                          //   setOpenSnackbar(true);
-                          // }
                         }}
                         variant="contained"
                         type="file"
@@ -846,7 +993,7 @@ function Authority() {
               alignItems: "center",
               m: "0",
               p: "0.4rem 1rem",
-              bgcolor: "#0F5F63",
+              bgcolor: "#0E4374",
               color: "white",
             }}
           >
@@ -855,7 +1002,7 @@ function Authority() {
               sx={{
                 color: "white",
                 p: "0",
-                "&: hover": { color: "black" },
+                "&: hover": { color: "red", bgcolor: "white" },
                 cursor: "pointer",
               }}
               onClick={handleDialogClose}
@@ -876,17 +1023,16 @@ function Authority() {
                   fontSize: "24",
                 }}
               >
-                {" "}
-                Do you want to delete this Role
+                Do you want to delete this Role{" "}
                 <span
                   style={{
                     fontFamily: "Poppins",
                     fontWeight: "600",
                     fontSize: "16px",
-                    color: "#075AD7",
+                    color: "#0E4374",
                   }}
                 >
-                  {deleteData?.rolesDescription}
+                  {deleteData?.auth}{" "}
                 </span>
                 ?
               </Typography>
@@ -898,24 +1044,26 @@ function Authority() {
                 handleDialogClose();
               }}
               variant="contained"
-              style={{ background: "#0F5F63", width: "25%", cursor: "pointer" }}
+              style={{ background: "#0E4374", width: "25%", cursor: "pointer" }}
               size="small"
             >
               No
             </Button>
             <Button
               onClick={() => {
-                handleDialogClose();
-                // updateUserRoles({
-                //   roleId: deletedId,
-                //   deleted: true,
-                // });
-                setNewRole("");
-                setHideRole(false);
+                DeletedRoleAuthority(
+                  deleteData?.authId,
+                  deleteData?.auth,
+                  deleteData?._VIEW,
+                  deleteData?._INSERT,
+                  deleteData?._UPDATE,
+                  deleteData?._LOCK,
+                  deleteData?._ALL
+                );
               }}
               autoFocus
               variant="contained"
-              style={{ background: "#0F5F63", width: "25%", cursor: "pointer" }}
+              style={{ background: "#0E4374", width: "25%", cursor: "pointer" }}
               size="small"
             >
               Yes
@@ -947,15 +1095,13 @@ function Authority() {
             }}
           >
             {snackbarInfo.snackbarMsg === "add"
-              ? `Add Roles Successfully!`
+              ? `Role added successfully!`
               : snackbarInfo.snackbarMsg === "delete"
-              ? `Deleted Successfully!`
+              ? `Role deleted successfully!`
               : snackbarInfo.snackbarMsg === "edit"
-              ? `Updated Successfully!`
-              : snackbarInfo.snackbarMsg === "new"
-              ? `Updated Successfully!`
-              : snackbarInfo.snackbarMsg === "formValidation"
-              ? `Role Required`
+              ? `Role updated successfully!`
+              : snackbarInfo.snackbarMsg === "error"
+              ? `An error occurred!`
               : `ERROR!`}
           </Alert>
         </Snackbar>
