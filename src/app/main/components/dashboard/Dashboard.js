@@ -17,8 +17,10 @@ import CreditScoreIcon from "@mui/icons-material/CreditScore";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import InfoIcon from "@mui/icons-material/Info";
 import { DataGrid } from "@mui/x-data-grid";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
+  const navigate = useNavigate();
   const DashboardBoxes = [
     {
       status: "Total Employees",
@@ -663,6 +665,50 @@ function Dashboard() {
             },
           }}
         />
+      </Box>
+
+      <Box sx={{ padding: 2, display: "flex", flexDirection: "row", gap: 2 }}>
+        <Typography>Tasks</Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => navigate("/facility")}
+          sx={{ gap: 1 }}
+        >
+          Facility
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => navigate("/facilitydetail")}
+          sx={{ gap: 1 }}
+        >
+          Facility Detail
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => navigate("/partialbill")}
+          sx={{ gap: 1 }}
+        >
+          Partial Bill
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => navigate("/memberInformation")}
+          sx={{ gap: 1 }}
+        >
+          Member Extra Facility
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => navigate("/memberdetail")}
+          sx={{ gap: 1 }}
+        >
+          Member Detail
+        </Button>
       </Box>
     </>
   );

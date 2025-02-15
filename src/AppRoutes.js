@@ -15,6 +15,11 @@ import UnderProcess from "./app/main/components/employees/employeeList/UnderProc
 import UserPage from "./app/main/components/user/UserPage";
 import Tabs from "./app/main/components/setting/Tab/Tabs";
 import Authority from "./app/main/components/setting/Authority/Authority";
+import Facility from "./app/main/components/facility/Facility";
+import FacilityDetail from "./app/main/components/facility/FacilityDetail";
+import PartialBill from "./app/main/components/facility/PartialBill";
+import MemberInformation from "./app/main/components/facility/MemberInformation";
+import MemberDetail from "./app/main/components/facility/MemberDetail";
 
 function AppRoutes() {
   return (
@@ -35,6 +40,11 @@ function AppRoutes() {
           <Route path="/userPage" element={<UserPage />} />
           <Route path="/tabs" element={<Tabs />} />
           <Route path="/authority" element={<Authority />} />
+          <Route path="/facility" element={<Facility />} />
+          <Route path="/facilitydetail" element={<FacilityDetail />} />
+          <Route path="/partialbill" element={<PartialBill />} />
+          <Route path="/memberInformation" element={<MemberInformation />} />
+          <Route path="/memberdetail" element={<MemberDetail />} />
         </Route>
       </Routes>
     </>
